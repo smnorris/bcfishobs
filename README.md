@@ -41,11 +41,38 @@ $ python bcfishobs.py download
 $ python bcfishobs.py process
 ```
 
-Download time will vary, but once all data is loaded the script creates the output table `whse_fish.fiss_fish_obsrvtn_events` (~7 min running time on a 2 core 2.8GHz laptop). 
+Time to complete the `download` command will vary.  
+The `process` command completes in ~7 min running time on a 2 core 2.8GHz laptop. 
 
-Note that the output table stores the source id and species codes values (`fish_observation_point_id`, `species_code`) as arrays in columns `obs_ids` and `species_codes`. This enables storing multiple observations at a single location within a single record.
+Two tables are output by the script:
+
+- `whse_fish.fiss_fish_obsrvtn_distinct` - distinct observation points
+- `whse_fish.fiss_fish_obsrvtn_events` - distinct observation points stored as locations on `whse_basemapping.fwa_stream_networks_sp`
+
+Note that the output tables store the source id and species codes values (`fish_observation_point_id`, `species_code`) as arrays in columns `obs_ids` and `species_codes`. This enables storing multiple observations at a single location within a single record.
 
 ```
+postgis=# \d whse_fish.fiss_fish_obsrvtn_distinct
+                      Table "whse_fish.fiss_fish_obsrvtn_distinct"
+            Column             |         Type          | Collation | Nullable | Default
+-------------------------------+-----------------------+-----------+----------+---------
+ fiss_fish_obsrvtn_distinct_id | bigint                |           | not null |
+ obs_ids                       | integer[]             |           |          |
+ utm_zone                      | smallint              |           |          |
+ utm_easting                   | integer               |           |          |
+ utm_northing                  | integer               |           |          |
+ wbody_id                      | double precision      |           |          |
+ waterbody_type                | character varying(20) |           |          |
+ new_watershed_code            | character varying(56) |           |          |
+ species_codes                 | character varying[]   |           |          |
+ geom                          | geometry              |           |          |
+ watershed_group_code          | text                  |           |          |
+Indexes:
+    "fiss_fish_obsrvtn_distinct_pkey" PRIMARY KEY, btree (fiss_fish_obsrvtn_distinct_id)
+    "fiss_fish_obsrvtn_distinct_gidx" gist (geom)
+    "fiss_fish_obsrvtn_distinct_wbidix" btree (wbody_id)
+
+
 postgis=# \d whse_fish.fiss_fish_obsrvtn_events
                       Table "whse_fish.fiss_fish_obsrvtn_events"
             Column             |        Type         | Collation | Nullable | Default
@@ -65,6 +92,22 @@ Indexes:
     "fiss_fish_obsrvtn_events_wscode_ltree_idx" gist (wscode_ltree)
     "fiss_fish_obsrvtn_events_wscode_ltree_idx1" btree (wscode_ltree)
 
+```
+
+Also note that not all distinct observations can be matched to a stream. Currently, about 1,200 distinct points are not close enough to a stream (or waterbody) to be matched:
+
+```
+postgis=# SELECT count(*) FROM whse_fish.fiss_fish_obsrvtn_distinct;
+ count
+-------
+ 77440
+(1 row)
+
+postgis=# SELECT count(*) FROM whse_fish.fiss_fish_obsrvtn_events;
+ count
+-------
+ 76201
+(1 row)
 ```
 
 # Use the data
