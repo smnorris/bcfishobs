@@ -78,7 +78,9 @@ With the observations now linked to the Freswater Atlas, we can write queries li
 
 ```
 -- Find what species have been observed on the Cowichan River,
--- downstream of Skutz Falls (about 34.1km upstream)
+-- downstream of Skutz Falls (about 34km upstream)
+
+postgis=#
 
 SELECT
   array_agg(distinct_spp) as species_codes
