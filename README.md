@@ -10,7 +10,7 @@ The script:
 - cleans the observations to retain only distinct species/location combinations that are coded as `point_type_code = 'Observation'`
 - references the observation points to their position on the FWA stream network in two ways:
     + for records with a `wbody_id` that is not associated with a lake (on a stream), match to nearest stream within 300m
-    + for records with a `wbody_id` associated with a lake, match to the lake that matches the `wbody_id` - or if that fails, with the nearest lake (within 1000m)
+    + for records with a `wbody_id` associated with a lake or wetland, match to the lake/wetland that matches the `wbody_id` - or if that fails, with the nearest lake/wetland (within 1500m)
 
 # Requirements
 
@@ -21,7 +21,7 @@ The script:
 
 # Installation
 
-With `fwakit` installed, all required python libraries should be available, no further installation should be necessary.  
+With `fwakit` installed, all required Python libraries should be available, no further installation should be necessary.  
 
 Download/clone the scripts to your system and navigate to the folder: 
 
@@ -78,7 +78,7 @@ With the observations now linked to the Freswater Atlas, we can write queries li
 
 ```
 -- Find what species have been observed on the Cowichan River,
--- downstream of Skutz Falls
+-- downstream of Skutz Falls (about 34.1km upstream)
 
 SELECT
   array_agg(distinct_spp) as species_codes
