@@ -10,16 +10,16 @@
 
 -- ---------------------------------------------
 -- First, create preliminary event table, with observations matched to all
--- streams within 1000m. Use this for subsequent analysis. Since we are using
+-- streams within 1500m. Use this for subsequent analysis. Since we are using
 -- such a large search area and also calculating the measures, this may take
--- some time (~5min)
+-- some time (~6min)
 -- ---------------------------------------------
 
 -- For development, create a non-temp table
 -- DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_events_prelim1;
 -- CREATE TABLE whse_fish.fiss_fish_obsrvtn_events_prelim1 AS
 
--- find nearest streams within 1000m, these are candidates for matching
+-- find nearest streams within 1500m, these are candidates for matching
 CREATE TEMPORARY TABLE fiss_fish_obsrvtn_events_prelim1 AS
 WITH candidates AS
  ( SELECT
