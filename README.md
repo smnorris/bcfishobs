@@ -46,8 +46,10 @@ The `process` command completes in ~7 min running time on a 2 core 2.8GHz laptop
 
 Two tables are output by the script:
 
-- `whse_fish.fiss_fish_obsrvtn_distinct` - distinct observation points
-- `whse_fish.fiss_fish_obsrvtn_events` - distinct observation points stored as locations on `whse_basemapping.fwa_stream_networks_sp`
+|         TABLE                        | DESCRIPTION                 |
+|--------------------------------------|-----------------------------|
+|`whse_fish.fiss_fish_obsrvtn_distinct`| distinct observation points |
+|`whse_fish.fiss_fish_obsrvtn_events`  | distinct observation points stored as locations on `whse_basemapping.fwa_stream_networks_sp` |
 
 Note that the output tables store the source id and species codes values (`fish_observation_point_id`, `species_code`) as arrays in columns `obs_ids` and `species_codes`. This enables storing multiple observations at a single location within a single record.
 
