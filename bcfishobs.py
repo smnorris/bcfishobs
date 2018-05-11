@@ -36,10 +36,10 @@ def download(email, db_url):
     """Download observation data and load to postgres
     """
 
-    #db = pgdata.connect(db_url)
-    #dataset = 'known-bc-fish-observations-and-bc-fish-distributions'
-    #info = db.bcdata2pg(dataset, email)
-    #click.echo('Loaded observations to '+info['schema']+'.'+info['table'] + ' loaded')
+    db = pgdata.connect(db_url)
+    dataset = 'known-bc-fish-observations-and-bc-fish-distributions'
+    info = db.bcdata2pg(dataset, email)
+    click.echo('Loaded observations to '+info['schema']+'.'+info['table'] + ' loaded')
 
     # get wdic_waterbodies table
     url = 'https://hillcrestgeo.ca/outgoing/whse_fish/whse_fish.wdic_waterbodies.csv.zip'
