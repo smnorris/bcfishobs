@@ -9,8 +9,8 @@ The script:
 - loads each table to postgres
 - cleans the observations to retain only distinct species/location combinations that are coded as `point_type_code = 'Observation'`
 - references the observation points to their position on the FWA stream network in two ways:
-    + for records with a `wbody_id` that is not associated with a lake (on a stream), match to nearest stream within 300m
-    + for records with a `wbody_id` associated with a lake or wetland, match to the lake/wetland that matches the `wbody_id` - or if that fails, with the nearest lake/wetland (within 1500m)
+    + for records associated with a stream (with a `wbody_id` that is not associated with a lake/wetland), match to nearest stream within 300m
+    + for records associated with a lake or wetland (according to `wbody_id`) , match to the lake/wetland that matches the `wbody_id` - or if that fails, with the nearest lake/wetland (within 1500m)
 
 # Requirements
 
