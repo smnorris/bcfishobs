@@ -30,23 +30,18 @@ $ git clone bcfishobs
 $ cd bcfishobs
 ```
 
-# Usage
+# Run the script
 
 Usage presumes that you have installed `fwakit`, the FWA database is loaded, and the `$FWA_DB` environment variable is correct. See the instructions for this [here](https://github.com/smnorris/fwakit#configuration).
 
-### Download data and copy to db
+Run the script in two steps, one to download the data, the next to do the linear referencing:  
 
 ```
 $ python bcfishobs.py download
-```
-
-### Process the observations
-
-```
 $ python bcfishobs.py process
 ```
 
-The script creates the output table `whse_fish.fiss_fish_obsrvtn_events` (~7 min running time on a 2 core 2.8GHz laptop). 
+Download time will vary, but once all data is loaded the script creates the output table `whse_fish.fiss_fish_obsrvtn_events` (~7 min running time on a 2 core 2.8GHz laptop). 
 
 Note that the output table stores the source id and species codes values (`fish_observation_point_id`, `species_code`) as arrays in columns `obs_ids` and `species_codes`. This enables storing multiple observations at a single location within a single record.
 
@@ -72,24 +67,23 @@ Indexes:
 
 ```
 
-### Use the observation events
+# Use the data
 
-With the observations now linked to the Freswater Atlas, we can write queries like this:
+With the observations now linked to the Freswater Atlas, we can write queries to find fish observations relative to their location on the stream network.  
+
+For example, we could list all species observed on the Cowichan River, downstream of Skutz Falls (about 34km from the river's mouth):
 
 ```
--- Find what species have been observed on the Cowichan River,
--- downstream of Skutz Falls (about 34km upstream)
-
-postgis=#
-
 SELECT
-  array_agg(distinct_spp) as species_codes
-FROM
-  (SELECT DISTINCT unnest(species_codes) as distinct_spp
-   FROM whse_fish.fiss_fish_obsrvtn_events
-   WHERE blue_line_key = 354155148
-   AND downstream_route_measure < 34180
-   ORDER BY unnest(species_codes)) as dist_spp;
+    array_agg(distinct_spp) AS species_codes
+FROM (
+    SELECT DISTINCT unnest(species_codes) AS distinct_spp
+    FROM whse_fish.fiss_fish_obsrvtn_events
+    WHERE
+        blue_line_key = 354155148
+        AND downstream_route_measure < 34180
+    ORDER BY unnest(species_codes)
+) AS dist_spp;
 
                                species_codes
 ----------------------------------------------------------------------------
