@@ -103,7 +103,7 @@ CREATE TEMPORARY TABLE fiss_fish_obsrvtn_events_prelim2
 -- Insert events matched to waterbodies.
 -- This is probably a lot more complicated than it has to be but we want to
 -- ensure that observations in waterbodies are associated with waterbodies
--- rather than just the closest stream. We use a large 1000m tolerance (in above
+-- rather than just the closest stream. We use a large 1500m tolerance (in above
 -- query) because observations in lakes may well be quite far from a stream flow
 -- line within larger lakes, or coordinates may be well away from the lake.
 -- This query:
@@ -153,14 +153,14 @@ closest AS
 -- several stream lines. Insert records with highest measure (though they should be the same)
 INSERT INTO fiss_fish_obsrvtn_events_prelim2
 SELECT DISTINCT ON (e.fiss_fish_obsrvtn_distinct_id)
-e.fiss_fish_obsrvtn_distinct_id,
-e.linear_feature_id,
-e.wscode_ltree,
-e.localcode_ltree,
-e.waterbody_key,
-e.blue_line_key,
-e.downstream_route_measure,
-e.distance_to_stream
+  e.fiss_fish_obsrvtn_distinct_id,
+  e.linear_feature_id,
+  e.wscode_ltree,
+  e.localcode_ltree,
+  e.waterbody_key,
+  e.blue_line_key,
+  e.downstream_route_measure,
+  e.distance_to_stream
 FROM fiss_fish_obsrvtn_events_prelim1 e
 INNER JOIN closest
 ON e.fiss_fish_obsrvtn_distinct_id = closest.fiss_fish_obsrvtn_distinct_id
@@ -195,14 +195,14 @@ closest_unmatched AS
 
 INSERT INTO fiss_fish_obsrvtn_events_prelim2
 SELECT DISTINCT ON (e.fiss_fish_obsrvtn_distinct_id)
-e.fiss_fish_obsrvtn_distinct_id,
-e.linear_feature_id,
-e.wscode_ltree,
-e.localcode_ltree,
-e.waterbody_key,
-e.blue_line_key,
-e.downstream_route_measure,
-e.distance_to_stream
+  e.fiss_fish_obsrvtn_distinct_id,
+  e.linear_feature_id,
+  e.wscode_ltree,
+  e.localcode_ltree,
+  e.waterbody_key,
+  e.blue_line_key,
+  e.downstream_route_measure,
+  e.distance_to_stream
 FROM fiss_fish_obsrvtn_events_prelim1 e
 INNER JOIN closest_unmatched
 ON e.fiss_fish_obsrvtn_distinct_id = closest_unmatched.fiss_fish_obsrvtn_distinct_id
@@ -239,14 +239,14 @@ closest_unmatched AS
 
 INSERT INTO fiss_fish_obsrvtn_events_prelim2
 SELECT DISTINCT ON (e.fiss_fish_obsrvtn_distinct_id)
-e.fiss_fish_obsrvtn_distinct_id,
-e.linear_feature_id,
-e.wscode_ltree,
-e.localcode_ltree,
-e.waterbody_key,
-e.blue_line_key,
-e.downstream_route_measure,
-e.distance_to_stream
+  e.fiss_fish_obsrvtn_distinct_id,
+  e.linear_feature_id,
+  e.wscode_ltree,
+  e.localcode_ltree,
+  e.waterbody_key,
+  e.blue_line_key,
+  e.downstream_route_measure,
+  e.distance_to_stream
 FROM fiss_fish_obsrvtn_events_prelim1 e
 INNER JOIN closest_unmatched
 ON e.fiss_fish_obsrvtn_distinct_id = closest_unmatched.fiss_fish_obsrvtn_distinct_id
@@ -258,9 +258,11 @@ DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_events;
 
 CREATE TABLE whse_fish.fiss_fish_obsrvtn_events
 (fiss_fish_obsrvtn_distinct_id bigint PRIMARY KEY,
+  linear_feature_id integer,
   wscode_ltree ltree,
   localcode_ltree ltree,
   blue_line_key integer,
+  waterbody_key integer,
   downstream_route_measure double precision,
   distance_to_stream double precision,
   obs_ids integer[],
@@ -269,9 +271,11 @@ CREATE TABLE whse_fish.fiss_fish_obsrvtn_events
 INSERT INTO whse_fish.fiss_fish_obsrvtn_events
 SELECT DISTINCT
   p2.fiss_fish_obsrvtn_distinct_id,
+  p2.linear_feature_id,
   p2.wscode_ltree,
   p2.localcode_ltree,
   p2.blue_line_key,
+  p2.waterbody_key,
   p2.downstream_route_measure,
   p2.distance_to_stream,
   dstnct.obs_ids,
@@ -284,3 +288,6 @@ CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events USING gist (wscode_ltree);
 CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events USING btree (wscode_ltree);
 CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events USING gist (localcode_ltree) ;
 CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events USING btree (localcode_ltree);
+CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events (linear_feature_id);
+CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events (blue_line_key);
+CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events (waterbody_key);

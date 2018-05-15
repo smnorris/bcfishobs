@@ -44,12 +44,13 @@ $ python bcfishobs.py process
 Time to complete the `download` command will vary.  
 The `process` command completes in ~7 min running time on a 2 core 2.8GHz laptop. 
 
-Four tables are created by the script:
+Five tables are created by the script:
 
 |         TABLE                        | DESCRIPTION                 |
 |--------------------------------------|-----------------------------|
-|`fiss_fish_obsrvtn_pnt_sp`            | Source fish observation points | 
-|`wdic_waterbodies`                    | Source lookup for relating 1:50,000 waterbody identifiers | 
+|`whse_fish.fiss_fish_obsrvtn_pnt_sp`            | Source fish observation points | 
+|`whse_fish.wdic_waterbodies`                    | Source lookup for relating 1:50,000 waterbody identifiers | 
+|`whse_fish.species_cd`| Species code -> name lookup |
 |`whse_fish.fiss_fish_obsrvtn_distinct`| Output distinct observation points |
 |`whse_fish.fiss_fish_obsrvtn_events`  | Output distinct observation points stored as linear locations on `whse_basemapping.fwa_stream_networks_sp` |
 

@@ -52,7 +52,18 @@ def download(email, db_url):
     zip_ref.extractall()
     zip_ref.close()
 
-    # load the waterbodies to the db by letting ogr parse the csv
+    # get species table
+    url = 'https://hillcrestgeo.ca/outgoing/whse_fish/species_cd.csv.zip'
+    file_name = 'species_cd.csv.zip'
+    r = requests.get(url, stream=True)
+    with open(file_name, 'wb') as f:
+        for chunk in r.iter_content():
+            f.write(chunk)
+    zip_ref = zipfile.ZipFile(file_name, 'r')
+    zip_ref.extractall()
+    zip_ref.close()
+
+    # load the waterbodies and species to the db by letting ogr parse the csvs
     u = urlparse(db_url)
     gdal_pg = "PG:host='{h}' port='{p}' dbname='{db}' user='{usr}' password='{pwd}'".format(
         h=u.hostname,
@@ -66,6 +77,15 @@ def download(email, db_url):
         'whse_fish.wdic_waterbodies.csv',
         format='PostgreSQL',
         layerName='wdic_waterbodies_load',
+        accessMode='overwrite',
+        layerCreationOptions=['OVERWRITE=YES',
+                              'SCHEMA=whse_fish']
+    )
+    gdal.VectorTranslate(
+        gdal_pg,
+        'species_cd.csv',
+        format='PostgreSQL',
+        layerName='species_cd',
         accessMode='overwrite',
         layerCreationOptions=['OVERWRITE=YES',
                               'SCHEMA=whse_fish']
