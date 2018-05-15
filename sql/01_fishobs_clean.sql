@@ -5,6 +5,10 @@
 -- - use only point_type_code = 'Observation' (not summaries)
 -- ------------------------------------
 
+-- ** NOTE **
+-- ** Geometries are not unique **
+-- ** Observations with different codes may be in exactly the same spot **
+
 DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_distinct;
 
 CREATE TABLE whse_fish.fiss_fish_obsrvtn_distinct AS

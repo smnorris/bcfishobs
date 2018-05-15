@@ -118,7 +118,9 @@ postgis=# SELECT count(*) FROM whse_fish.fiss_fish_obsrvtn_events;
 
 With the observations now linked to the Freswater Atlas, we can write queries to find fish observations relative to their location on the stream network.  
 
-For example, we could list all species observed on the Cowichan River, downstream of Skutz Falls (about 34km from the river's mouth):
+## Example 1
+
+List all species observed on the Cowichan River (`blue_line_key = 354155148`), downstream of Skutz Falls (`downstream_route_meaure = 34180`). Note the use of [`unnest`](https://www.postgresql.org/docs/10/static/functions-array.html#ARRAY-FUNCTIONS-TABLE) to find distinct species:
 
 ```
 SELECT
@@ -139,4 +141,13 @@ FROM (
 
 ```
 
-Note the use of [`unnest`](https://www.postgresql.org/docs/10/static/functions-array.html#ARRAY-FUNCTIONS-TABLE) to find distinct species.
+
+## Example 2
+
+For all coho observations not in a waterbody, what is the slope of the stream at the observation?
+
+
+## Example 3
+
+Trace downstream of all Coho observations in the `COWN` watershed group:
+
