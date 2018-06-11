@@ -145,7 +145,30 @@ FROM (
 
 ## Example 2
 
-For all coho observations not in a waterbody, what is the slope of the stream at the observation?
+What is the slope of all streams where Coho have been observed?
+
+```
+SELECT * FROM
+    (SELECT
+      e.fiss_fish_obsrvtn_distinct_id, 
+      e.blue_line_key,
+      s.edge_type, 
+      ec.edge_description,
+      e.downstream_route_measure, 
+      Round(fwa_streamslope(e.blue_line_key, e.downstream_route_measure)::numeric, 4) AS slope, 
+      e.waterbody_key,
+      wb.waterbody_type,
+      Unnest(e.species_codes) AS species_code
+    FROM whse_fish.fiss_fish_obsrvtn_events e
+    INNER JOIN whse_basemapping.fwa_stream_networks_sp s 
+    ON e.linear_feature_id = s.linear_feature_id
+    INNER JOIN whse_basemapping.fwa_edge_type_codes ec
+    ON s.edge_type = ec.edge_type
+    LEFT OUTER JOIN whse_basemapping.waterbodies wb 
+    ON e.waterbody_key = wb.waterbody_key
+    ) as obs
+WHERE species_code = 'CO'
+```
 
 
 ## Example 3
