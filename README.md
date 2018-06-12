@@ -71,7 +71,7 @@ Three new tables are created by the script (in addition to the downloaded data):
 
 #### `whse_fish.fiss_fish_obsrvtn_distinct`
 
-Distinct locations of fish observations. Some locations may be duplicated as equivalent locations may have different values for `new_watershed_code`.
+Distinct locations of fish observations. Some points are duplicated as equivalent locations may have different values for `new_watershed_code`.
 
 ```
             Column             |         Type          
