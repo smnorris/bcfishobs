@@ -32,6 +32,3 @@ FROM whse_fish.wdic_waterbodies_load;
 -- index
 CREATE INDEX wdic_waterbodies_wbtrimidx ON whse_fish.wdic_waterbodies (LTRIM(waterbody_identifier,'0'));
 CREATE INDEX wdic_waterbodies_typeidx ON whse_fish.wdic_waterbodies (type);
-
--- drop temp load table
-DROP TABLE whse_fish.wdic_waterbodies_load;

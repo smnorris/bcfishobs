@@ -1,16 +1,35 @@
 # bcfishobs
 
-BC [Known BC Fish Observations](https://catalogue.data.gov.bc.ca/dataset/known-bc-fish-observations-and-bc-fish-distributions) is a table described as the *most current and comprehensive information source on fish presence for the province*. However, the point locations in the table are not referenced to the most current and comprehensive stream network currently available for BC, the [Freshwater Atlas](https://www2.gov.bc.ca/gov/content/data/geographic-data-services/topographic-data/freshwater). 
+BC [Known BC Fish Observations](https://catalogue.data.gov.bc.ca/dataset/known-bc-fish-observations-and-bc-fish-distributions) is a table described as the *most current and comprehensive information source on fish presence for the province*. This repository includes a method and scripts for locating these observation locations as linear referencing events on the most current and comprehensive stream network currently available for BC, the [Freshwater Atlas](https://www2.gov.bc.ca/gov/content/data/geographic-data-services/topographic-data/freshwater). 
 
 The script:
 
-- downloads observation data from DataBC
+- downloads `whse_fish.fiss_fish_obsrvtn_pnt_sp`, the latest observation data from DataBC
 - downloads a lookup table `whse_fish.wdic_waterbodies` used to match the 50k waterbody codes in the observations table to FWA waterbodies
-- loads each table to postgres
-- cleans the observations to retain only distinct species/location combinations that are coded as `point_type_code = 'Observation'`
-- references the observation points to their position on the FWA stream network in two ways:
-    + for records associated with a stream (with a `wbody_id` that is not associated with a lake/wetland), match to nearest stream within 300m
-    + for records associated with a lake or wetland (according to `wbody_id`) , match to the lake/wetland that matches the `wbody_id` - or if that fails, with the nearest lake/wetland (within 1500m)
+- downloads a lookup table `species_cd`, linking the fish species code found in the observation table to species name and scientific name
+- loads each table to a PostgreSQL database
+- aggregates the observations to retain only distinct sites that are coded as `point_type_code = 'Observation'` (`Summary` records should all be duplicates of `Observation` records; they can be discarded)
+- references the observation points to their position on the FWA stream network using the logic outlined below
+
+## Matching logic / steps
+
+1. For observation points associated with a lake or wetland (according to `wbody_id`):
+
+    - match to the FWA lake/wetland that matches the `wbody_id`
+    - if no FWA lake/wetland has a matching `wbody_id`, match to the nearest lake/wetland within 1500m
+
+2. For observation points associated with a stream:
+    
+    - match to the closest FWA stream within 100m that has a matching watershed code (via `fwa_streams_20k_50k_xref`)
+    - for remaining unmatched records within 100m of an FWA stream, match to the closest stream regardless of a match via watershed code
+    - for remaining unmatched records between 100m to 500m of an FWA stream, match to the closest FWA stream that has a matching watershed code
+
+This logic is based on the assumptions:
+
+- for observations noted as within a lake/wetland, we can use a relatively high distance threshold for matching to a stream because the observation may be on a bank far from the waterbody flow line
+- for observations on streams, the location of an observation should generally take priority over a match via the xref lookup because many points have been manually snapped to the 20k stream lines - the lookup is best used to prioritize instances of multiple matches within 100m and allow for confidence in making matches between 100 and 500m
+
+
 
 # Requirements
 

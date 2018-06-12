@@ -97,13 +97,17 @@ def download(email, db_url):
               help='Target database Default: $FWA_DB',
               envvar='FWA_DB')
 def process(db_url):
-    """ Clean observation data and reference it to the stream network
+    """ Clean observations, reference to the stream network, write outputs
     """
     db = pgdata.connect(db_url)
-    db.execute(db.queries['01_fishobs_clean'])
-    db.execute(db.queries['02_wdic_clean'])
-    db.execute(db.queries['03_fishobs_reference'])
-
+    db.execute(db.queries['01_clean-fishobs'])
+    db.execute(db.queries['02_clean-wdic'])
+    db.execute(db.queries['03_create-prelim-table'])
+    db.execute(db.queries['04_add-waterbodies'])
+    db.execute(db.queries['05_add-streams-100m-matched'])
+    db.execute(db.queries['06_add-streams-100m-unmatched'])
+    db.execute(db.queries['07_add-streams-100m-500m'])
+    db.execute(db.queries['08_create-outputs'])
 
 if __name__ == '__main__':
     cli()
