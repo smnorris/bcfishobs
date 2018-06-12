@@ -26,7 +26,9 @@ The script:
 
 This logic is based on the assumptions:
 
-- for observations noted as within a lake/wetland, we can use a relatively high distance threshold for matching to a stream because the observation may be on a bank far from the waterbody flow line any inaccuracy of the resulting position within the waterbody is unimportant
+- for observations noted as within a lake/wetland, we can use a relatively high distance threshold for matching to a stream because 
+    -  an observation may be on a bank far from a waterbody flow line
+    -  as long as an observation is associated with the correct waterbody, it is not important to exactly locate it on the stream network within the waterbody
 - for observations on streams, the location of an observation should generally take priority over a match via the xref lookup because many points have been manually snapped to the 20k stream lines - the lookup is best used to prioritize instances of multiple matches within 100m and allow for confidence in making matches between 100 and 500m
 
 
