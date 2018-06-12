@@ -140,6 +140,28 @@ Indexes:
     "fiss_fish_obsrvtn_unmatched_pkey" PRIMARY KEY, btree (fiss_fish_obsrvtn_distinct_id)     
 ```
 
+## QA results
+
+To report on how many observations were matched to streams and how the match was made, run the query `match_report.sql`.
+
+Current result (June 12, 2018):
+
+```
+                  match_type                   | n_distinct_pts | n_observations 
+-----------------------------------------------+----------------+----------------
+ matched - stream, 100-500m, lookup            |           4377 |          28336
+ matched - stream, within 100m, closest stream |           6353 |          17801
+ matched - stream, within 100m, lookup         |          51950 |         156826
+ matched - waterbody, closest stream           |           1433 |          15350
+ matched - waterbody, lookup                   |          11709 |         110951
+ TOTAL, MATCHED                                |          75822 |         329264
+ unmatched - less than 1500m to stream         |           1519 |           4902
+ unmatched - more than 1500m to stream         |             99 |            713
+ TOTAL, UNMATCHED                              |           1618 |           5615
+ GRAND TOTAL                                   |          77440 |         334879
+ ```
+
+
 
 ## Use the data
 
@@ -171,10 +193,10 @@ FROM (
 
 ### Example 2
 
-What is the slope of all streams where Coho have been observed?
+What is the slope of all streams where Coho have been observed? (this takes a few minutes to complete)
 
 ```
-SELECT * FROM
+SELECT DISTINCT * FROM
     (SELECT
       e.fiss_fish_obsrvtn_distinct_id, 
       e.blue_line_key,

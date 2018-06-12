@@ -44,7 +44,7 @@ CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events (blue_line_key);
 CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events (waterbody_key);
 
 
--- Dump all un-referenced points for QA
+-- Dump all un-referenced points (within 1500m of a stream) for QA
 DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_unmatched;
 CREATE TABLE whse_fish.fiss_fish_obsrvtn_unmatched AS
 SELECT DISTINCT ON (e1.fiss_fish_obsrvtn_distinct_id)
@@ -66,5 +66,5 @@ ADD PRIMARY KEY (fiss_fish_obsrvtn_distinct_id);
 
 -- drop temp tables
 DROP TABLE IF EXISTS whse_fish.wdic_waterbodies_load;
-DROP TABLE whse_fish.fiss_fish_obsrvtn_events_prelim1;
-DROP TABLE whse_fish.fiss_fish_obsrvtn_events_prelim2;
+DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_events_prelim1;
+DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_events_prelim2;

@@ -64,7 +64,7 @@ SELECT DISTINCT ON (e.fiss_fish_obsrvtn_distinct_id)
   e.blue_line_key,
   e.downstream_route_measure,
   e.distance_to_stream,
-  'Waterbody, lookup'
+  'matched - waterbody, lookup'
 FROM whse_fish.fiss_fish_obsrvtn_events_prelim1 e
 INNER JOIN closest
 ON e.fiss_fish_obsrvtn_distinct_id = closest.fiss_fish_obsrvtn_distinct_id
@@ -107,7 +107,7 @@ SELECT DISTINCT ON (e.fiss_fish_obsrvtn_distinct_id)
   e.blue_line_key,
   e.downstream_route_measure,
   e.distance_to_stream,
-  'Waterbody, closest stream match'
+  'matched - waterbody, closest stream'
 FROM whse_fish.fiss_fish_obsrvtn_events_prelim1 e
 INNER JOIN closest_unmatched
 ON e.fiss_fish_obsrvtn_distinct_id = closest_unmatched.fiss_fish_obsrvtn_distinct_id

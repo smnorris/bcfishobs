@@ -37,7 +37,7 @@ SELECT DISTINCT ON (e.fiss_fish_obsrvtn_distinct_id)
   e.blue_line_key,
   e.downstream_route_measure,
   e.distance_to_stream,
-  'Stream, 100-500m, lookup match'
+  'matched - stream, 100-500m, lookup'
 FROM whse_fish.fiss_fish_obsrvtn_events_prelim1 e
 INNER JOIN closest_unmatched
 ON e.fiss_fish_obsrvtn_distinct_id = closest_unmatched.fiss_fish_obsrvtn_distinct_id
