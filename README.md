@@ -11,7 +11,7 @@ The script:
 - aggregates the observations to retain only distinct sites that are coded as `point_type_code = 'Observation'` (`Summary` records should all be duplicates of `Observation` records; they can be discarded)
 - references the observation points to their position on the FWA stream network using the logic outlined below
 
-## Matching logic / steps
+### Matching logic / steps
 
 1. For observation points associated with a lake or wetland (according to `wbody_id`):
 
@@ -33,14 +33,14 @@ This logic is based on the assumptions:
 
 
 
-# Requirements
+## Requirements
 
 - PostgreSQL/PostGIS
 - Python
 - GDAL and GDAL Python bindings
 - [fwakit](https://github.com/smnorris/fwakit) and a FWA database
 
-# Installation
+## Installation
 
 With `fwakit` installed, all required Python libraries should be available, no further installation should be necessary.  
 
@@ -51,7 +51,7 @@ $ git clone bcfishobs
 $ cd bcfishobs
 ```
 
-# Run the script
+## Run the script
 
 Usage presumes that you have installed `fwakit`, the FWA database is loaded, and the `$FWA_DB` environment variable is correct. See the instructions for this [here](https://github.com/smnorris/fwakit#configuration).
 
@@ -65,82 +65,87 @@ $ python bcfishobs.py process
 Time to complete the `download` command will vary.  
 The `process` command completes in ~7 min running time on a 2 core 2.8GHz laptop. 
 
-Five tables are created by the script:
+## Output data
 
-|         TABLE                        | DESCRIPTION                 |
-|--------------------------------------|-----------------------------|
-|`whse_fish.fiss_fish_obsrvtn_pnt_sp`            | Source fish observation points | 
-|`whse_fish.wdic_waterbodies`                    | Source lookup for relating 1:50,000 waterbody identifiers | 
-|`whse_fish.species_cd`| Species code -> name lookup |
-|`whse_fish.fiss_fish_obsrvtn_distinct`| Output distinct observation points |
-|`whse_fish.fiss_fish_obsrvtn_events`  | Output distinct observation points stored as linear locations on `whse_basemapping.fwa_stream_networks_sp` |
+Three new tables are created by the script (in addition to the downloaded data):
 
-Note that the two output tables store the source id and species codes values (`fish_observation_point_id`, `species_code`) as arrays in columns `obs_ids` and `species_codes`. This enables storing multiple observations at a single location within a single record.
+#### `whse_fish.fiss_fish_obsrvtn_distinct`
+
+Distinct locations of fish observations. Some locations may be duplicated as equivalent locations may have different values for `new_watershed_code`.
 
 ```
-postgis=# \d whse_fish.fiss_fish_obsrvtn_distinct
-                      Table "whse_fish.fiss_fish_obsrvtn_distinct"
-            Column             |         Type          | Collation | Nullable | Default
--------------------------------+-----------------------+-----------+----------+---------
- fiss_fish_obsrvtn_distinct_id | bigint                |           | not null |
- obs_ids                       | integer[]             |           |          |
- utm_zone                      | smallint              |           |          |
- utm_easting                   | integer               |           |          |
- utm_northing                  | integer               |           |          |
- wbody_id                      | double precision      |           |          |
- waterbody_type                | character varying(20) |           |          |
- new_watershed_code            | character varying(56) |           |          |
- species_codes                 | character varying[]   |           |          |
- geom                          | geometry              |           |          |
- watershed_group_code          | text                  |           |          |
+            Column             |         Type          
+-------------------------------+-----------------------
+ fiss_fish_obsrvtn_distinct_id | bigint                
+ obs_ids                       | integer[]             
+ utm_zone                      | smallint              
+ utm_easting                   | integer               
+ utm_northing                  | integer               
+ wbody_id                      | double precision      
+ waterbody_type                | character varying(20) 
+ new_watershed_code            | character varying(56) 
+ species_codes                 | character varying[]   
+ geom                          | geometry              
+ watershed_group_code          | text                  
+
 Indexes:
     "fiss_fish_obsrvtn_distinct_pkey" PRIMARY KEY, btree (fiss_fish_obsrvtn_distinct_id)
     "fiss_fish_obsrvtn_distinct_gidx" gist (geom)
     "fiss_fish_obsrvtn_distinct_wbidix" btree (wbody_id)
+```
 
 
-postgis=# \d whse_fish.fiss_fish_obsrvtn_events
-                      Table "whse_fish.fiss_fish_obsrvtn_events"
-            Column             |        Type         | Collation | Nullable | Default
--------------------------------+---------------------+-----------+----------+---------
- fiss_fish_obsrvtn_distinct_id | bigint              |           | not null |
- wscode_ltree                  | ltree               |           |          |
- localcode_ltree               | ltree               |           |          |
- blue_line_key                 | integer             |           |          |
- downstream_route_measure      | double precision    |           |          |
- distance_to_stream            | double precision    |           |          |
- obs_ids                       | integer[]           |           |          |
- species_codes                 | character varying[] |           |          |
+#### `whse_fish.fiss_fish_obsrvtn_events`  
+Distinct observation points stored as linear events on `whse_basemapping.fwa_stream_networks_sp` 
+
+```
+            Column             |         Type         
+-------------------------------+----------------------
+ fiss_fish_obsrvtn_distinct_id | bigint               
+ linear_feature_id             | integer              
+ wscode_ltree                  | ltree                
+ localcode_ltree               | ltree                
+ blue_line_key                 | integer              
+ waterbody_key                 | integer              
+ downstream_route_measure      | double precision     
+ distance_to_stream            | double precision     
+ match_type                    | text                 
+ watershed_group_code          | character varying(4) 
+ obs_ids                       | integer[]            
+ species_codes                 | character varying[]  
 Indexes:
     "fiss_fish_obsrvtn_events_pkey" PRIMARY KEY, btree (fiss_fish_obsrvtn_distinct_id)
+    "fiss_fish_obsrvtn_events_blue_line_key_idx" btree (blue_line_key)
+    "fiss_fish_obsrvtn_events_linear_feature_id_idx" btree (linear_feature_id)
     "fiss_fish_obsrvtn_events_localcode_ltree_idx" gist (localcode_ltree)
     "fiss_fish_obsrvtn_events_localcode_ltree_idx1" btree (localcode_ltree)
+    "fiss_fish_obsrvtn_events_waterbody_key_idx" btree (waterbody_key)
     "fiss_fish_obsrvtn_events_wscode_ltree_idx" gist (wscode_ltree)
     "fiss_fish_obsrvtn_events_wscode_ltree_idx1" btree (wscode_ltree)
-
 ```
 
-Also note that not all distinct observations can be matched to a stream. Currently, about 1,200 distinct points are not close enough to a stream (or waterbody) to be matched:
+
+#### `whse_fish.fiss_fish_obsrvtn_unmatched` 
+Distinct observation points that were not referenced to the stream network (for QA)
 
 ```
-postgis=# SELECT count(*) FROM whse_fish.fiss_fish_obsrvtn_distinct;
- count
--------
- 77440
-(1 row)
-
-postgis=# SELECT count(*) FROM whse_fish.fiss_fish_obsrvtn_events;
- count
--------
- 76201
-(1 row)
+            Column             |        Type         
+-------------------------------+---------------------
+ fiss_fish_obsrvtn_distinct_id | bigint              
+ obs_ids                       | integer[]           
+ species_codes                 | character varying[] 
+ distance_to_stream            | double precision    
+ geom                          | geometry       
+Indexes:
+    "fiss_fish_obsrvtn_unmatched_pkey" PRIMARY KEY, btree (fiss_fish_obsrvtn_distinct_id)     
 ```
 
-# Use the data
+
+## Use the data
 
 With the observations now linked to the Freswater Atlas, we can write queries to find fish observations relative to their location on the stream network.  
 
-## Example 1
+### Example 1
 
 List all species observed on the Cowichan River (`blue_line_key = 354155148`), downstream of Skutz Falls (`downstream_route_meaure = 34180`). Note the use of [`unnest`](https://www.postgresql.org/docs/10/static/functions-array.html#ARRAY-FUNCTIONS-TABLE) to find distinct species:
 
@@ -164,7 +169,7 @@ FROM (
 ```
 
 
-## Example 2
+### Example 2
 
 What is the slope of all streams where Coho have been observed?
 
@@ -192,7 +197,7 @@ WHERE species_code = 'CO'
 ```
 
 
-## Example 3
+### Example 3
 
 Trace downstream of all Coho observations in the `COWN` watershed group:
 
