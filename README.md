@@ -142,7 +142,7 @@ Indexes:
 
 ## QA results
 
-On run, the script will output the results of the query `sql/09_match_report.sql`, reporting on the number and type of matches made.
+On completion, the script outputs to stdout the results of the query `sql/09_match_report.sql`, reporting on the number and type of matches made.
 
 Current result (June 12, 2018):
 
