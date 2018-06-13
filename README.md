@@ -15,8 +15,8 @@ The script:
 
 1. For observation points associated with a lake or wetland (according to `wbody_id`):
 
-    - match to the FWA lake/wetland that matches the `wbody_id`
-    - if no FWA lake/wetland has a matching `wbody_id`, match to the nearest lake/wetland within 1500m
+    - match observations to the closest FWA stream in a waterbody that matches the observation's `wbody_id`, within 1500m
+    - if no FWA stream in a lake/wetland within 1500m matches the observation's `wbody_id`, match to the closest stream in any lake/wetland within 1500m
 
 2. For observation points associated with a stream:
     
