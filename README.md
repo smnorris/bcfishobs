@@ -47,7 +47,7 @@ With `fwakit` installed, all required Python libraries should be available, no f
 Download/clone the scripts to your system and navigate to the folder: 
 
 ```
-$ git clone bcfishobs
+$ git clone https://github.com/smnorris/bcfishobs.git
 $ cd bcfishobs
 ```
 
