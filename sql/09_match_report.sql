@@ -89,27 +89,27 @@ INNER JOIN unmatched_obs2 n ON m.match_type = n.match_type),
 
 total_matched AS (
 SELECT
-'TOTAL, MATCHED' as match_type,
+'TOTAL MATCHED' as match_type,
 sum(n_distinct_pts) as n_distinct_pts,
 sum(n_observations) as n_observations
 FROM raw
-WHERE match_type LIKE 'matched - %'),
+WHERE match_type LIKE 'matched - %%'),
 
 total_unmatched AS (
 SELECT
-'TOTAL, UNMATCHED' as match_type,
+'TOTAL UNMATCHED' as match_type,
 sum(n_distinct_pts) as n_distinct_pts,
 sum(n_observations) as n_observations
 FROM raw
-WHERE match_type LIKE 'unmatched - %')
+WHERE match_type LIKE 'unmatched - %%')
 
 SELECT * FROM raw
-WHERE match_type LIKE 'matched - %'
+WHERE match_type LIKE 'matched - %%'
 UNION ALL
 SELECT * FROM total_matched
 UNION ALL
 SELECT * FROM raw
-WHERE match_type LIKE 'unmatched - %'
+WHERE match_type LIKE 'unmatched - %%'
 UNION ALL
 SELECT * FROM total_unmatched
 UNION ALL

@@ -100,6 +100,7 @@ def process(db_url):
     """ Clean observations, reference to the stream network, write outputs
     """
     db = pgdata.connect(db_url)
+
     db.execute(db.queries['01_clean-fishobs'])
     db.execute(db.queries['02_clean-wdic'])
     db.execute(db.queries['03_create-prelim-table'])
@@ -108,6 +109,27 @@ def process(db_url):
     db.execute(db.queries['06_add-streams-100m-unmatched'])
     db.execute(db.queries['07_add-streams-100m-500m'])
     db.execute(db.queries['08_create-outputs'])
+
+    # report on the results, dumping to stdout
+    matches = db.query(db.queries['09_match_report'])
+    click.echo(
+        "{}| {}| {}".format(
+            'match_type'.ljust(50),
+            'n_distinct_pts'.ljust(15),
+            'n_observations'.ljust(15)
+        )
+    )
+    click.echo('----------------------------------------------------------------------'
+               '-------------')
+    for row in matches:
+        click.echo(
+            "{}| {}| {}".format(
+                row['match_type'].ljust(50),
+                str(row['n_distinct_pts']).ljust(15),
+                str(row['n_observations']).ljust(15)
+            )
+        )
+
 
 if __name__ == '__main__':
     cli()
