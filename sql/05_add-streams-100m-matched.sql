@@ -1,7 +1,7 @@
--- find points on streams that are within 100m of stream, but only
--- insert those with an exact match in the 20k-50k lookup
+-- Find points on streams that are within 100m of stream, but only
+-- insert those with an exact match in the 20k-50k lookup.
 -- This means that if we have multiple matches within 100m, we insert
--- the record with a match in the LUT, if available
+-- the record with a match in the xref - if available.
 WITH unmatched AS
 (   SELECT e.*
     FROM whse_fish.fiss_fish_obsrvtn_events_prelim1 e

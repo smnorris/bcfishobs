@@ -1,5 +1,6 @@
 -- For records that we haven't yet inserted, insert those that are 100m
--- or less from a stream based just on minimum distance to stream
+-- or less from a stream, based just on minimum distance to stream
+
 WITH unmatched AS
 (   SELECT e1.*
     FROM whse_fish.fiss_fish_obsrvtn_events_prelim1 e1

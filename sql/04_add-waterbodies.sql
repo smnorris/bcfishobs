@@ -13,7 +13,7 @@ ADD COLUMN match_type text;
 -- Insert events matched to waterbodies.
 -- This is perhaps more complicated than it has to be but we want to
 -- ensure that observations in waterbodies are associated with waterbodies.
--- We use a large 1500m tolerance (in above query) because observations in
+-- We use a large 1500m tolerance (in previous query) because observations in
 -- larger lakes can be quite far from a stream flow line. This makes the
 -- assumption we can prioritize the waterbody key of observation points
 -- over the actual the location of the point.

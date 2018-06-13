@@ -1,4 +1,4 @@
--- create output table, add source ids and species codes for easier use
+-- Now that we are done with matching points to streams, create the output table
 
 DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_events;
 
@@ -16,6 +16,7 @@ CREATE TABLE whse_fish.fiss_fish_obsrvtn_events
   obs_ids integer[],
   species_codes character varying[]);
 
+-- insert all data from the _prelim2 table
 INSERT INTO whse_fish.fiss_fish_obsrvtn_events
 SELECT DISTINCT
   p2.fiss_fish_obsrvtn_distinct_id,
@@ -44,7 +45,9 @@ CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events (blue_line_key);
 CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events (waterbody_key);
 
 
--- Dump all un-referenced points (within 1500m of a stream) for QA
+-- Dump all un-referenced points (within 1500m of a stream) for QA.
+-- Note that points >1500m from a stream will not be in this table, but there
+-- are not many of those.
 DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_unmatched;
 CREATE TABLE whse_fish.fiss_fish_obsrvtn_unmatched AS
 SELECT DISTINCT ON (e1.fiss_fish_obsrvtn_distinct_id)

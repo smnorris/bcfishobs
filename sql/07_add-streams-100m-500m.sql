@@ -1,6 +1,7 @@
 -- Finally, within records that still have not been inserted,
--- find those that are >100m from a stream but have a exact (linear_feature_id)
--- match in the lookup
+-- find those that are >100m and <500m from a stream and have a exact
+-- (linear_feature_id) match in the xref lookup.
+
 WITH unmatched AS
 (   SELECT e1.*
     FROM whse_fish.fiss_fish_obsrvtn_events_prelim1 e1
