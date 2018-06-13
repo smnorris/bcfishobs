@@ -109,9 +109,10 @@ def process(db_url):
     db.execute(db.queries['06_add-streams-100m-unmatched'])
     db.execute(db.queries['07_add-streams-100m-500m'])
     db.execute(db.queries['08_create-outputs'])
+    db.execute(db.queries['09_create-events-vw'])
 
     # report on the results, dumping to stdout
-    matches = db.query(db.queries['09_match_report'])
+    matches = db.query(db.queries['match_report'])
     click.echo(
         "{}| {}| {}".format(
             'match_type'.ljust(50),
