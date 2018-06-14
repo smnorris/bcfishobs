@@ -144,21 +144,21 @@ Indexes:
 
 On completion, the script outputs to stdout the results of the query `sql/09_match_report.sql`, reporting on the number and type of matches made.
 
-Current result (June 12, 2018):
+Current result (June 13, 2018):
 
 ```
-match_type                                        | n_distinct_pts | n_observations
------------------------------------------------------------------------------------
-matched - stream, 100-500m, lookup                | 4377           | 28336
-matched - stream, within 100m, closest stream     | 6353           | 17801
-matched - stream, within 100m, lookup             | 51950          | 156826
-matched - waterbody, closest stream               | 1433           | 15350
-matched - waterbody, lookup                       | 11709          | 110951
-TOTAL MATCHED                                     | 75822          | 329264
-unmatched - less than 1500m to stream             | 1519           | 4902
-unmatched - more than 1500m to stream             | 99             | 713
-TOTAL UNMATCHED                                   | 1618           | 5615
-GRAND TOTAL                                       | 77440          | 334879
+                           match_type                            | n_distinct_pts | n_observations 
+-----------------------------------------------------------------+----------------+----------------
+ A. matched - stream; within 100m; lookup                        |          52065 |         157030
+ B. matched - stream; within 100m; closest stream                |           6375 |          17833
+ C. matched - stream; 100-500m; lookup                           |           4391 |          28358
+ D. matched - waterbody; construction line within 1500m; lookup  |          11791 |         111323
+ E. matched - waterbody; construction line within 1500m, closest |           1443 |          15390
+ TOTAL MATCHED                                                   |          76065 |         329934
+ F: unmatched - less than 1500m to stream                        |           1567 |           4977
+ G: unmatched - more than 1500m to stream                        |            101 |            717
+ TOTAL UNMATCHED                                                 |           1668 |           5694
+ GRAND TOTAL                                                     |          77733 |         335628
 ```
 
 

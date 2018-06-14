@@ -96,7 +96,8 @@ def download(email, db_url):
 @click.option('--db_url',
               help='Target database Default: $FWA_DB',
               envvar='FWA_DB')
-def process(db_url):
+@click.option('--no-cleanup', '-c', is_flag=True, default=False)
+def process(db_url, no_cleanup):
     """ Clean observations, reference to the stream network, write outputs
     """
     db = pgdata.connect(db_url)
@@ -110,7 +111,8 @@ def process(db_url):
     db.execute(db.queries['07_add-streams-100m-500m'])
     db.execute(db.queries['08_create-outputs'])
     db.execute(db.queries['09_create-events-vw'])
-
+    if not no_cleanup:
+        db.execute(db.queries['10_cleanup'])
     # report on the results, dumping to stdout
     matches = db.query(db.queries['match_report'])
     click.echo(

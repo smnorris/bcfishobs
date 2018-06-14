@@ -1,5 +1,6 @@
 -- Now that we are done with matching points to streams, create the output table
 
+DROP MATERIALIZED VIEW IF EXISTS whse_fish.fiss_fish_obsrvtn_events_vw;
 DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_events;
 
 CREATE TABLE whse_fish.fiss_fish_obsrvtn_events
@@ -66,8 +67,3 @@ ORDER BY e1.fiss_fish_obsrvtn_distinct_id, e1.distance_to_stream;
 
 ALTER TABLE whse_fish.fiss_fish_obsrvtn_unmatched
 ADD PRIMARY KEY (fiss_fish_obsrvtn_distinct_id);
-
--- drop temp tables
-DROP TABLE IF EXISTS whse_fish.wdic_waterbodies_load;
-DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_events_prelim1;
-DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_events_prelim2;
