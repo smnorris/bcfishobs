@@ -19,7 +19,7 @@ ORDER BY match_type),
 unmatched_pts1 AS
 (
 SELECT
-  'F: unmatched - less than 1500m to stream' as match_type,
+  'F. unmatched - less than 1500m to stream' as match_type,
   count(*) as n_distinct_pts
 FROM whse_fish.fiss_fish_obsrvtn_unmatched
 GROUP BY match_type
@@ -29,7 +29,7 @@ unmatched_obs1 AS
 (SELECT match_type, count(*) as n_observations
 FROM
 (SELECT
-  'F: unmatched - less than 1500m to stream' as match_type,
+  'F. unmatched - less than 1500m to stream' as match_type,
   unnest(obs_ids) as fish_observation_point_id
 FROM whse_fish.fiss_fish_obsrvtn_unmatched) as obs
 GROUP BY match_type
@@ -37,7 +37,7 @@ ORDER BY match_type),
 
 unmatched_pts2 AS (
 SELECT
-  'G: unmatched - more than 1500m to stream' as match_type,
+  'G. unmatched - more than 1500m to stream' as match_type,
   count(o.fiss_fish_obsrvtn_distinct_id) as n_distinct_pts
 FROM whse_fish.fiss_fish_obsrvtn_distinct o
 LEFT OUTER JOIN whse_fish.fiss_fish_obsrvtn_events e
@@ -51,7 +51,7 @@ AND e.fiss_fish_obsrvtn_distinct_id IS NULL
 
 unmatched_obs2 AS (
   SELECT
-    'G: unmatched - more than 1500m to stream' as match_type,
+    'G. unmatched - more than 1500m to stream' as match_type,
     Count(*) as n_observations
   FROM
   (SELECT unnest(o.obs_ids) AS fish_observation_point_id

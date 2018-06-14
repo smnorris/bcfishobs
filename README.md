@@ -155,8 +155,8 @@ Current result (June 13, 2018):
  D. matched - waterbody; construction line within 1500m; lookup  |          11791 |         111323
  E. matched - waterbody; construction line within 1500m, closest |           1443 |          15390
  TOTAL MATCHED                                                   |          76065 |         329934
- F: unmatched - less than 1500m to stream                        |           1567 |           4977
- G: unmatched - more than 1500m to stream                        |            101 |            717
+ F. unmatched - less than 1500m to stream                        |           1567 |           4977
+ G. unmatched - more than 1500m to stream                        |            101 |            717
  TOTAL UNMATCHED                                                 |           1668 |           5694
  GRAND TOTAL                                                     |          77733 |         335628
 ```
