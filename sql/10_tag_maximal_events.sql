@@ -48,13 +48,18 @@ OR
     END
 )
 WHERE b.fish_obsrvtn_distinct_id is null
-AND a.species_codes @> ARRAY[:species]
+AND a.species_codes @> ARRAY[%s]
 ORDER BY blue_line_key, downstream_route_measure
 )
 
+-- When this update is applied via python, the conditional logic based on NULL
+-- is required - otherwise no updates are applied.
+-- When applied via psql it is not - very odd.
 UPDATE whse_fish.fiss_fish_obsrvtn_events
-SET maximal_species = maximal_species||ARRAY[:species]
-FROM maximal m
-WHERE fiss_fish_obsrvtn_events.fish_obsrvtn_distinct_id = m.fish_obsrvtn_distinct_id
-
+SET maximal_species =
+  CASE WHEN maximal_species IS NULL THEN ARRAY[%s]
+  ELSE maximal_species||ARRAY[%s]
+END
+WHERE fish_obsrvtn_distinct_id IN
+  (SELECT fish_obsrvtn_distinct_id FROM maximal)
 

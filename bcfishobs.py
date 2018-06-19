@@ -117,10 +117,12 @@ def process(db_url, no_cleanup):
     species_codes = db.query("""SELECT DISTINCT species_code
                                 FROM whse_fish.fiss_fish_obsrvtn_pnt_sp
                                 ORDER BY species_code""").fetchall()
-    for rec in species_codes:
-        click.echo('Processing species: ' + rec['species_code'])
-        sql = text(db.queries['10_tag_maximal_events'])
-        db.engine.execute(sql, species=rec['species_code'])
+    for row in species_codes:
+        species = row['species_code']
+        click.echo('Processing species: ' + species)
+        sql = db.queries['10_tag_maximal_events']
+        db.execute(sql, (species, species, species))
+
     if not no_cleanup:
         db.execute(db.queries['11_cleanup'])
 
@@ -129,7 +131,7 @@ def process(db_url, no_cleanup):
     click.echo(
         "{}| {}| {}".format(
             'match_type'.ljust(65),
-            'n_distinct_pts'.ljust(15),
+            'n_distinct_events'.ljust(15),
             'n_observations'.ljust(15)
         )
     )
@@ -139,7 +141,7 @@ def process(db_url, no_cleanup):
         click.echo(
             "{}| {}| {}".format(
                 row['match_type'].ljust(65),
-                str(row['n_distinct_pts']).ljust(15),
+                str(row['n_distinct_events']).ljust(15),
                 str(row['n_observations']).ljust(15)
             )
         )
