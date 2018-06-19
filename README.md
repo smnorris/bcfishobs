@@ -76,7 +76,7 @@ Distinct locations of fish observations. Some points are duplicated as equivalen
 ```
             Column             |         Type          
 -------------------------------+-----------------------
- fiss_fish_obsrvtn_distinct_id | bigint                
+ fish_obsrvtn_distinct_id      | bigint                
  obs_ids                       | integer[]             
  utm_zone                      | smallint              
  utm_easting                   | integer               
@@ -84,12 +84,12 @@ Distinct locations of fish observations. Some points are duplicated as equivalen
  wbody_id                      | double precision      
  waterbody_type                | character varying(20) 
  new_watershed_code            | character varying(56) 
- species_codes                 | character varying[]   
+ species_codes                 | text[]   
  geom                          | geometry              
  watershed_group_code          | text                  
 
 Indexes:
-    "fiss_fish_obsrvtn_distinct_pkey" PRIMARY KEY, btree (fiss_fish_obsrvtn_distinct_id)
+    "fish_obsrvtn_distinct_pkey" PRIMARY KEY, btree (fish_obsrvtn_distinct_id)
     "fiss_fish_obsrvtn_distinct_gidx" gist (geom)
     "fiss_fish_obsrvtn_distinct_wbidix" btree (wbody_id)
 ```
@@ -101,7 +101,7 @@ Distinct observation points stored as linear events on `whse_basemapping.fwa_str
 ```
             Column             |         Type         
 -------------------------------+----------------------
- fiss_fish_obsrvtn_distinct_id | bigint               
+ fish_obsrvtn_distinct_id      | bigint               
  linear_feature_id             | integer              
  wscode_ltree                  | ltree                
  localcode_ltree               | ltree                
@@ -112,9 +112,9 @@ Distinct observation points stored as linear events on `whse_basemapping.fwa_str
  match_type                    | text                 
  watershed_group_code          | character varying(4) 
  obs_ids                       | integer[]            
- species_codes                 | character varying[]  
+ species_codes                 | text[]  
 Indexes:
-    "fiss_fish_obsrvtn_events_pkey" PRIMARY KEY, btree (fiss_fish_obsrvtn_distinct_id)
+    "fish_obsrvtn_events_pkey" PRIMARY KEY, btree (fish_obsrvtn_distinct_id)
     "fiss_fish_obsrvtn_events_blue_line_key_idx" btree (blue_line_key)
     "fiss_fish_obsrvtn_events_linear_feature_id_idx" btree (linear_feature_id)
     "fiss_fish_obsrvtn_events_localcode_ltree_idx" gist (localcode_ltree)
@@ -131,34 +131,34 @@ Distinct observation points that were not referenced to the stream network (for 
 ```
             Column             |        Type         
 -------------------------------+---------------------
- fiss_fish_obsrvtn_distinct_id | bigint              
+ fish_obsrvtn_distinct_id      | bigint              
  obs_ids                       | integer[]           
  species_codes                 | character varying[] 
  distance_to_stream            | double precision    
  geom                          | geometry       
 Indexes:
-    "fiss_fish_obsrvtn_unmatched_pkey" PRIMARY KEY, btree (fiss_fish_obsrvtn_distinct_id)     
+    "fish_obsrvtn_unmatched_pkey" PRIMARY KEY, btree (fish_obsrvtn_distinct_id)     
 ```
 
 ## QA results
 
-On completion, the script outputs to stdout the results of the query `sql/09_match_report.sql`, reporting on the number and type of matches made.
+On completion, the script outputs to stdout the results of the query `sql/match_report.sql`, reporting on the number and type of matches made.
 
-Current result (June 13, 2018):
+Current result (June 18, 2018):
 
 ```
-                           match_type                            | n_distinct_pts | n_observations 
------------------------------------------------------------------+----------------+----------------
- A. matched - stream; within 100m; lookup                        |          52065 |         157030
- B. matched - stream; within 100m; closest stream                |           6375 |          17833
- C. matched - stream; 100-500m; lookup                           |           4391 |          28358
- D. matched - waterbody; construction line within 1500m; lookup  |          11791 |         111323
- E. matched - waterbody; construction line within 1500m; closest |           1443 |          15390
- TOTAL MATCHED                                                   |          76065 |         329934
- F. unmatched - less than 1500m to stream                        |           1567 |           4977
- G. unmatched - more than 1500m to stream                        |            101 |            717
- TOTAL UNMATCHED                                                 |           1668 |           5694
- GRAND TOTAL                                                     |          77733 |         335628
+                           match_type                            | n_distinct_events | n_observations 
+-----------------------------------------------------------------+-------------------+----------------
+ A. matched - stream; within 100m; lookup                        |             51730 |         156763
+ B. matched - stream; within 100m; closest stream                |              6230 |          17827
+ C. matched - stream; 100-500m; lookup                           |              4168 |          28349
+ D. matched - waterbody; construction line within 1500m; lookup  |             11210 |         110095
+ E. matched - waterbody; construction line within 1500m; closest |              1249 |          15260
+ TOTAL MATCHED                                                   |             74587 |         328294
+ F. unmatched - less than 1500m to stream                        |              1567 |           4977
+ G. unmatched - more than 1500m to stream                        |               100 |            715
+ TOTAL UNMATCHED                                                 |              1667 |           5692
+ GRAND TOTAL                                                     |             76254 |         333986
 ```
 
 
@@ -198,7 +198,7 @@ What is the slope of all streams where Coho have been observed? (this takes a fe
 ```
 SELECT DISTINCT * FROM
     (SELECT
-      e.fiss_fish_obsrvtn_distinct_id, 
+      e.fish_obsrvtn_distinct_id, 
       e.blue_line_key,
       s.edge_type, 
       ec.edge_description,

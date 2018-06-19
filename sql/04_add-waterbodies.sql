@@ -28,7 +28,7 @@ ADD COLUMN match_type text;
 WITH wb AS
 (
   SELECT DISTINCT
-    o.fiss_fish_obsrvtn_distinct_id,
+    o.fish_obsrvtn_distinct_id,
     wb.waterbody_key
   FROM whse_fish.fiss_fish_obsrvtn_distinct o
   INNER JOIN whse_fish.wdic_waterbodies wdic ON o.wbody_id = wdic.id
@@ -37,26 +37,26 @@ WITH wb AS
   INNER JOIN whse_basemapping.fwa_waterbodies wb
   ON lut.waterbody_key_20k = wb.waterbody_key
   WHERE o.waterbody_type IN ('Lake', 'Wetland')
-  ORDER BY o.fiss_fish_obsrvtn_distinct_id
+  ORDER BY o.fish_obsrvtn_distinct_id
 ),
 -- from the candidate matches generated above, use the one closest to a stream
 closest AS
 (
   SELECT DISTINCT ON
-   (e.fiss_fish_obsrvtn_distinct_id)
-    e.fiss_fish_obsrvtn_distinct_id,
+   (e.fish_obsrvtn_distinct_id)
+    e.fish_obsrvtn_distinct_id,
     e.distance_to_stream
   FROM whse_fish.fiss_fish_obsrvtn_events_prelim1 e
-  INNER JOIN wb ON e.fiss_fish_obsrvtn_distinct_id = wb.fiss_fish_obsrvtn_distinct_id
+  INNER JOIN wb ON e.fish_obsrvtn_distinct_id = wb.fish_obsrvtn_distinct_id
   AND e.waterbody_key = wb.waterbody_key
-  ORDER BY fiss_fish_obsrvtn_distinct_id, distance_to_stream
+  ORDER BY fish_obsrvtn_distinct_id, distance_to_stream
 )
 -- Insert the results into our output table
 -- Note that there are duplicate records because observations can be equidistant from
 -- several stream lines. Insert records with highest measure (though they should be the same)
 INSERT INTO whse_fish.fiss_fish_obsrvtn_events_prelim2
-SELECT DISTINCT ON (e.fiss_fish_obsrvtn_distinct_id)
-  e.fiss_fish_obsrvtn_distinct_id,
+SELECT DISTINCT ON (e.fish_obsrvtn_distinct_id)
+  e.fish_obsrvtn_distinct_id,
   e.linear_feature_id,
   e.wscode_ltree,
   e.localcode_ltree,
@@ -67,10 +67,10 @@ SELECT DISTINCT ON (e.fiss_fish_obsrvtn_distinct_id)
   'D. matched - waterbody; construction line within 1500m; lookup'
 FROM whse_fish.fiss_fish_obsrvtn_events_prelim1 e
 INNER JOIN closest
-ON e.fiss_fish_obsrvtn_distinct_id = closest.fiss_fish_obsrvtn_distinct_id
+ON e.fish_obsrvtn_distinct_id = closest.fish_obsrvtn_distinct_id
 AND e.distance_to_stream = closest.distance_to_stream
 WHERE e.waterbody_key is NOT NULL
-ORDER BY e.fiss_fish_obsrvtn_distinct_id, e.downstream_route_measure;
+ORDER BY e.fish_obsrvtn_distinct_id, e.downstream_route_measure;
 
 
 -- ---------------------------------------------
@@ -81,25 +81,25 @@ WITH unmatched_wb AS
 (    SELECT e.*
     FROM whse_fish.fiss_fish_obsrvtn_events_prelim1 e
     INNER JOIN whse_fish.fiss_fish_obsrvtn_distinct o
-    ON e.fiss_fish_obsrvtn_distinct_id = o.fiss_fish_obsrvtn_distinct_id
+    ON e.fish_obsrvtn_distinct_id = o.fish_obsrvtn_distinct_id
     LEFT OUTER JOIN whse_fish.fiss_fish_obsrvtn_events_prelim2 p
-    ON e.fiss_fish_obsrvtn_distinct_id = p.fiss_fish_obsrvtn_distinct_id
+    ON e.fish_obsrvtn_distinct_id = p.fish_obsrvtn_distinct_id
     WHERE o.wbody_id IS NOT NULL AND o.waterbody_type IN ('Lake','Wetland')
-    AND p.fiss_fish_obsrvtn_distinct_id IS NULL
+    AND p.fish_obsrvtn_distinct_id IS NULL
 ),
 
 closest_unmatched AS
 (
-  SELECT DISTINCT ON (fiss_fish_obsrvtn_distinct_id)
-    fiss_fish_obsrvtn_distinct_id,
+  SELECT DISTINCT ON (fish_obsrvtn_distinct_id)
+    fish_obsrvtn_distinct_id,
     distance_to_stream
   FROM unmatched_wb
-  ORDER BY fiss_fish_obsrvtn_distinct_id, distance_to_stream
+  ORDER BY fish_obsrvtn_distinct_id, distance_to_stream
 )
 
 INSERT INTO whse_fish.fiss_fish_obsrvtn_events_prelim2
-SELECT DISTINCT ON (e.fiss_fish_obsrvtn_distinct_id)
-  e.fiss_fish_obsrvtn_distinct_id,
+SELECT DISTINCT ON (e.fish_obsrvtn_distinct_id)
+  e.fish_obsrvtn_distinct_id,
   e.linear_feature_id,
   e.wscode_ltree,
   e.localcode_ltree,
@@ -110,8 +110,8 @@ SELECT DISTINCT ON (e.fiss_fish_obsrvtn_distinct_id)
   'E. matched - waterbody; construction line within 1500m; closest'
 FROM whse_fish.fiss_fish_obsrvtn_events_prelim1 e
 INNER JOIN closest_unmatched
-ON e.fiss_fish_obsrvtn_distinct_id = closest_unmatched.fiss_fish_obsrvtn_distinct_id
+ON e.fish_obsrvtn_distinct_id = closest_unmatched.fish_obsrvtn_distinct_id
 AND e.distance_to_stream = closest_unmatched.distance_to_stream
-ORDER BY e.fiss_fish_obsrvtn_distinct_id, e.downstream_route_measure;
+ORDER BY e.fish_obsrvtn_distinct_id, e.downstream_route_measure;
 
 

@@ -15,7 +15,7 @@ CREATE TABLE whse_fish.fiss_fish_obsrvtn_distinct AS
 WITH obs AS
 (
   SELECT
-    row_number() over() as fiss_fish_obsrvtn_distinct_id,
+    row_number() over() as fish_obsrvtn_distinct_id,
     array_agg(o.fish_observation_point_id) as obs_ids,
     o.utm_zone,
     o.utm_easting,
@@ -44,7 +44,7 @@ FROM obs
 LEFT OUTER JOIN whse_basemapping.fwa_watershed_groups_subdivided wsg
 ON ST_Intersects(obs.geom, wsg.geom);
 
-ALTER TABLE whse_fish.fiss_fish_obsrvtn_distinct ADD PRIMARY KEY (fiss_fish_obsrvtn_distinct_id);
+ALTER TABLE whse_fish.fiss_fish_obsrvtn_distinct ADD PRIMARY KEY (fish_obsrvtn_distinct_id);
 
 CREATE INDEX fiss_fish_obsrvtn_distinct_wbidix ON whse_fish.fiss_fish_obsrvtn_distinct (wbody_id);
 CREATE INDEX fiss_fish_obsrvtn_distinct_gidx ON whse_fish.fiss_fish_obsrvtn_distinct USING gist (geom);
