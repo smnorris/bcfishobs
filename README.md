@@ -142,7 +142,7 @@ Indexes:
 
 ## QA results
 
-On completion, the script outputs to stdout the results of the query `sql/match_report.sql`, reporting on the number and type of matches made.
+On completion, the script outputs to stdout the results of the query `sql/qa_match_report.sql`, reporting on the number and type of matches made.
 
 Current result (June 18, 2018):
 
@@ -161,7 +161,7 @@ Current result (June 18, 2018):
  GRAND TOTAL                                                     |             76254 |         333986
 ```
 
-
+This result can be compared with the output of `sql/qa_total_records`, the number of total observations should be the same in each query.
 
 ## Use the data
 

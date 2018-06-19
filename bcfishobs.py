@@ -125,7 +125,7 @@ def process(db_url, no_cleanup):
         db.execute(db.queries['11_cleanup'])
 
     # report on the results, dumping to stdout
-    matches = db.query(db.queries['match_report'])
+    matches = db.query(db.queries['qa_match_report'])
     click.echo(
         "{}| {}| {}".format(
             'match_type'.ljust(65),
