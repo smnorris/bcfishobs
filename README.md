@@ -99,22 +99,22 @@ Indexes:
 Distinct observation points stored as linear events on `whse_basemapping.fwa_stream_networks_sp` 
 
 ```
-            Column             |         Type         
--------------------------------+----------------------
- fish_obsrvtn_distinct_id      | bigint               
- linear_feature_id             | integer              
- wscode_ltree                  | ltree                
- localcode_ltree               | ltree                
- blue_line_key                 | integer              
- waterbody_key                 | integer              
- downstream_route_measure      | double precision     
- distance_to_stream            | double precision     
- match_type                    | text                 
- watershed_group_code          | character varying(4) 
- obs_ids                       | integer[]            
- species_codes                 | text[]  
+          Column          |         Type         
+--------------------------+----------------------
+ fish_obsrvtn_distinct_id | integer              
+ linear_feature_id        | integer              
+ wscode_ltree             | ltree                
+ localcode_ltree          | ltree                
+ blue_line_key            | integer              
+ waterbody_key            | integer              
+ downstream_route_measure | double precision     
+ watershed_group_code     | character varying(4) 
+ obs_ids                  | integer[]            
+ species_codes            | text[]               
+ maximal_species          | text[]               
+ distance_to_stream       | double precision     
+ match_type               | text                 
 Indexes:
-    "fish_obsrvtn_events_pkey" PRIMARY KEY, btree (fish_obsrvtn_distinct_id)
     "fiss_fish_obsrvtn_events_blue_line_key_idx" btree (blue_line_key)
     "fiss_fish_obsrvtn_events_linear_feature_id_idx" btree (linear_feature_id)
     "fiss_fish_obsrvtn_events_localcode_ltree_idx" gist (localcode_ltree)
@@ -133,7 +133,7 @@ Distinct observation points that were not referenced to the stream network (for 
 -------------------------------+---------------------
  fish_obsrvtn_distinct_id      | bigint              
  obs_ids                       | integer[]           
- species_codes                 | character varying[] 
+ species_codes                 | text[] 
  distance_to_stream            | double precision    
  geom                          | geometry       
 Indexes:
