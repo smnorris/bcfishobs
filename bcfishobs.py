@@ -121,7 +121,7 @@ def process(db_url, no_cleanup):
         species = row['species_code']
         click.echo('Processing species: ' + species)
         sql = db.queries['10_tag_maximal_events']
-        db.execute(sql, (species, species, species))
+        db.execute(sql, (species, species, species, species))
 
     if not no_cleanup:
         db.execute(db.queries['11_cleanup'])

@@ -48,8 +48,8 @@ agg AS
   waterbody_key,
   downstream_route_measure,
   watershed_group_code,
-  array_agg(obs_id) as obs_ids,
-  array_agg(species_code) AS species_codes
+  array_agg(distinct obs_id) as obs_ids,
+  array_agg(distinct species_code) AS species_codes
 FROM popped
 GROUP BY
   linear_feature_id,

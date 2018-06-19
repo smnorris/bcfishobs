@@ -7,6 +7,11 @@ WITH maximal AS
 FROM whse_fish.fiss_fish_obsrvtn_events a
 LEFT OUTER JOIN whse_fish.fiss_fish_obsrvtn_events b
 ON
+  -- first, the upstream observation has to be same spp
+  b.species_codes @> ARRAY[%s] AND
+
+-- then it has to be upstream
+ (
   (a.blue_line_key = b.blue_line_key AND
    a.downstream_route_measure < b.downstream_route_measure)
 OR
@@ -46,6 +51,7 @@ OR
           )
         THEN TRUE
     END
+)
 )
 WHERE b.fish_obsrvtn_distinct_id is null
 AND a.species_codes @> ARRAY[%s]
