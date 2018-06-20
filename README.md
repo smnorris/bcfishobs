@@ -204,8 +204,6 @@ INNER JOIN whse_basemapping.fwa_stream_networks_sp s
 ON e.linear_feature_id = s.linear_feature_id
 INNER JOIN whse_basemapping.fwa_edge_type_codes ec
 ON s.edge_type = ec.edge_type
-LEFT OUTER JOIN whse_basemapping.waterbodies wb 
-ON e.waterbody_key = wb.waterbody_key
 WHERE e.species_codes @> ARRAY['CO']
 AND e.watershed_group_code = 'COWN'
 AND ec.edge_type = 1000;
