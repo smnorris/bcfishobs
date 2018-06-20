@@ -193,33 +193,39 @@ FROM (
 
 ### Example 2
 
-What is the slope of all streams where Coho have been observed? (this takes a few minutes to complete)
+What is the slope (percent) of the stream at the locations of all distinct Coho observations in `COWN` watershed group (on single line streams)?
 
 ```
-SELECT DISTINCT * FROM
-    (SELECT
-      e.fish_obsrvtn_distinct_id, 
-      e.blue_line_key,
-      s.edge_type, 
-      ec.edge_description,
-      e.downstream_route_measure, 
-      Round(fwa_streamslope(e.blue_line_key, e.downstream_route_measure)::numeric, 4) AS slope, 
-      e.waterbody_key,
-      wb.waterbody_type,
-      Unnest(e.species_codes) AS species_code
-    FROM whse_fish.fiss_fish_obsrvtn_events e
-    INNER JOIN whse_basemapping.fwa_stream_networks_sp s 
-    ON e.linear_feature_id = s.linear_feature_id
-    INNER JOIN whse_basemapping.fwa_edge_type_codes ec
-    ON s.edge_type = ec.edge_type
-    LEFT OUTER JOIN whse_basemapping.waterbodies wb 
-    ON e.waterbody_key = wb.waterbody_key
-    ) as obs
-WHERE species_code = 'CO'
+SELECT
+  e.fish_obsrvtn_distinct_id, 
+  Round((fwa_streamslope(e.blue_line_key, e.downstream_route_measure) * 100)::numeric, 2) AS slope
+FROM whse_fish.fiss_fish_obsrvtn_events e
+INNER JOIN whse_basemapping.fwa_stream_networks_sp s 
+ON e.linear_feature_id = s.linear_feature_id
+INNER JOIN whse_basemapping.fwa_edge_type_codes ec
+ON s.edge_type = ec.edge_type
+LEFT OUTER JOIN whse_basemapping.waterbodies wb 
+ON e.waterbody_key = wb.waterbody_key
+WHERE e.species_codes @> ARRAY['CO']
+AND e.watershed_group_code = 'COWN'
+AND ec.edge_type = 1000;
+
+fish_obsrvtn_distinct_id | slope
+--------------------------+--------
+                    30728 | 0.0000
+                    30128 | 0.4175
+                    31129 | 0.0231
+                    29762 | 0.0000
+                    31350 | 0.2049
+                    32586 | 0.0364
+                    32667 | 0.0000
+...
 ```
 
 
 ### Example 3
 
-Trace downstream of all Coho observations in the `COWN` watershed group:
+Trace downstream from fish observations to the ocean, generating implied habitat distribution for anadramous species:
+
+See [`bcfishobs_traces`](https://github.com/smnorris/bcfishobs_traces)
 
