@@ -96,20 +96,27 @@ def download(email, db_url):
 @click.option('--db_url',
               help='Target database Default: $FWA_DB',
               envvar='FWA_DB')
-@click.option('--no-cleanup', '-c', is_flag=True, default=False)
-def process(db_url, no_cleanup):
+def process(db_url):
     """ Clean observations, reference to the stream network, write outputs
     """
     db = pgdata.connect(db_url)
-
+    click.echo('01_clean-fishobs')
     db.execute(db.queries['01_clean-fishobs'])
+    click.echo('02_clean-wdic')
     db.execute(db.queries['02_clean-wdic'])
+    click.echo('03_create-prelim-table')
     db.execute(db.queries['03_create-prelim-table'])
+    click.echo('04_add-waterbodies')
     db.execute(db.queries['04_add-waterbodies'])
+    click.echo('05_add-streams-100m-lookup')
     db.execute(db.queries['05_add-streams-100m-lookup'])
+    click.echo('05_add-streams-100m-closest')
     db.execute(db.queries['06_add-streams-100m-closest'])
+    click.echo('07_add-streams-100m-500m')
     db.execute(db.queries['07_add-streams-100m-500m'])
+    click.echo('08_create-outputs')
     db.execute(db.queries['08_create-outputs'])
+    click.echo('09_create-events-vw')
     db.execute(db.queries['09_create-events-vw'])
 
     # for all species in the database, flag observation events that have no
@@ -123,8 +130,6 @@ def process(db_url, no_cleanup):
         sql = db.queries['10_tag_maximal_events']
         db.execute(sql, (species, species, species, species))
 
-    if not no_cleanup:
-        db.execute(db.queries['11_cleanup'])
 
     # report on the results, dumping to stdout
     matches = db.query(db.queries['qa_match_report'])
@@ -146,6 +151,14 @@ def process(db_url, no_cleanup):
             )
         )
 
+
+@cli.command()
+@click.option('--db_url',
+              help='Target database Default: $FWA_DB',
+              envvar='FWA_DB')
+def cleanup(db_url):
+    """ Remove temp tables """
+    db.execute(db.queries['11_cleanup'])
 
 if __name__ == '__main__':
     cli()
