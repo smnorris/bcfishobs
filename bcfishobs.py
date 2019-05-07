@@ -3,6 +3,7 @@ try:
     from urllib.parse import urlparse
 except ImportError:
      from urlparse import urlparse
+import subprocess
 
 import click
 import gdal
@@ -36,10 +37,17 @@ def download(email, db_url):
     """Download observation data and load to postgres
     """
 
-    db = pgdata.connect(db_url)
-    dataset = 'known-bc-fish-observations-and-bc-fish-distributions'
-    info = db.bcdata2pg(dataset, email)
-    click.echo('Loaded observations to '+info['schema']+'.'+info['table'])
+    dataset = 'WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP'
+    subprocess.run([
+        'bcdata',
+        'bc2pg',
+        dataset,
+        '--db_url',
+        db_url,
+        '--sortby',
+        'FISH_OBSERVATION_POINT_ID']
+    )
+    click.echo('Loaded observations to postgres')
 
     # get wdic_waterbodies table
     url = 'https://hillcrestgeo.ca/outgoing/whse_fish/whse_fish.wdic_waterbodies.csv.zip'
@@ -130,7 +138,6 @@ def process(db_url):
         sql = db.queries['10_tag_maximal_events']
         db.execute(sql, (species, species, species, species))
 
-
     # report on the results, dumping to stdout
     matches = db.query(db.queries['qa_match_report'])
     click.echo(
@@ -158,7 +165,9 @@ def process(db_url):
               envvar='FWA_DB')
 def cleanup(db_url):
     """ Remove temp tables """
+    db = pgdata.connect(db_url)
     db.execute(db.queries['11_cleanup'])
+
 
 if __name__ == '__main__':
     cli()

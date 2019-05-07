@@ -1,6 +1,6 @@
 # bcfishobs
 
-BC [Known BC Fish Observations](https://catalogue.data.gov.bc.ca/dataset/known-bc-fish-observations-and-bc-fish-distributions) is a table described as the *most current and comprehensive information source on fish presence for the province*. This repository includes a method and scripts for locating these observation locations as linear referencing events on the most current and comprehensive stream network currently available for BC, the [Freshwater Atlas](https://www2.gov.bc.ca/gov/content/data/geographic-data-services/topographic-data/freshwater). 
+BC [Known BC Fish Observations](https://catalogue.data.gov.bc.ca/dataset/known-bc-fish-observations-and-bc-fish-distributions) is a table described as the *most current and comprehensive information source on fish presence for the province*. This repository includes a method and scripts for locating these observation locations as linear referencing events on the most current and comprehensive stream network currently available for BC, the [Freshwater Atlas](https://www2.gov.bc.ca/gov/content/data/geographic-data-services/topographic-data/freshwater).
 
 The script:
 
@@ -19,14 +19,14 @@ The script:
     - if no FWA stream in a lake/wetland within 1500m matches the observation's `wbody_id`, match to the closest stream in any lake/wetland within 1500m
 
 2. For observation points associated with a stream:
-    
+
     - match to the closest FWA stream within 100m that has a matching watershed code (via `fwa_streams_20k_50k_xref`)
     - for remaining unmatched records within 100m of an FWA stream, match to the closest stream regardless of a match via watershed code
     - for remaining unmatched records between 100m to 500m of an FWA stream, match to the closest FWA stream that has a matching watershed code
 
 This logic is based on the assumptions:
 
-- for observations noted as within a lake/wetland, we can use a relatively high distance threshold for matching to a stream because 
+- for observations noted as within a lake/wetland, we can use a relatively high distance threshold for matching to a stream because
     -  an observation may be on a bank far from a waterbody flow line
     -  as long as an observation is associated with the correct waterbody, it is not important to exactly locate it on the stream network within the waterbody
 - for observations on streams, the location of an observation should generally take priority over a match via the xref lookup because many points have been manually snapped to the 20k stream lines - the lookup is best used to prioritize instances of multiple matches within 100m and allow for confidence in making matches between 100 and 500m
@@ -39,12 +39,13 @@ This logic is based on the assumptions:
 - PostgreSQL/PostGIS (tested with v10.4/2.4.4)
 - GDAL and GDAL Python bindings
 - [fwakit](https://github.com/smnorris/fwakit) and a FWA database
+- [bcdata](https://github.com/smnorris/bcdata)
 
 ## Installation
 
-With `fwakit` installed, all required Python libraries should be available, no further installation should be necessary.  
+With `fwakit` and `bcdata` installed, all required Python libraries should be available, no further installation should be necessary.
 
-Download/clone the scripts to your system and navigate to the folder: 
+Download/clone the scripts to your system and navigate to the folder:
 
 ```
 $ git clone https://github.com/smnorris/bcfishobs.git
@@ -55,15 +56,15 @@ $ cd bcfishobs
 
 Usage presumes that you have installed `fwakit`, the FWA database is loaded, and the `$FWA_DB` environment variable is correct. See the instructions for this [here](https://github.com/smnorris/fwakit#configuration).
 
-Run the script in two steps, one to download the data, the next to do the linear referencing:  
+Run the script in two steps, one to download the data, the next to do the linear referencing:
 
 ```
 $ python bcfishobs.py download
 $ python bcfishobs.py process
 ```
 
-Time to complete the `download` command will vary.  
-The `process` command completes in ~7 min running time on a 2 core 2.8GHz laptop. 
+Time to complete the `download` command will vary.
+The `process` command completes in ~7 min running time on a 2 core 2.8GHz laptop.
 
 ## Output data
 
@@ -74,19 +75,19 @@ Three new tables are created by the script (in addition to the downloaded data):
 Distinct locations of fish observations. Some points are duplicated as equivalent locations may have different values for `new_watershed_code`.
 
 ```
-            Column             |         Type          
+            Column             |         Type
 -------------------------------+-----------------------
- fish_obsrvtn_distinct_id      | bigint                
- obs_ids                       | integer[]             
- utm_zone                      | smallint              
- utm_easting                   | integer               
- utm_northing                  | integer               
- wbody_id                      | double precision      
- waterbody_type                | character varying(20) 
- new_watershed_code            | character varying(56) 
- species_codes                 | text[]   
- geom                          | geometry              
- watershed_group_code          | text                  
+ fish_obsrvtn_distinct_id      | bigint
+ obs_ids                       | integer[]
+ utm_zone                      | smallint
+ utm_easting                   | integer
+ utm_northing                  | integer
+ wbody_id                      | double precision
+ waterbody_type                | character varying(20)
+ new_watershed_code            | character varying(56)
+ species_codes                 | text[]
+ geom                          | geometry
+ watershed_group_code          | text
 
 Indexes:
     "fish_obsrvtn_distinct_pkey" PRIMARY KEY, btree (fish_obsrvtn_distinct_id)
@@ -95,25 +96,25 @@ Indexes:
 ```
 
 
-#### `whse_fish.fiss_fish_obsrvtn_events`  
-Distinct observation points stored as linear events on `whse_basemapping.fwa_stream_networks_sp` 
+#### `whse_fish.fiss_fish_obsrvtn_events`
+Distinct observation points stored as linear events on `whse_basemapping.fwa_stream_networks_sp`
 
 ```
-          Column          |         Type         
+          Column          |         Type
 --------------------------+----------------------
- fish_obsrvtn_distinct_id | integer              
- linear_feature_id        | integer              
- wscode_ltree             | ltree                
- localcode_ltree          | ltree                
- blue_line_key            | integer              
- waterbody_key            | integer              
- downstream_route_measure | double precision     
- watershed_group_code     | character varying(4) 
- obs_ids                  | integer[]            
- species_codes            | text[]               
- maximal_species          | text[]               
- distance_to_stream       | double precision     
- match_type               | text                 
+ fish_obsrvtn_distinct_id | integer
+ linear_feature_id        | integer
+ wscode_ltree             | ltree
+ localcode_ltree          | ltree
+ blue_line_key            | integer
+ waterbody_key            | integer
+ downstream_route_measure | double precision
+ watershed_group_code     | character varying(4)
+ obs_ids                  | integer[]
+ species_codes            | text[]
+ maximal_species          | text[]
+ distance_to_stream       | double precision
+ match_type               | text
 Indexes:
     "fiss_fish_obsrvtn_events_blue_line_key_idx" btree (blue_line_key)
     "fiss_fish_obsrvtn_events_linear_feature_id_idx" btree (linear_feature_id)
@@ -125,47 +126,47 @@ Indexes:
 ```
 
 
-#### `whse_fish.fiss_fish_obsrvtn_unmatched` 
+#### `whse_fish.fiss_fish_obsrvtn_unmatched`
 Distinct observation points that were not referenced to the stream network (for QA)
 
 ```
-            Column             |        Type         
+            Column             |        Type
 -------------------------------+---------------------
- fish_obsrvtn_distinct_id      | bigint              
- obs_ids                       | integer[]           
- species_codes                 | text[] 
- distance_to_stream            | double precision    
- geom                          | geometry       
+ fish_obsrvtn_distinct_id      | bigint
+ obs_ids                       | integer[]
+ species_codes                 | text[]
+ distance_to_stream            | double precision
+ geom                          | geometry
 Indexes:
-    "fish_obsrvtn_unmatched_pkey" PRIMARY KEY, btree (fish_obsrvtn_distinct_id)     
+    "fish_obsrvtn_unmatched_pkey" PRIMARY KEY, btree (fish_obsrvtn_distinct_id)
 ```
 
 ## QA results
 
 On completion, the script outputs to stdout the results of the query `sql/qa_match_report.sql`, reporting on the number and type of matches made.
 
-Current result (June 18, 2018):
+Current result (May 07, 2019):
 
 ```
-                           match_type                            | n_distinct_events | n_observations 
------------------------------------------------------------------+-------------------+----------------
- A. matched - stream; within 100m; lookup                        |             51730 |         156763
- B. matched - stream; within 100m; closest stream                |              6230 |          17827
- C. matched - stream; 100-500m; lookup                           |              4168 |          28349
- D. matched - waterbody; construction line within 1500m; lookup  |             11210 |         110095
- E. matched - waterbody; construction line within 1500m; closest |              1249 |          15260
- TOTAL MATCHED                                                   |             74587 |         328294
- F. unmatched - less than 1500m to stream                        |              1567 |           4977
- G. unmatched - more than 1500m to stream                        |               100 |            715
- TOTAL UNMATCHED                                                 |              1667 |           5692
- GRAND TOTAL                                                     |             76254 |         333986
+match_type                                                       | n_distinct_events| n_observations
+--------------------------------------------------------------------------------------------------
+A. matched - stream; within 100m; lookup                         | 52485          | 160344
+B. matched - stream; within 100m; closest stream                 | 6410           | 18314
+C. matched - stream; 100-500m; lookup                            | 4341           | 29190
+D. matched - waterbody; construction line within 1500m; lookup   | 11537          | 111444
+E. matched - waterbody; construction line within 1500m; closest  | 1283           | 15467
+TOTAL MATCHED                                                    | 76056          | 334759
+F. unmatched - less than 1500m to stream                         | 1613           | 5051
+G. unmatched - more than 1500m to stream                         | 102            | 713
+TOTAL UNMATCHED                                                  | 1715           | 5764
+GRAND TOTAL                                                      | 77771          | 340523
 ```
 
 This result can be compared with the output of `sql/qa_total_records`, the number of total observations should be the same in each query.
 
 ## Use the data
 
-With the observations now linked to the Freswater Atlas, we can write queries to find fish observations relative to their location on the stream network.  
+With the observations now linked to the Freswater Atlas, we can write queries to find fish observations relative to their location on the stream network.
 
 ### Example 1
 
@@ -197,10 +198,10 @@ What is the slope (percent) of the stream at the locations of all distinct Coho 
 
 ```
 SELECT
-  e.fish_obsrvtn_distinct_id, 
+  e.fish_obsrvtn_distinct_id,
   Round((fwa_streamslope(e.blue_line_key, e.downstream_route_measure) * 100)::numeric, 2) AS slope
 FROM whse_fish.fiss_fish_obsrvtn_events e
-INNER JOIN whse_basemapping.fwa_stream_networks_sp s 
+INNER JOIN whse_basemapping.fwa_stream_networks_sp s
 ON e.linear_feature_id = s.linear_feature_id
 INNER JOIN whse_basemapping.fwa_edge_type_codes ec
 ON s.edge_type = ec.edge_type

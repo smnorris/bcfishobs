@@ -129,3 +129,19 @@ ORDER BY e1.fish_obsrvtn_distinct_id, e1.distance_to_stream;
 
 ALTER TABLE whse_fish.fiss_fish_obsrvtn_unmatched
 ADD PRIMARY KEY (fish_obsrvtn_distinct_id);
+
+
+-- create a layer holding distinct observations by species
+-- (useful for mapping, but it is probably better to add to QGIS via a query)
+DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_pnt_distinct_spp;
+CREATE TABLE whse_fish.fiss_fish_obsrvtn_pnt_distinct_spp AS
+SELECT row_number() over() as fish_obsrvtn_distinct_spp_id,
+species_code,
+geom
+FROM (
+SELECT DISTINCT
+    species_code,
+    (ST_Dump(o.geom)).geom as geom
+  FROM whse_fish.fiss_fish_obsrvtn_pnt_sp o
+  WHERE o.point_type_code = 'Observation') as f;
+
