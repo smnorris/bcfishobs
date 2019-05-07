@@ -1,6 +1,6 @@
--- for convenience, create a materialized view that holds all observation events
--- (not just distinct locations), commonly queried columns, and the location that
--- the observation is referenced to - as a point geometry
+-- for convenience, create a materialized view that holds all observation
+-- events (not just distinct locations), commonly queried columns, and the
+-- location that the observation is referenced to - as a point geometry
 
 CREATE MATERIALIZED VIEW whse_fish.fiss_fish_obsrvtn_events_vw
 AS

@@ -7,7 +7,8 @@
 
 -- ** NOTE **
 -- ** Geometries are not unique **
--- ** Observations with different watershed codes may be in exactly the same spot **
+-- ** Observations with different watershed codes may be in exactly the
+--    same spot **
 
 DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_distinct;
 

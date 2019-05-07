@@ -21,9 +21,11 @@ OR
     -- never return the start segment, that is added above
   AND b.linear_feature_id != a.linear_feature_id
   AND
-      -- conditional upstream join logic, based on whether watershed codes are equivalent
+      -- conditional upstream join logic, based on whether watershed codes
+      -- are equivalent
     CASE
-      -- first, consider simple case - streams where wscode and localcode are equivalent
+      -- first, consider simple case - streams where wscode and localcode are
+      -- equivalent
       -- this is all segments with equivalent bluelinekey and a larger measure
       -- (plus fudge factor)
        WHEN
@@ -33,7 +35,8 @@ OR
                b.downstream_route_measure > a.downstream_route_measure + .01)
           )
        THEN TRUE
-       -- next, the more complicated case - where wscode and localcode are not equal
+       -- next, the more complicated case - where wscode and localcode are
+       -- not equal
        WHEN
           a.wscode_ltree != a.localcode_ltree AND
           (
@@ -41,11 +44,13 @@ OR
               (b.blue_line_key = a.blue_line_key AND
                b.downstream_route_measure > a.downstream_route_measure + .01)
               OR
-           -- tributaries: b wscode > a localcode and b wscode is not a child of a localcode
+           -- tributaries: b wscode > a localcode and b wscode is not a child
+           -- of a localcode
               (b.wscode_ltree > a.localcode_ltree AND
                NOT b.wscode_ltree <@ a.localcode_ltree)
               OR
-           -- capture side channels: b is the same watershed code, with larger localcode
+           -- capture side channels: b is the same watershed code, with larger
+           -- localcode
               (b.wscode_ltree = a.wscode_ltree
                AND b.localcode_ltree >= a.localcode_ltree)
           )

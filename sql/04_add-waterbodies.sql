@@ -52,8 +52,10 @@ closest AS
   ORDER BY fish_obsrvtn_distinct_id, distance_to_stream
 )
 -- Insert the results into our output table
--- Note that there are duplicate records because observations can be equidistant from
--- several stream lines. Insert records with highest measure (though they should be the same)
+-- Note that there are duplicate records because observations can be
+-- equidistant from
+-- several stream lines. Insert records with highest measure (though they
+-- should be the same)
 INSERT INTO whse_fish.fiss_fish_obsrvtn_events_prelim2
 SELECT DISTINCT ON (e.fish_obsrvtn_distinct_id)
   e.fish_obsrvtn_distinct_id,
@@ -74,7 +76,8 @@ ORDER BY e.fish_obsrvtn_distinct_id, e.downstream_route_measure;
 
 
 -- ---------------------------------------------
--- Some observations in waterbodies do not get added above due to lookup quirks.
+-- Some observations in waterbodies do not get added above due to
+-- lookup quirks.
 -- Insert these records simply based on the closest stream
 -- ---------------------------------------------
 WITH unmatched_wb AS

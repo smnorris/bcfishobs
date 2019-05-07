@@ -1,4 +1,5 @@
--- Now that we are done with matching points to streams, create the output table
+-- Now that we are done with matching points to streams,
+-- create the output table
 
 DROP MATERIALIZED VIEW IF EXISTS whse_fish.fiss_fish_obsrvtn_events_vw;
 DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_events;
@@ -77,8 +78,8 @@ INSERT INTO whse_fish.fiss_fish_obsrvtn_events
   match_type)
 
 -- finally, on insert only return one record per unique blue_line_key / measure
--- This eliminates duplicate events (and while we don't really care which point is
--- retained, sorting by distance_to_stream ensures it is the closest)
+-- This eliminates duplicate events (and while we don't really care which
+-- point is retained, sorting by distance_to_stream ensures it is the closest)
 SELECT DISTINCT ON (blue_line_key, downstream_route_measure)
   p.fish_obsrvtn_distinct_id,
   a.linear_feature_id,
