@@ -35,15 +35,16 @@ This logic is based on the assumptions:
 
 ## Requirements
 
-- Python (tested with v3.6)
-- PostgreSQL/PostGIS (tested with v10.4/2.4.4)
-- GDAL and GDAL Python bindings
-- [fwakit](https://github.com/smnorris/fwakit) and a FWA database
+- PostgreSQL/PostGIS (tested with v10.4/2.4.4+)
+- a FWA database created by [fwapg](https://github.com/smnorris/bcdata)
+- GDAL
+- Python (>=3.6)
 - [bcdata](https://github.com/smnorris/bcdata)
+- wget, unzip, psql2csv
 
 ## Installation
 
-With `fwakit` and `bcdata` installed, all required Python libraries should be available, no further installation should be necessary.
+With `bcdata` installed (via `pip install --user bcdata`), all required Python libraries should be available, no further installation should be necessary.
 
 Download/clone the scripts to your system and navigate to the folder:
 
@@ -52,19 +53,20 @@ $ git clone https://github.com/smnorris/bcfishobs.git
 $ cd bcfishobs
 ```
 
-## Run the script
+## Run the scripts
 
-Usage presumes that you have installed `fwakit`, the FWA database is loaded, and the `$FWA_DB` environment variable is correct. See the instructions for this [here](https://github.com/smnorris/fwakit#configuration).
+Scripts presume that:
+- the FWA database is loaded (to schema `whse_basemapping`)
+- environment variables PGHOST, PGUSER, PGDATABASE, PGPORT, DATABASE_URL are set to the appropriate db
+- password authentication for the database is not required
 
-Run the script in two steps, one to download the data, the next to do the linear referencing:
+The scripts are run via two bash control scripts:
 
 ```
-$ python bcfishobs.py download
-$ python bcfishobs.py process
+$ ./01_load.sh
+$ ./02_process.sh
 ```
 
-Time to complete the `download` command will vary.
-The `process` command completes in ~7 min running time on a 2 core 2.8GHz laptop.
 
 ## Output data
 
@@ -143,24 +145,9 @@ Indexes:
 
 ## QA results
 
-On completion, the script outputs to stdout the results of the query `sql/qa_match_report.sql`, reporting on the number and type of matches made.
+On completion, the script runs the query `sql/qa_match_report.sql`, reporting on the number and type of matches made. Results are written to csv file `qa_match_report.csv`.
 
-Current result (May 07, 2019):
-
-```
-match_type                                                       | n_distinct_events| n_observations
---------------------------------------------------------------------------------------------------
-A. matched - stream; within 100m; lookup                         | 52485          | 160344
-B. matched - stream; within 100m; closest stream                 | 6410           | 18314
-C. matched - stream; 100-500m; lookup                            | 4341           | 29190
-D. matched - waterbody; construction line within 1500m; lookup   | 11537          | 111444
-E. matched - waterbody; construction line within 1500m; closest  | 1283           | 15467
-TOTAL MATCHED                                                    | 76056          | 334759
-F. unmatched - less than 1500m to stream                         | 1613           | 5051
-G. unmatched - more than 1500m to stream                         | 102            | 713
-TOTAL UNMATCHED                                                  | 1715           | 5764
-GRAND TOTAL                                                      | 77771          | 340523
-```
+[Current result (Feb 27, 2020)](qa_match_report.csv)
 
 This result can be compared with the output of `sql/qa_total_records`, the number of total observations should be the same in each query.
 
