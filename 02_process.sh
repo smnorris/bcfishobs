@@ -16,7 +16,7 @@ psql -f sql/09_create-events-vw.sql
 
 # Tag maximal observations for each species
 # As this is run as a loop it is easier to do via Python
-python tag_maximal_events.py
+python3 tag_maximal_events.py
 
 # report on the results of the job
 psql2csv < sql/qa_match_report.sql > qa_match_report.csv

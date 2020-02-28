@@ -33,6 +33,6 @@ ogr2ogr \
   -nlt NONE \
   species_cd.csv
 
-rm whse_fish.whse_fish.wdic_waterbodies.csv
+rm whse_fish.wdic_waterbodies.csv
 rm species_cd.csv
 

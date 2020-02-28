@@ -5,7 +5,7 @@
 SELECT 'Total' as match_type, dist.n_distinct_pts, total.n_observations
 FROM
 (SELECT Count(*) AS n_distinct_pts
-FROM whse_fish.fiss_fish_obsrvtn_distinct) dist,
+FROM whse_fish.fiss_fish_obsrvtn_pnt_distinct) dist,
 (SELECT Count(*) AS n_observations
 FROM whse_fish.fiss_fish_obsrvtn_pnt_sp
 WHERE point_type_code = 'Observation') total
