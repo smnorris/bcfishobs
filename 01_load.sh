@@ -12,8 +12,8 @@ bcdata bc2pg WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP \
 wget -N https://hillcrestgeo.ca/outgoing/whse_fish/whse_fish.wdic_waterbodies.csv.zip
 wget -N https://hillcrestgeo.ca/outgoing/whse_fish/species_cd.csv.zip
 
-unzip whse_fish.wdic_waterbodies.csv.zip
-unzip species_cd.csv.zip
+unzip -qjun whse_fish.wdic_waterbodies.csv.zip
+unzip -qjun species_cd.csv.zip
 
 ogr2ogr \
   -f PostgreSQL \
@@ -32,3 +32,7 @@ ogr2ogr \
   -nln species_cd \
   -nlt NONE \
   species_cd.csv
+
+rm whse_fish.whse_fish.wdic_waterbodies.csv
+rm species_cd.csv
+

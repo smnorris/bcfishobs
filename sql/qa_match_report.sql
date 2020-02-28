@@ -13,8 +13,8 @@ FROM
   a.match_type,
   unnest(b.obs_ids) as fish_observation_point_id
 FROM whse_fish.fiss_fish_obsrvtn_events_prelim2 a
-INNER JOIN whse_fish.fiss_fish_obsrvtn_distinct b
-ON a.fish_obsrvtn_distinct_id = b.fish_obsrvtn_distinct_id) as obs
+INNER JOIN whse_fish.fiss_fish_obsrvtn_pnt_distinct b
+ON a.fish_obsrvtn_pnt_distinct_id = b.fish_obsrvtn_pnt_distinct_id) as obs
 GROUP BY match_type
 ORDER BY match_type),
 
@@ -40,14 +40,14 @@ ORDER BY match_type),
 unmatched_pts2 AS (
 SELECT
   'G. unmatched - more than 1500m to stream' as match_type,
-  count(o.fish_obsrvtn_distinct_id) as n_distinct_events
-FROM whse_fish.fiss_fish_obsrvtn_distinct o
+  count(o.fish_obsrvtn_pnt_distinct_id) as n_distinct_events
+FROM whse_fish.fiss_fish_obsrvtn_pnt_distinct o
 LEFT OUTER JOIN whse_fish.fiss_fish_obsrvtn_events_prelim2 e
-ON o.fish_obsrvtn_distinct_id = e.fish_obsrvtn_distinct_id
+ON o.fish_obsrvtn_pnt_distinct_id = e.fish_obsrvtn_pnt_distinct_id
 LEFT OUTER JOIN whse_fish.fiss_fish_obsrvtn_unmatched u
-ON o.fish_obsrvtn_distinct_id = u.fish_obsrvtn_distinct_id
-WHERE u.fish_obsrvtn_distinct_id IS NULL
-AND e.fish_obsrvtn_distinct_id IS NULL
+ON o.fish_obsrvtn_pnt_distinct_id = u.fish_obsrvtn_pnt_distinct_id
+WHERE u.fish_obsrvtn_pnt_distinct_id IS NULL
+AND e.fish_obsrvtn_pnt_distinct_id IS NULL
 ),
 
 unmatched_obs2 AS (
@@ -56,13 +56,13 @@ unmatched_obs2 AS (
     Count(*) as n_observations
   FROM
   (SELECT unnest(o.obs_ids) AS fish_observation_point_id
-  FROM whse_fish.fiss_fish_obsrvtn_distinct o
+  FROM whse_fish.fiss_fish_obsrvtn_pnt_distinct o
   LEFT OUTER JOIN whse_fish.fiss_fish_obsrvtn_events_prelim2 e
-  ON o.fish_obsrvtn_distinct_id = e.fish_obsrvtn_distinct_id
+  ON o.fish_obsrvtn_pnt_distinct_id = e.fish_obsrvtn_pnt_distinct_id
   LEFT OUTER JOIN whse_fish.fiss_fish_obsrvtn_unmatched u
-  ON o.fish_obsrvtn_distinct_id = u.fish_obsrvtn_distinct_id
-  WHERE u.fish_obsrvtn_distinct_id IS NULL
-  AND e.fish_obsrvtn_distinct_id IS NULL) as all_ids
+  ON o.fish_obsrvtn_pnt_distinct_id = u.fish_obsrvtn_pnt_distinct_id
+  WHERE u.fish_obsrvtn_pnt_distinct_id IS NULL
+  AND e.fish_obsrvtn_pnt_distinct_id IS NULL) as all_ids
 ),
 
 raw AS

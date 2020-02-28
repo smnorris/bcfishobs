@@ -1,9 +1,10 @@
--- for convenience, create a materialized view that holds all observation
+-- for convenience, create a view that holds all observation
 -- events (not just distinct locations), commonly queried columns, and the
 -- location that the observation is referenced to - as a point geometry
 
-CREATE MATERIALIZED VIEW whse_fish.fiss_fish_obsrvtn_events_vw
-AS
+DROP MATERIALIZED VIEW IF EXISTS whse_fish.fiss_fish_obsrvtn_events_vw;
+
+CREATE MATERIALIZED VIEW whse_fish.fiss_fish_obsrvtn_events_vw AS
 
 WITH all_obs AS
 (SELECT
@@ -17,7 +18,8 @@ WITH all_obs AS
    e.distance_to_stream,
    e.match_type,
    e.watershed_group_code,
-   ST_LineInterpolatePoint(
+   ST_Force2D(
+    ST_LineInterpolatePoint(
      ST_LineMerge(s.geom),
      ROUND(
        CAST(
@@ -25,26 +27,35 @@ WITH all_obs AS
              s.downstream_route_measure) / s.length_metre AS NUMERIC
         ),
        5)
-     ) AS geom
+     )
+    )::geometry(Point, 3005) AS geom
 FROM whse_fish.fiss_fish_obsrvtn_events e
 INNER JOIN whse_basemapping.fwa_stream_networks_sp s
 ON e.linear_feature_id = s.linear_feature_id)
 
 SELECT
-  a.*,
+  a.fish_observation_point_id,
+  a.linear_feature_id,
+  a.wscode_ltree,
+  a.localcode_ltree,
+  a.blue_line_key,
+  a.waterbody_key,
+  a.downstream_route_measure,
+  a.distance_to_stream,
+  a.match_type,
+  a.watershed_group_code,
   b.species_code,
   b.agency_id,
   b.observation_date,
   b.agency_name,
   b.source,
-  b.source_ref
+  b.source_ref,
+  a.geom
 FROM all_obs a
 INNER JOIN whse_fish.fiss_fish_obsrvtn_pnt_sp  b
 ON a.fish_observation_point_id = b.fish_observation_point_id;
 
--- We can index the matierialized view for performance
-
-CREATE UNIQUE INDEX ON whse_fish.fiss_fish_obsrvtn_events_vw (fish_observation_point_id);
+-- create indexes
 CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events_vw (linear_feature_id);
 CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events_vw (blue_line_key);
 CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events_vw (waterbody_key);

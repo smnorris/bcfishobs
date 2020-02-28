@@ -72,27 +72,27 @@ $ ./02_process.sh
 
 Three new tables are created by the script (in addition to the downloaded data):
 
-#### `whse_fish.fiss_fish_obsrvtn_distinct`
+#### `whse_fish.fiss_fish_obsrvtn_pnt_distinct`
 
 Distinct locations of fish observations. Some points are duplicated as equivalent locations may have different values for `new_watershed_code`.
 
 ```
             Column             |         Type
 -------------------------------+-----------------------
- fish_obsrvtn_distinct_id      | bigint
+ fish_obsrvtn_pnt_distinct_id  | integer
  obs_ids                       | integer[]
- utm_zone                      | smallint
+ utm_zone                      | integer
  utm_easting                   | integer
  utm_northing                  | integer
  wbody_id                      | double precision
- waterbody_type                | character varying(20)
- new_watershed_code            | character varying(56)
+ waterbody_type                | character varying
+ new_watershed_code            | character varying
  species_codes                 | text[]
- geom                          | geometry
  watershed_group_code          | text
+ geom                          | geometry(Point, 3005)
 
 Indexes:
-    "fish_obsrvtn_distinct_pkey" PRIMARY KEY, btree (fish_obsrvtn_distinct_id)
+    "fiss_fish_obsrvtn_pnt_distinct_pkey" PRIMARY KEY, btree (fish_obsrvtn_pnt_distinct_id)
     "fiss_fish_obsrvtn_distinct_gidx" gist (geom)
     "fiss_fish_obsrvtn_distinct_wbidix" btree (wbody_id)
 ```
@@ -102,21 +102,21 @@ Indexes:
 Distinct observation points stored as linear events on `whse_basemapping.fwa_stream_networks_sp`
 
 ```
-          Column          |         Type
---------------------------+----------------------
- fish_obsrvtn_distinct_id | integer
- linear_feature_id        | integer
- wscode_ltree             | ltree
- localcode_ltree          | ltree
- blue_line_key            | integer
- waterbody_key            | integer
- downstream_route_measure | double precision
- watershed_group_code     | character varying(4)
- obs_ids                  | integer[]
- species_codes            | text[]
- maximal_species          | text[]
- distance_to_stream       | double precision
- match_type               | text
+          Column              |         Type
+------------------------------+----------------------
+ fish_obsrvtn_pnt_distinct_id | integer
+ linear_feature_id            | integer
+ wscode_ltree                 | ltree
+ localcode_ltree              | ltree
+ blue_line_key                | integer
+ waterbody_key                | integer
+ downstream_route_measure     | double precision
+ watershed_group_code         | character varying(4)
+ obs_ids                      | integer[]
+ species_codes                | text[]
+ maximal_species              | text[]
+ distance_to_stream           | double precision
+ match_type                   | text
 Indexes:
     "fiss_fish_obsrvtn_events_blue_line_key_idx" btree (blue_line_key)
     "fiss_fish_obsrvtn_events_linear_feature_id_idx" btree (linear_feature_id)
@@ -134,11 +134,11 @@ Distinct observation points that were not referenced to the stream network (for 
 ```
             Column             |        Type
 -------------------------------+---------------------
- fish_obsrvtn_distinct_id      | bigint
+ fish_obsrvtn_pnt_distinct_id  | bigint
  obs_ids                       | integer[]
- species_codes                 | text[]
+ species_codes                 | character varying[]
  distance_to_stream            | double precision
- geom                          | geometry
+ geom                          | geometry(Point, 3005)
 Indexes:
     "fish_obsrvtn_unmatched_pkey" PRIMARY KEY, btree (fish_obsrvtn_distinct_id)
 ```
@@ -147,7 +147,7 @@ Indexes:
 
 On completion, the script runs the query `sql/qa_match_report.sql`, reporting on the number and type of matches made. Results are written to csv file `qa_match_report.csv`.
 
-[Current result (Feb 27, 2020)](qa_match_report.csv)
+[Current result (Feb 28, 2020)](qa_match_report.csv)
 
 This result can be compared with the output of `sql/qa_total_records`, the number of total observations should be the same in each query.
 

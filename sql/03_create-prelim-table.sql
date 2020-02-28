@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_events_prelim1;
 CREATE TABLE whse_fish.fiss_fish_obsrvtn_events_prelim1 AS
 WITH candidates AS
  ( SELECT
-    pt.fish_obsrvtn_distinct_id,
+    pt.fish_obsrvtn_pnt_distinct_id,
     nn.linear_feature_id,
     nn.wscode_ltree,
     nn.localcode_ltree,
@@ -27,7 +27,7 @@ WITH candidates AS
     nn.downstream_route_measure,
     nn.distance_to_stream,
     ST_LineMerge(nn.geom) AS geom
-  FROM whse_fish.fiss_fish_obsrvtn_distinct as pt
+  FROM whse_fish.fiss_fish_obsrvtn_pnt_distinct as pt
   CROSS JOIN LATERAL
   (SELECT
      str.linear_feature_id,
@@ -52,17 +52,17 @@ WITH candidates AS
 bluelines AS
 (SELECT * FROM
     (SELECT
-      fish_obsrvtn_distinct_id,
+      fish_obsrvtn_pnt_distinct_id,
       blue_line_key,
       min(distance_to_stream) AS distance_to_stream
     FROM candidates
-    GROUP BY fish_obsrvtn_distinct_id, blue_line_key) as f
+    GROUP BY fish_obsrvtn_pnt_distinct_id, blue_line_key) as f
   ORDER BY distance_to_stream
 )
 
 -- from the selected blue lines, generate downstream_route_measure
 SELECT
-  bluelines.fish_obsrvtn_distinct_id,
+  bluelines.fish_obsrvtn_pnt_distinct_id,
   candidates.linear_feature_id,
   candidates.wscode_ltree,
   candidates.localcode_ltree,
@@ -74,12 +74,13 @@ SELECT
     AS downstream_route_measure,
   candidates.distance_to_stream
 FROM bluelines
-INNER JOIN candidates ON bluelines.fish_obsrvtn_distinct_id = candidates.fish_obsrvtn_distinct_id
+INNER JOIN candidates ON bluelines.fish_obsrvtn_pnt_distinct_id = candidates.fish_obsrvtn_pnt_distinct_id
 AND bluelines.blue_line_key = candidates.blue_line_key
 AND bluelines.distance_to_stream = candidates.distance_to_stream
-INNER JOIN whse_fish.fiss_fish_obsrvtn_distinct pts ON bluelines.fish_obsrvtn_distinct_id = pts.fish_obsrvtn_distinct_id;
+INNER JOIN whse_fish.fiss_fish_obsrvtn_pnt_distinct pts
+ON bluelines.fish_obsrvtn_pnt_distinct_id = pts.fish_obsrvtn_pnt_distinct_id;
 
 -- ---------------------------------------------
 -- index the intermediate table
-CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events_prelim1 (fish_obsrvtn_distinct_id);
+CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events_prelim1 (fish_obsrvtn_pnt_distinct_id);
 

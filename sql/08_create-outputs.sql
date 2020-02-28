@@ -1,11 +1,10 @@
 -- Now that we are done with matching points to streams,
 -- create the output table
 
-DROP MATERIALIZED VIEW IF EXISTS whse_fish.fiss_fish_obsrvtn_events_vw;
 DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_events;
 
 CREATE TABLE whse_fish.fiss_fish_obsrvtn_events
-( fish_obsrvtn_distinct_id integer,
+( fish_obsrvtn_pnt_distinct_id integer,
   linear_feature_id integer,
   wscode_ltree ltree,
   localcode_ltree ltree,
@@ -23,7 +22,7 @@ CREATE TABLE whse_fish.fiss_fish_obsrvtn_events
 -- remove any duplicates by unnesting arrays and re-aggregating
 WITH popped AS
 (SELECT
-  p2.fish_obsrvtn_distinct_id,
+  p2.fish_obsrvtn_pnt_distinct_id,
   p2.linear_feature_id,
   p2.wscode_ltree,
   p2.localcode_ltree,
@@ -34,8 +33,8 @@ WITH popped AS
   unnest(dstnct.obs_ids) as obs_id,
   unnest(dstnct.species_codes) as species_code
 FROM whse_fish.fiss_fish_obsrvtn_events_prelim2 p2
-INNER JOIN whse_fish.fiss_fish_obsrvtn_distinct dstnct
-ON p2.fish_obsrvtn_distinct_id = dstnct.fish_obsrvtn_distinct_id
+INNER JOIN whse_fish.fiss_fish_obsrvtn_pnt_distinct dstnct
+ON p2.fish_obsrvtn_pnt_distinct_id = dstnct.fish_obsrvtn_pnt_distinct_id
 INNER JOIN whse_basemapping.fwa_stream_networks_sp s
 ON p2.linear_feature_id = s.linear_feature_id),
 
@@ -64,7 +63,7 @@ ORDER BY blue_line_key, downstream_route_measure
 )
 
 INSERT INTO whse_fish.fiss_fish_obsrvtn_events
- ( fish_obsrvtn_distinct_id,
+ ( fish_obsrvtn_pnt_distinct_id,
   linear_feature_id,
   wscode_ltree,
   localcode_ltree,
@@ -81,7 +80,7 @@ INSERT INTO whse_fish.fiss_fish_obsrvtn_events
 -- This eliminates duplicate events (and while we don't really care which
 -- point is retained, sorting by distance_to_stream ensures it is the closest)
 SELECT DISTINCT ON (blue_line_key, downstream_route_measure)
-  p.fish_obsrvtn_distinct_id,
+  p.fish_obsrvtn_pnt_distinct_id,
   a.linear_feature_id,
   a.wscode_ltree,
   a.localcode_ltree,
@@ -114,35 +113,20 @@ CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events (waterbody_key);
 -- are not many of those.
 DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_unmatched;
 CREATE TABLE whse_fish.fiss_fish_obsrvtn_unmatched AS
-SELECT DISTINCT ON (e1.fish_obsrvtn_distinct_id)
-  e1.fish_obsrvtn_distinct_id,
+SELECT DISTINCT ON (e1.fish_obsrvtn_pnt_distinct_id)
+  e1.fish_obsrvtn_pnt_distinct_id,
   o.obs_ids,
   o.species_codes,
   e1.distance_to_stream,
   o.geom
 FROM whse_fish.fiss_fish_obsrvtn_events_prelim1 e1
 LEFT OUTER JOIN whse_fish.fiss_fish_obsrvtn_events_prelim2 e2
-ON e1.fish_obsrvtn_distinct_id = e2.fish_obsrvtn_distinct_id
-INNER JOIN whse_fish.fiss_fish_obsrvtn_distinct o
-ON e1.fish_obsrvtn_distinct_id = o.fish_obsrvtn_distinct_id
-WHERE e2.fish_obsrvtn_distinct_id IS NULL
-ORDER BY e1.fish_obsrvtn_distinct_id, e1.distance_to_stream;
+ON e1.fish_obsrvtn_pnt_distinct_id = e2.fish_obsrvtn_pnt_distinct_id
+INNER JOIN whse_fish.fiss_fish_obsrvtn_pnt_distinct o
+ON e1.fish_obsrvtn_pnt_distinct_id = o.fish_obsrvtn_pnt_distinct_id
+WHERE e2.fish_obsrvtn_pnt_distinct_id IS NULL
+ORDER BY e1.fish_obsrvtn_pnt_distinct_id, e1.distance_to_stream;
 
 ALTER TABLE whse_fish.fiss_fish_obsrvtn_unmatched
-ADD PRIMARY KEY (fish_obsrvtn_distinct_id);
-
-
--- create a layer holding distinct observations by species
--- (useful for mapping, but it is probably better to add to QGIS via a query)
-DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_pnt_distinct_spp;
-CREATE TABLE whse_fish.fiss_fish_obsrvtn_pnt_distinct_spp AS
-SELECT row_number() over() as fish_obsrvtn_distinct_spp_id,
-species_code,
-geom
-FROM (
-SELECT DISTINCT
-    species_code,
-    (ST_Dump(o.geom)).geom as geom
-  FROM whse_fish.fiss_fish_obsrvtn_pnt_sp o
-  WHERE o.point_type_code = 'Observation') as f;
+ADD PRIMARY KEY (fish_obsrvtn_pnt_distinct_id);
 
