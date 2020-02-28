@@ -19,6 +19,6 @@ psql -f sql/09_create-events-vw.sql
 python tag_maximal_events.py
 
 # report on the results of the job
-psql2csv < sql/qa_match_report.sql > match_report.csv
+psql2csv < sql/qa_match_report.sql > qa_match_report.csv
 
 psql -f sql/11_cleanup.sql
