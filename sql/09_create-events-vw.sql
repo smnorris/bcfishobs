@@ -2,7 +2,7 @@
 -- events (not just distinct locations), commonly queried columns, and the
 -- location that the observation is referenced to - as a point geometry
 
-DROP MATERIALIZED VIEW IF EXISTS whse_fish.fiss_fish_obsrvtn_events_vw;
+DROP MATERIALIZED VIEW IF EXISTS whse_fish.fiss_fish_obsrvtn_events_vw CASCADE;
 
 CREATE MATERIALIZED VIEW whse_fish.fiss_fish_obsrvtn_events_vw AS
 

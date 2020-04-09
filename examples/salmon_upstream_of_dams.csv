@@ -1,0 +1,363 @@
+dam_name,dam_date,fish_observation_point_id,species_code,observation_date,source
+Arrow Lakes/Keenleyside Dam,2002,160326,CH,1999-01-01,FISS Database: survey_id 281410
+Arrow Lakes/Keenleyside Dam,2002,160327,CH,1999-01-01,FISS Database: survey_id 281413
+Arrow Lakes/Keenleyside Dam,2002,3382,CM,1949-06-06,BC Lakes Database: survey_id 2135
+Arrow Lakes/Keenleyside Dam,2002,160329,CM,1999-01-01,FISS Database: survey_id 281413
+Arrow Lakes/Keenleyside Dam,2002,160328,CM,1999-01-01,FISS Database: survey_id 281410
+Arrow Lakes/Keenleyside Dam,2002,160331,CO,1999-01-01,FISS Database: survey_id 281413
+Arrow Lakes/Keenleyside Dam,2002,160330,CO,1999-01-01,FISS Database: survey_id 281410
+Ash River,1959,723,CO,1977-09-14,BC Lakes Database: survey_id 633
+Ash River,1959,280399,ST,1983-09-08,Releases Database: release_id 23441
+Ash River,1959,155498,ST,1993-01-01,FISS Database: survey_id 90191
+Ashlu Creek,2010,137775,CH,2013-10-08,FDIS Database: fshclctn_id 157497
+Ashlu Creek,2010,137781,CH,2013-10-14,FDIS Database: fshclctn_id 157498
+Ashlu Creek,2010,137759,CH,2013-10-14,FDIS Database: fshclctn_id 157494
+Ashlu Creek,2010,137789,CH,2013-10-25,FDIS Database: fshclctn_id 157500
+Ashlu Creek,2010,137794,CH,2014-03-24,FDIS Database: fshclctn_id 157501
+Ashlu Creek,2010,137800,CH,2014-03-31,FDIS Database: fshclctn_id 157502
+Ashlu Creek,2010,138170,CH,2014-10-02,FDIS Database: fshclctn_id 157610
+Ashlu Creek,2010,138201,CH,2014-10-09,FDIS Database: fshclctn_id 157621
+Ashlu Creek,2010,89447,CH,2015-10-15,FDIS Database: fshclctn_id 165753
+Ashlu Creek,2010,194270,CH,,FISS Database: survey_id 91808
+Ashlu Creek,2010,194272,CM,,FISS Database: survey_id 86844
+Ashlu Creek,2010,223181,CO,1997-12-01,FISS Database: survey_id 101923
+Ashlu Creek,2010,228480,CO,1998-10-01,FISS Database: survey_id 134153
+Ashlu Creek,2010,19727,CO,2010-10-17,FDIS Database: fshclctn_id 108044
+Ashlu Creek,2010,77980,CO,2011-04-13,FDIS Database: fshclctn_id 132729
+Ashlu Creek,2010,81503,CO,2012-09-28,FDIS Database: fshclctn_id 142265
+Ashlu Creek,2010,81534,CO,2012-10-07,FDIS Database: fshclctn_id 142276
+Ashlu Creek,2010,138172,CO,2014-10-02,FDIS Database: fshclctn_id 157610
+Ashlu Creek,2010,138203,CO,2014-10-09,FDIS Database: fshclctn_id 157621
+Ashlu Creek,2010,89460,CO,2015-09-14,FDIS Database: fshclctn_id 165755
+Ashlu Creek,2010,89441,CO,2015-10-08,FDIS Database: fshclctn_id 165752
+Ashlu Creek,2010,89449,CO,2015-10-15,FDIS Database: fshclctn_id 165753
+Ashlu Creek,2010,194274,CO,,FISS Database: survey_id 86845
+Ashlu Creek,2010,194280,PK,,FISS Database: survey_id 86847
+Ashlu Creek,2010,194282,SK,1995-01-01,FISS Database: survey_id 91810
+Ashlu Creek,2010,194284,ST,1987-01-01,FISS Database: survey_id 86848
+Ashlu Creek,2010,194286,ST,1994-03-01,FISS Database: survey_id 190527
+Ashlu Creek,2010,194300,ST,1995-01-01,FISS Database: survey_id 86851
+Ashlu Creek,2010,194288,ST,1995-01-01,FISS Database: survey_id 167944
+Ashlu Creek,2010,194268,ST,1995-01-01,FISS Database: survey_id 167942
+Ashlu Creek,2010,19719,ST,2010-06-11,FDIS Database: fshclctn_id 108035
+Bone Creek,2011,40953,CH,2006-01-01,FDIS Database: fshclctn_id 121693
+Bone Creek,2011,40977,CH,2006-01-01,FDIS Database: fshclctn_id 121705
+Box Canyon,2017,65154,CM,2006-11-16,FDIS Database: fshclctn_id 113746
+Box Canyon,2017,20093,CO,2006-04-25,FDIS Database: fshclctn_id 108330
+Box Canyon,2017,20094,CO,2006-08-21,FDIS Database: fshclctn_id 108331
+Box Canyon,2017,65151,CO,2006-08-21,FDIS Database: fshclctn_id 113745
+Box Canyon,2017,65157,CO,2006-11-16,FDIS Database: fshclctn_id 113746
+Box Canyon,2017,65160,CO,2007-04-24,FDIS Database: fshclctn_id 113747
+Box Canyon,2017,50749,CO,2007-11-15,FDIS Database: fshclctn_id 110890
+Box Canyon,2017,50758,CO,2008-04-10,FDIS Database: fshclctn_id 110891
+Box Canyon,2017,50762,CO,2008-04-19,FDIS Database: fshclctn_id 110892
+Box Canyon,2017,50766,CO,2008-11-13,FDIS Database: fshclctn_id 110893
+Box Canyon,2017,65767,CO,2009-08-19,FDIS Database: fshclctn_id 113880
+Box Canyon,2017,67506,CO,2009-09-15,FDIS Database: fshclctn_id 114301
+Box Canyon,2017,67497,CO,2009-09-15,FDIS Database: fshclctn_id 114300
+Box Canyon,2017,75882,CO,2010-09-09,FDIS Database: fshclctn_id 131524
+Box Canyon,2017,75823,CO,2010-09-09,FDIS Database: fshclctn_id 131517
+Box Canyon,2017,50770,ST,2008-11-13,FDIS Database: fshclctn_id 110893
+Brilliant Dam,1944,7768,ST,1952-06-23,BC Lakes Database: survey_id 4161
+Brilliant Dam,1944,7736,ST,1952-07-03,BC Lakes Database: survey_id 4139
+Brilliant Dam,1944,253794,ST,1956-09-10,REHAB Database: rehab_id 141
+Brilliant Dam,1944,7662,ST,1958-08-31,BC Lakes Database: survey_id 4066
+Brilliant Dam,1944,253808,ST,1972-09-30,REHAB Database: rehab_id 145
+Brilliant Dam,1944,3171,ST,1974-08-14,BC Lakes Database: survey_id 2005
+Canoe Creek,2010,238644,CO,1999-01-01,FISS Database: survey_id 7501637
+Clemina Creek Hydro,,214204,CO,1979-01-01,FISS Database: survey_id 75854
+Clemina Creek Hydro,,238080,CO,1989-01-01,FISS Database: survey_id 7500685
+Clemina Creek Hydro,,207274,CO,1995-01-01,FISS Database: survey_id 109779
+Clemina Creek Hydro,,34251,CO,2004-10-10,FDIS Database: fshclctn_id 63231
+Clemina Creek Hydro,,85085,CO,2012-08-03,FDIS Database: fshclctn_id 147055
+Clemina Creek Hydro,,85103,CO,2012-08-18,FDIS Database: fshclctn_id 147133
+Clemina Creek Hydro,,85102,CO,2012-08-19,FDIS Database: fshclctn_id 147122
+Clemina Creek Hydro,,85104,CO,2012-08-20,FDIS Database: fshclctn_id 147144
+Clemina Creek Hydro,,85112,CO,2012-08-22,FDIS Database: fshclctn_id 147216
+Clemina Creek Hydro,,113944,CO,2015-10-29,FDIS Database: fshclctn_id 191881
+Clemina Creek Hydro,,148614,CO,2017-09-28,FDIS Database: fshclctn_id 228739
+Clowhom,1957,35074,CO,2002-03-13,FDIS Database: fshclctn_id 63753
+Dasque Creek,2015,81001,CH,2013-08-29,FDIS Database: fshclctn_id 142531
+Dasque Creek,2015,81022,CH,2013-08-29,FDIS Database: fshclctn_id 142536
+Dasque Creek,2015,81028,CH,2013-08-29,FDIS Database: fshclctn_id 142537
+Dasque Creek,2015,81039,CH,2013-08-29,FDIS Database: fshclctn_id 142539
+Dasque Creek,2015,81035,CH,2013-08-29,FDIS Database: fshclctn_id 142538
+Dasque Creek,2015,125626,CH,2014-08-25,FDIS Database: fshclctn_id 200895
+Dasque Creek,2015,120966,CH,2015-08-27,FDIS Database: fshclctn_id 194800
+Dasque Creek,2015,120971,CH,2015-08-27,FDIS Database: fshclctn_id 194801
+Dasque Creek,2015,120975,CH,2015-08-27,FDIS Database: fshclctn_id 194802
+Dasque Creek,2015,120980,CH,2015-08-27,FDIS Database: fshclctn_id 194803
+Dasque Creek,2015,120986,CH,2015-08-27,FDIS Database: fshclctn_id 194804
+Dasque Creek,2015,120992,CH,2015-08-28,FDIS Database: fshclctn_id 194804
+Dasque Creek,2015,121968,CH,2016-08-25,FDIS Database: fshclctn_id 195524
+Dasque Creek,2015,121927,CH,2016-08-25,FDIS Database: fshclctn_id 195521
+Dasque Creek,2015,121943,CH,2016-08-25,FDIS Database: fshclctn_id 195522
+Dasque Creek,2015,121956,CH,2016-08-25,FDIS Database: fshclctn_id 195523
+Dasque Creek,2015,121950,CH,2016-08-26,FDIS Database: fshclctn_id 195522
+Dasque Creek,2015,121935,CH,2016-08-26,FDIS Database: fshclctn_id 195521
+Dasque Creek,2015,121975,CH,2016-08-26,FDIS Database: fshclctn_id 195524
+Dasque Creek,2015,121981,CH,2016-08-26,FDIS Database: fshclctn_id 195525
+Dasque Creek,2015,121962,CH,2016-08-26,FDIS Database: fshclctn_id 195523
+Dasque Creek,2015,162722,CH,2017-08-23,FDIS Database: fshclctn_id 230129
+Dasque Creek,2015,39220,CO,2011-09-14,FDIS Database: fshclctn_id 120572
+Dasque Creek,2015,39224,CO,2011-10-19,FDIS Database: fshclctn_id 120574
+Dasque Creek,2015,39226,CO,2011-11-01,FDIS Database: fshclctn_id 120575
+Dasque Creek,2015,125606,CO,2014-08-25,FDIS Database: fshclctn_id 200890
+Dasque Creek,2015,125609,CO,2014-08-26,FDIS Database: fshclctn_id 200890
+Dasque Creek,2015,125616,CO,2014-08-26,FDIS Database: fshclctn_id 200892
+Dasque Creek,2015,125612,CO,2014-08-26,FDIS Database: fshclctn_id 200891
+Dasque Creek,2015,125620,CO,2014-08-26,FDIS Database: fshclctn_id 200893
+Dasque Creek,2015,125628,CO,2014-08-26,FDIS Database: fshclctn_id 200895
+Dasque Creek,2015,121970,CO,2016-08-25,FDIS Database: fshclctn_id 195524
+Dasque Creek,2015,121945,CO,2016-08-25,FDIS Database: fshclctn_id 195522
+Dasque Creek,2015,121929,CO,2016-08-25,FDIS Database: fshclctn_id 195521
+Dasque Creek,2015,121937,CO,2016-08-26,FDIS Database: fshclctn_id 195521
+Dasque Creek,2015,121983,CO,2016-08-26,FDIS Database: fshclctn_id 195525
+Dasque Creek,2015,121977,CO,2016-08-26,FDIS Database: fshclctn_id 195524
+Dasque Creek,2015,162731,CO,2017-08-22,FDIS Database: fshclctn_id 230131
+Dasque Creek,2015,162725,CO,2017-08-22,FDIS Database: fshclctn_id 230130
+Dasque Creek,2015,162728,CO,2017-08-23,FDIS Database: fshclctn_id 230130
+Dasque Creek,2015,162714,CO,2017-08-23,FDIS Database: fshclctn_id 230127
+Dasque Creek,2015,162718,CO,2017-08-23,FDIS Database: fshclctn_id 230128
+Dasque Creek,2015,162734,CO,2017-08-23,FDIS Database: fshclctn_id 230131
+Doran Taylor Hydro,1996,312961,ST,1982-08-25,Releases Database: release_id 23529
+Doran Taylor Hydro,1996,255431,ST,1988-07-06,Releases Database: release_id 23441
+Doran Taylor Hydro,1996,275371,ST,1990-07-24,Releases Database: release_id 23441
+Doran Taylor Hydro,1996,155508,ST,1993-01-01,FISS Database: survey_id 90193
+Doran Taylor Hydro,1996,306402,ST,1993-08-17,Releases Database: release_id 23441
+Doran Taylor Hydro,1996,262988,ST,1994-07-22,Releases Database: release_id 23441
+Doran Taylor Hydro,1996,290988,ST,1995-05-31,Releases Database: release_id 23441
+Douglas Creek (Kwalsa Energy),2010,196676,CH,1985-01-01,FISS Database: survey_id 111039
+Douglas Creek (Kwalsa Energy),2010,196678,CM,1985-01-01,FISS Database: survey_id 111042
+Douglas Creek (Kwalsa Energy),2010,196680,CO,1985-01-01,FISS Database: survey_id 111041
+Douglas Creek (Kwalsa Energy),2010,196686,SK,1985-01-01,FISS Database: survey_id 111040
+East Toba,2010,197758,CH,2001-03-01,FISS Database: survey_id 78398
+East Toba,2010,197761,CO,1977-04-01,FISS Database: survey_id 92160
+East Toba,2010,197763,CO,2001-03-01,FISS Database: survey_id 190127
+East Toba,2010,197765,PK,2001-03-01,FISS Database: survey_id 78399
+Elko,1924,7736,ST,1952-07-03,BC Lakes Database: survey_id 4139
+Forrest Kerr Generating Station,2014,178796,ST,1972-01-01,FISS Database: survey_id 62454
+Gabion River EPA,,177190,CM,1989-01-01,FISS Database: survey_id 110205
+Gabion River EPA,,177186,CO,1989-01-01,FISS Database: survey_id 110204
+Gabion River EPA,,174336,CO,1995-01-01,FISS Database: survey_id 95766
+Gabion River EPA,,222003,CO,1995-01-01,FISS Database: survey_id 66989
+Gabion River EPA,,8976,CO,1996-08-29,BC Lakes Database: survey_id 5133
+Gabion River EPA,,8957,CO,1996-08-29,BC Lakes Database: survey_id 5119
+Gabion River EPA,,86956,CO,2010-02-16,FDIS Database: fshclctn_id 150708
+Gabion River EPA,,86966,CO,2010-08-03,FDIS Database: fshclctn_id 150716
+Gabion River EPA,,177188,PK,1989-01-01,FISS Database: survey_id 110207
+Gabion River EPA,,177184,SK,1989-01-01,FISS Database: survey_id 110206
+Hauer Creek (aka Tete),2007,173520,CH,1980-01-01,FISS Database: survey_id 71361
+Hauer Creek (aka Tete),2007,231690,CH,1997-10-01,FISS Database: survey_id 183563
+Hauer Creek (aka Tete),2007,231692,CH,1997-10-01,FISS Database: survey_id 183567
+John Hart,1947,165091,CH,2019-03-25,FDIS Database: fshclctn_id 233230
+John Hart,1947,165092,CM,2019-03-25,FDIS Database: fshclctn_id 233230
+John Hart,1947,194130,CO,1992-01-01,FISS Database: survey_id 161607
+John Hart,1947,14782,CO,2007-06-12,FDIS Database: fshclctn_id 102176
+John Hart,1947,146886,CO,2010-10-07,FDIS Database: fshclctn_id 161465
+John Hart,1947,126875,CO,2013-08-22,FDIS Database: fshclctn_id 203299
+John Hart,1947,193900,CO,,FISS Database: survey_id 161593
+John Hart,1947,260399,ST,1988-09-13,Releases Database: release_id 23443
+John Hart,1947,254983,ST,1989-09-14,Releases Database: release_id 23443
+John Hart,1947,298290,ST,1990-09-17,Releases Database: release_id 23443
+John Hart,1947,258046,ST,1991-10-18,Releases Database: release_id 23443
+John Hart,1947,279985,ST,1991-11-07,Releases Database: release_id 23443
+John Hart,1947,194054,ST,1992-01-01,FISS Database: survey_id 89792
+John Hart,1947,194092,ST,1992-01-01,FISS Database: survey_id 65733
+John Hart,1947,262753,ST,1992-10-16,Releases Database: release_id 23443
+John Hart,1947,298360,ST,1992-10-16,Releases Database: release_id 23443
+John Hart,1947,262154,ST,1993-09-02,Releases Database: release_id 23443
+John Hart,1947,298323,ST,1993-09-23,Releases Database: release_id 23443
+John Hart,1947,298997,ST,1994-08-18,Releases Database: release_id 23443
+John Hart,1947,263588,ST,1994-09-07,Releases Database: release_id 23443
+John Hart,1947,195584,ST,1995-01-01,FISS Database: survey_id 96452
+John Hart,1947,306923,ST,1995-08-14,Releases Database: release_id 23443
+John Hart,1947,314734,ST,1996-08-21,Releases Database: release_id 23443
+John Hart,1947,274345,ST,1997-10-09,Releases Database: release_id 23443
+John Hart,1947,261811,ST,1998-08-12,Releases Database: release_id 23443
+John Hart,1947,272248,ST,2003-04-16,Releases Database: release_id 23410
+Kenny Dam,1954,197644,ST,1982-04-01,FISS Database: survey_id 103891
+Kenny Dam,1954,197720,ST,,FISS Database: survey_id 149969
+Kenny Dam,1954,221283,ST,,FISS Database: survey_id 149902
+Kokish River,2014,194618,CO,1988-01-01,FISS Database: survey_id 74643
+Kokish River,2014,194620,CO,1995-01-01,FISS Database: survey_id 126721
+Kokish River,2014,194632,CO,1995-01-01,FISS Database: survey_id 126724
+Kokish River,2014,92128,CO,2008-07-27,FDIS Database: fshclctn_id 154725
+Kokish River,2014,92132,CO,2008-07-28,FDIS Database: fshclctn_id 154726
+Kokish River,2014,92142,CO,2008-08-10,FDIS Database: fshclctn_id 154728
+Kokish River,2014,92138,CO,2008-08-10,FDIS Database: fshclctn_id 154727
+Kokish River,2014,557,SK,1980-05-24,BC Lakes Database: survey_id 573
+Kokish River,2014,558,ST,1980-05-24,BC Lakes Database: survey_id 573
+Kokish River,2014,194642,ST,1995-01-01,FISS Database: survey_id 65823
+Kokish River,2014,205703,ST,1995-01-01,FISS Database: survey_id 66405
+Kokish River,2014,194630,ST,,FISS Database: survey_id 90175
+Kootenay Canal,1975,7768,ST,1952-06-23,BC Lakes Database: survey_id 4161
+Kootenay Canal,1975,7736,ST,1952-07-03,BC Lakes Database: survey_id 4139
+Kootenay Canal,1975,253794,ST,1956-09-10,REHAB Database: rehab_id 141
+Kootenay Canal,1975,7662,ST,1958-08-31,BC Lakes Database: survey_id 4066
+Kootenay Canal,1975,253808,ST,1972-09-30,REHAB Database: rehab_id 145
+Kootenay Canal,1975,3171,ST,1974-08-14,BC Lakes Database: survey_id 2005
+Kwoiek Creek,2013,215900,ST,1991-01-01,FISS Database: survey_id 103030
+Ladore,1956,194130,CO,1992-01-01,FISS Database: survey_id 161607
+Ladore,1956,126875,CO,2013-08-22,FDIS Database: fshclctn_id 203299
+Ladore,1956,260399,ST,1988-09-13,Releases Database: release_id 23443
+Ladore,1956,254983,ST,1989-09-14,Releases Database: release_id 23443
+Ladore,1956,298290,ST,1990-09-17,Releases Database: release_id 23443
+Ladore,1956,258046,ST,1991-10-18,Releases Database: release_id 23443
+Ladore,1956,279985,ST,1991-11-07,Releases Database: release_id 23443
+Ladore,1956,194054,ST,1992-01-01,FISS Database: survey_id 89792
+Ladore,1956,194092,ST,1992-01-01,FISS Database: survey_id 65733
+Ladore,1956,262753,ST,1992-10-16,Releases Database: release_id 23443
+Ladore,1956,298360,ST,1992-10-16,Releases Database: release_id 23443
+Ladore,1956,262154,ST,1993-09-02,Releases Database: release_id 23443
+Ladore,1956,298323,ST,1993-09-23,Releases Database: release_id 23443
+Ladore,1956,298997,ST,1994-08-18,Releases Database: release_id 23443
+Ladore,1956,263588,ST,1994-09-07,Releases Database: release_id 23443
+Ladore,1956,195584,ST,1995-01-01,FISS Database: survey_id 96452
+Ladore,1956,306923,ST,1995-08-14,Releases Database: release_id 23443
+Ladore,1956,314734,ST,1996-08-21,Releases Database: release_id 23443
+Ladore,1956,274345,ST,1997-10-09,Releases Database: release_id 23443
+Ladore,1956,261811,ST,1998-08-12,Releases Database: release_id 23443
+Ladore,1956,272248,ST,2003-04-16,Releases Database: release_id 23410
+Lake Buntzen,1951,198162,ST,1995-01-01,FISS Database: survey_id 144574
+Lamont Creek (Upper Stave Energy),2010,139442,CO,2015-07-29,FDIS Database: fshclctn_id 157879
+Lower Clowhom,2009,35074,CO,2002-03-13,FDIS Database: fshclctn_id 63753
+Mamquam Hydro,1996,191937,ST,1995-01-01,FISS Database: survey_id 145458
+Mamquam Hydro,1996,191934,ST,1995-01-01,FISS Database: survey_id 143729
+Mamquam Hydro,1996,191931,ST,1995-01-01,FISS Database: survey_id 167598
+McNair Creek Hydro,2004,249779,CM,1980-07-28,"RAB Database: survey_id 176155, date 28-JUL-80"
+McNair Creek Hydro,2004,249780,CO,1980-07-28,"RAB Database: survey_id 176155, date 28-JUL-80"
+McNair Creek Hydro,2004,194399,CO,1995-01-01,FISS Database: survey_id 143906
+McNair Creek Hydro,2004,17888,CO,2008-07-16,FDIS Database: fshclctn_id 106333
+McNair Creek Hydro,2004,204246,CO,,FISS Database: survey_id 104202
+McNair Creek Hydro,2004,197349,ST,1995-01-01,FISS Database: survey_id 104203
+McNair Creek Hydro,2004,17889,ST,2008-07-16,FDIS Database: fshclctn_id 106333
+Miller Creek,2003,239671,CO,2006-01-01,FISS Database: survey_id 7503091
+Montrose Creek,2010,95612,CH,2010-10-27,FDIS Database: fshclctn_id 170604
+Montrose Creek,2010,95640,CH,2010-12-10,FDIS Database: fshclctn_id 170632
+Montrose Creek,2010,95641,CH,2011-01-10,FDIS Database: fshclctn_id 170633
+Montrose Creek,2010,54288,CH,2011-05-03,FDIS Database: fshclctn_id 127606
+Montrose Creek,2010,95601,CO,2010-10-01,FDIS Database: fshclctn_id 170593
+Montrose Creek,2010,165806,CO,2017-06-06,FDIS Database: fshclctn_id 234239
+Montrose Creek,2010,165791,CO,2017-09-27,FDIS Database: fshclctn_id 234226
+Montrose Creek,2010,166544,CO,2018-11-13,FDIS Database: fshclctn_id 234758
+Montrose Creek,2010,166545,CO,2018-11-13,FDIS Database: fshclctn_id 234759
+Northwest Stave River,2013,139442,CO,2015-07-29,FDIS Database: fshclctn_id 157879
+Peace Canyon,1980,195848,CO,1947-01-01,FISS Database: survey_id 152173
+Peace Canyon,1980,195856,SK,1995-01-01,FISS Database: survey_id 66276
+Peace Canyon,1980,195858,SK,,FISS Database: survey_id 76161
+Peace Canyon,1980,195860,ST,1947-01-01,FISS Database: survey_id 152173
+Revelstoke,1984,160327,CH,1999-01-01,FISS Database: survey_id 281413
+Revelstoke,1984,160326,CH,1999-01-01,FISS Database: survey_id 281410
+Revelstoke,1984,160329,CM,1999-01-01,FISS Database: survey_id 281413
+Revelstoke,1984,160328,CM,1999-01-01,FISS Database: survey_id 281410
+Revelstoke,1984,160330,CO,1999-01-01,FISS Database: survey_id 281410
+Revelstoke,1984,160331,CO,1999-01-01,FISS Database: survey_id 281413
+Ruskin,1930,193843,CM,1986-01-01,FISS Database: survey_id 143866
+Ruskin,1930,194010,CM,1994-09-01,FISS Database: survey_id 155511
+Ruskin,1930,193845,CO,1986-01-01,FISS Database: survey_id 143866
+Ruskin,1930,194012,CO,1994-09-01,FISS Database: survey_id 155511
+Ruskin,1930,139442,CO,2015-07-29,FDIS Database: fshclctn_id 157879
+Ruskin,1930,194027,SK,1994-09-01,FISS Database: survey_id 155511
+Ruskin,1930,198589,SK,1994-09-01,FISS Database: survey_id 155481
+Ruskin,1930,256007,ST,1983-05-04,Releases Database: release_id 23503
+Ruskin,1930,287385,ST,1984-05-14,Releases Database: release_id 23520
+Ruskin,1930,286938,ST,1984-05-17,Releases Database: release_id 23520
+Ruskin,1930,286935,ST,1984-05-18,Releases Database: release_id 23520
+Ruskin,1930,299241,ST,1985-08-13,Releases Database: release_id 23503
+Ruskin,1930,282970,ST,1986-05-30,Releases Database: release_id 23520
+Ruskin,1930,304313,ST,1986-07-25,Releases Database: release_id 23503
+Ruskin,1930,304307,ST,1987-07-17,Releases Database: release_id 23503
+Ruskin,1930,293100,ST,1987-08-18,Releases Database: release_id 23503
+Ruskin,1930,264429,ST,1988-08-23,Releases Database: release_id 23520
+Ruskin,1930,198544,ST,1989-03-01,FISS Database: survey_id 145943
+Ruskin,1930,254662,ST,1989-07-12,Releases Database: release_id 23503
+Ruskin,1930,258325,ST,1990-09-18,Releases Database: release_id 23520
+Ruskin,1930,262160,ST,1992-09-09,Releases Database: release_id 23520
+Ruskin,1930,258690,ST,1993-06-29,Releases Database: release_id 23503
+Ruskin,1930,198546,ST,1994-09-01,FISS Database: survey_id 153391
+Ruskin,1930,189088,ST,1995-01-01,FISS Database: survey_id 143590
+Ruskin,1930,281754,ST,1996-07-05,Releases Database: release_id 23503
+Sechelt Creek (Salmon Inslet),1997,197503,CM,1976-01-01,FISS Database: survey_id 104057
+Sechelt Creek (Salmon Inslet),1997,197505,CO,1976-01-01,FISS Database: survey_id 104056
+Sechelt Creek (Salmon Inslet),1997,167697,CO,2018-09-04,FDIS Database: fshclctn_id 235634
+Sechelt Creek (Salmon Inslet),1997,197507,PK,1976-01-01,FISS Database: survey_id 104058
+Sechelt Creek (Salmon Inslet),1997,197509,ST,1976-01-01,FISS Database: survey_id 104055
+Sechelt Creek (Salmon Inslet),1997,210545,ST,1983-11-01,FISS Database: survey_id 115196
+Sechelt Creek (Salmon Inslet),1997,138363,ST,2015-07-14,FDIS Database: fshclctn_id 157701
+Sechelt Creek (Salmon Inslet),1997,138359,ST,2015-07-14,FDIS Database: fshclctn_id 157700
+Sechelt Creek (Salmon Inslet),1997,167698,ST,2018-09-04,FDIS Database: fshclctn_id 235634
+Sechelt Creek (Salmon Inslet),1997,167627,ST,2018-10-15,FDIS Database: fshclctn_id 235581
+Site C Dam,~2024,195848,CO,1947-01-01,FISS Database: survey_id 152173
+Site C Dam,~2024,195856,SK,1995-01-01,FISS Database: survey_id 66276
+Site C Dam,~2024,195858,SK,,FISS Database: survey_id 76161
+Site C Dam,~2024,195860,ST,1947-01-01,FISS Database: survey_id 152173
+South Slocan,1928,7768,ST,1952-06-23,BC Lakes Database: survey_id 4161
+South Slocan,1928,7736,ST,1952-07-03,BC Lakes Database: survey_id 4139
+South Slocan,1928,253794,ST,1956-09-10,REHAB Database: rehab_id 141
+South Slocan,1928,7662,ST,1958-08-31,BC Lakes Database: survey_id 4066
+South Slocan,1928,253808,ST,1972-09-30,REHAB Database: rehab_id 145
+South Slocan,1928,3171,ST,1974-08-14,BC Lakes Database: survey_id 2005
+South Sutton Creek,2005,156162,CH,1979-01-01,FISS Database: survey_id 104528
+South Sutton Creek,2005,156164,CO,1979-01-01,FISS Database: survey_id 107663
+South Sutton Creek,2005,156166,SK,1979-01-01,FISS Database: survey_id 107662
+South Sutton Creek,2005,238544,ST,1999-01-01,FISS Database: survey_id 7501528
+Stave Falls,1912,194010,CM,1994-09-01,FISS Database: survey_id 155511
+Stave Falls,1912,194012,CO,1994-09-01,FISS Database: survey_id 155511
+Stave Falls,1912,139442,CO,2015-07-29,FDIS Database: fshclctn_id 157879
+Stave Falls,1912,194027,SK,1994-09-01,FISS Database: survey_id 155511
+Stave Falls,1912,198589,SK,1994-09-01,FISS Database: survey_id 155481
+Stave Falls,1912,256007,ST,1983-05-04,Releases Database: release_id 23503
+Stave Falls,1912,189088,ST,1995-01-01,FISS Database: survey_id 143590
+Strathcona,1958,194130,CO,1992-01-01,FISS Database: survey_id 161607
+Strathcona,1958,126875,CO,2013-08-22,FDIS Database: fshclctn_id 203299
+Tipella Creek (Kwalsa Energy),2010,196849,CH,1985-01-01,FISS Database: survey_id 92283
+Tipella Creek (Kwalsa Energy),2010,196851,CM,1985-01-01,FISS Database: survey_id 79160
+Tipella Creek (Kwalsa Energy),2010,196853,CO,1985-01-01,FISS Database: survey_id 92284
+Tipella Creek (Kwalsa Energy),2010,196855,PK,1985-01-01,FISS Database: survey_id 79161
+Tipella Creek (Kwalsa Energy),2010,196858,SK,1985-01-01,FISS Database: survey_id 79162
+Tipella Creek (Kwalsa Energy),2010,196860,ST,1987-01-01,FISS Database: survey_id 92002
+Tretheway Creek,2015,165893,CO,2017-08-23,FDIS Database: fshclctn_id 234322
+Tretheway Creek,2015,168669,CO,2018-08-22,FDIS Database: fshclctn_id 236035
+Upper Bonnington,1907,7768,ST,1952-06-23,BC Lakes Database: survey_id 4161
+Upper Bonnington,1907,7736,ST,1952-07-03,BC Lakes Database: survey_id 4139
+Upper Bonnington,1907,253794,ST,1956-09-10,REHAB Database: rehab_id 141
+Upper Bonnington,1907,7662,ST,1958-08-31,BC Lakes Database: survey_id 4066
+Upper Bonnington,1907,253808,ST,1972-09-30,REHAB Database: rehab_id 145
+Upper Bonnington,1907,3171,ST,1974-08-14,BC Lakes Database: survey_id 2005
+Upper Lillooet River,2017,204275,CH,1987-01-01,FISS Database: survey_id 97501
+Upper Lillooet River,2017,204276,CO,,FISS Database: survey_id 97901
+Upper Stave River (Upper Stave Energy),2010,139442,CO,2015-07-29,FDIS Database: fshclctn_id 157879
+Wahleach,1952,138241,PK,2016-04-11,FDIS Database: fshclctn_id 224153
+Winchie Creek,2018,156339,CH,1993-01-01,FISS Database: survey_id 60075
+Winchie Creek,2018,204801,CH,1995-09-01,FISS Database: survey_id 105039
+Winchie Creek,2018,238569,CH,1999-01-01,FISS Database: survey_id 7501446
+Winchie Creek,2018,238555,CH,1999-01-01,FISS Database: survey_id 7501550
+Winchie Creek,2018,238605,CH,1999-01-01,FISS Database: survey_id 7501546
+Winchie Creek,2018,156341,CO,1993-01-01,FISS Database: survey_id 107570
+Winchie Creek,2018,156422,CO,1993-01-01,FISS Database: survey_id 60086
+Winchie Creek,2018,156397,CO,1993-01-01,FISS Database: survey_id 60083
+Winchie Creek,2018,205511,CO,1995-01-01,FISS Database: survey_id 107440
+Winchie Creek,2018,156361,CO,1995-09-01,FISS Database: survey_id 107441
+Winchie Creek,2018,156415,CO,1995-09-01,FISS Database: survey_id 73536
+Winchie Creek,2018,156405,CO,1995-09-01,FISS Database: survey_id 74997
+Winchie Creek,2018,238557,CO,1999-01-01,FISS Database: survey_id 7501548
+Winchie Creek,2018,238556,CO,1999-01-01,FISS Database: survey_id 7501447
+Winchie Creek,2018,238606,CO,1999-01-01,FISS Database: survey_id 7501544
+Winchie Creek,2018,238570,CO,1999-01-01,FISS Database: survey_id 7501445
+Winchie Creek,2018,156359,CO,,FISS Database: survey_id 74996
+Winchie Creek,2018,156365,SK,1979-01-01,FISS Database: survey_id 88560
+Winchie Creek,2018,195551,SK,1979-01-01,FISS Database: survey_id 88791
+Winchie Creek,2018,156367,SK,1979-01-01,FISS Database: survey_id 116919
+Winchie Creek,2018,204798,SK,1995-09-01,FISS Database: survey_id 105825
+Winchie Creek,2018,204800,SK,1995-09-01,FISS Database: survey_id 105623
+Winchie Creek,2018,156411,SK,1995-09-01,FISS Database: survey_id 105657
+Winchie Creek,2018,238567,SK,1999-01-01,FISS Database: survey_id 7501442
+Winchie Creek,2018,238675,SK,1999-01-01,FISS Database: survey_id 7501675
+Winchie Creek,2018,238561,SK,1999-01-01,FISS Database: survey_id 7501532
+Winchie Creek,2018,156389,ST,1995-01-01,FISS Database: survey_id 90267
+Winchie Creek,2018,238573,ST,1999-01-01,FISS Database: survey_id 7501487
+Winchie Creek,2018,238562,ST,1999-01-01,FISS Database: survey_id 7501551
+Winchie Creek,2018,238608,ST,1999-01-01,FISS Database: survey_id 7501547
+Winchie Creek,2018,156413,ST,,FISS Database: survey_id 89923
+Zeballos Lake,2009,159203,ST,1994-01-01,FISS Database: survey_id 60520

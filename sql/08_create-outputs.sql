@@ -1,7 +1,7 @@
 -- Now that we are done with matching points to streams,
 -- create the output table
 
-DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_events;
+DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_events CASCADE;
 
 CREATE TABLE whse_fish.fiss_fish_obsrvtn_events
 ( fish_obsrvtn_pnt_distinct_id integer,
