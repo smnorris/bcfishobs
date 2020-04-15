@@ -70,7 +70,7 @@ $ ./02_process.sh
 
 ## Output data
 
-Three new tables are created by the script (in addition to the downloaded data):
+Three new tables and one view are created by the script (in addition to the downloaded data):
 
 #### `whse_fish.fiss_fish_obsrvtn_pnt_distinct`
 
@@ -141,6 +141,43 @@ Distinct observation points that were not referenced to the stream network (for 
  geom                          | geometry(Point, 3005)
 Indexes:
     "fish_obsrvtn_unmatched_pkey" PRIMARY KEY, btree (fish_obsrvtn_distinct_id)
+```
+
+#### `whse_fish.fiss_fish_obsrvtn_events_vw`
+A materialized view showing all observations that are successfully matched to streams (not just distinct locations) plus commonly used columns.
+Geometries are located on the stream to which the observation is matched.
+Useful for visualization and for easier queries.
+
+```
+          Column           |         Type
+---------------------------+----------------------
+ fish_observation_point_id | integer
+ linear_feature_id         | integer
+ wscode_ltree              | ltree
+ localcode_ltree           | ltree
+ blue_line_key             | integer
+ waterbody_key             | integer
+ downstream_route_measure  | double precision
+ distance_to_stream        | double precision
+ match_type                | text
+ watershed_group_code      | character varying(4)
+ species_code              | character varying
+ agency_id                 | character varying
+ observation_date          | date
+ agency_name               | character varying
+ source                    | character varying
+ source_ref                | character varying
+ geom                      | geometry(Point,3005)
+Indexes:
+    "fiss_fish_obsrvtn_events_vw_blue_line_key_idx" btree (blue_line_key)
+    "fiss_fish_obsrvtn_events_vw_geom_idx" gist (geom)
+    "fiss_fish_obsrvtn_events_vw_linear_feature_id_idx" btree (linear_feature_id)
+    "fiss_fish_obsrvtn_events_vw_localcode_ltree_idx" btree (localcode_ltree)
+    "fiss_fish_obsrvtn_events_vw_localcode_ltree_idx1" gist (localcode_ltree)
+    "fiss_fish_obsrvtn_events_vw_waterbody_key_idx" btree (waterbody_key)
+    "fiss_fish_obsrvtn_events_vw_watershed_group_code_idx" btree (watershed_group_code)
+    "fiss_fish_obsrvtn_events_vw_wscode_ltree_idx" btree (wscode_ltree)
+    "fiss_fish_obsrvtn_events_vw_wscode_ltree_idx1" gist (wscode_ltree)
 ```
 
 ## QA results
