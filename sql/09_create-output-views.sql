@@ -1,6 +1,6 @@
 -- for convenience, create a view that holds all observation
 -- events (not just distinct locations), commonly queried columns, and the
--- location that the observation is referenced to - as a point geometry
+-- location that the observation is referenced to - as a point geometry with Z and M values
 
 DROP MATERIALIZED VIEW IF EXISTS whse_fish.fiss_fish_obsrvtn_events_vw CASCADE;
 
@@ -18,17 +18,10 @@ WITH all_obs AS
    e.distance_to_stream,
    e.match_type,
    e.watershed_group_code,
-   ST_Force2D(
-    ST_LineInterpolatePoint(
-     ST_LineMerge(s.geom),
-     ROUND(
-       CAST(
-          (e.downstream_route_measure -
-             s.downstream_route_measure) / s.length_metre AS NUMERIC
-        ),
-       5)
-     )
-    )::geometry(Point, 3005) AS geom
+   (ST_Dump(
+      ST_LocateAlong(s.geom, e.downstream_route_measure)
+      )
+   ).geom::geometry(PointZM, 3005) AS geom
 FROM whse_fish.fiss_fish_obsrvtn_events e
 INNER JOIN whse_basemapping.fwa_stream_networks_sp s
 ON e.linear_feature_id = s.linear_feature_id)

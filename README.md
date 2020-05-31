@@ -146,28 +146,28 @@ Indexes:
 #### `whse_fish.fiss_fish_obsrvtn_events_vw`
 A materialized view showing all observations that are successfully matched to streams (not just distinct locations) plus commonly used columns.
 Geometries are located on the stream to which the observation is matched.
-Useful for visualization and for easier queries.
+Useful for visualization and for most queries.
 
 ```
-          Column           |         Type
----------------------------+----------------------
- fish_observation_point_id | integer
- linear_feature_id         | integer
- wscode_ltree              | ltree
- localcode_ltree           | ltree
- blue_line_key             | integer
- waterbody_key             | integer
- downstream_route_measure  | double precision
- distance_to_stream        | double precision
- match_type                | text
- watershed_group_code      | character varying(4)
- species_code              | character varying
- agency_id                 | character varying
- observation_date          | date
- agency_name               | character varying
- source                    | character varying
- source_ref                | character varying
- geom                      | geometry(Point,3005)
+          Column           |          Type          | Collation | Nullable | Default
+---------------------------+------------------------+-----------+----------+---------
+ fish_observation_point_id | integer                |           |          |
+ linear_feature_id         | integer                |           |          |
+ wscode_ltree              | ltree                  |           |          |
+ localcode_ltree           | ltree                  |           |          |
+ blue_line_key             | integer                |           |          |
+ waterbody_key             | integer                |           |          |
+ downstream_route_measure  | double precision       |           |          |
+ distance_to_stream        | double precision       |           |          |
+ match_type                | text                   |           |          |
+ watershed_group_code      | character varying(4)   |           |          |
+ species_code              | character varying      |           |          |
+ agency_id                 | character varying      |           |          |
+ observation_date          | date                   |           |          |
+ agency_name               | character varying      |           |          |
+ source                    | character varying      |           |          |
+ source_ref                | character varying      |           |          |
+ geom                      | geometry(PointZM,3005) |           |          |
 Indexes:
     "fiss_fish_obsrvtn_events_vw_blue_line_key_idx" btree (blue_line_key)
     "fiss_fish_obsrvtn_events_vw_geom_idx" gist (geom)
@@ -222,7 +222,7 @@ What is the slope (percent) of the stream at the locations of all distinct Coho 
 
 ```
 SELECT
-  e.fish_obsrvtn_distinct_id,
+  e.fish_obsrvtn_pnt_distinct_id,
   Round((fwa_streamslope(e.blue_line_key, e.downstream_route_measure) * 100)::numeric, 2) AS slope
 FROM whse_fish.fiss_fish_obsrvtn_events e
 INNER JOIN whse_basemapping.fwa_stream_networks_sp s
