@@ -275,7 +275,7 @@ See [`bcfishobs_traces`](https://github.com/smnorris/bcfishobs_traces)
 
 ### Example 4
 
-What are the order, elevation and gradient of all Greyling observations in the Parsnip watershed group?
+What are the order, elevation and gradient of all Arctic Grayling observations in the Parsnip watershed group?
 
 ```
 SELECT
