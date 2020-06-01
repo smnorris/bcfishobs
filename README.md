@@ -35,7 +35,7 @@ This logic is based on the assumptions:
 
 ## Requirements
 
-- PostgreSQL/PostGIS (tested with v10.4/2.4.4+)
+- PostgreSQL/PostGIS (requires PostgreSQL >=12.0, tested with v12.2, PostGIS 3.0.1)
 - a FWA database created by [fwapg](https://github.com/smnorris/bcdata)
 - GDAL
 - Python (>=3.6)
@@ -99,6 +99,7 @@ Indexes:
 
 
 #### `whse_fish.fiss_fish_obsrvtn_events`
+
 Distinct observation points stored as linear events on `whse_basemapping.fwa_stream_networks_sp`
 
 ```
@@ -129,6 +130,7 @@ Indexes:
 
 
 #### `whse_fish.fiss_fish_obsrvtn_unmatched`
+
 Distinct observation points that were not referenced to the stream network (for QA)
 
 ```
@@ -144,9 +146,10 @@ Indexes:
 ```
 
 #### `whse_fish.fiss_fish_obsrvtn_events_vw`
+
 A materialized view showing all observations that are successfully matched to streams (not just distinct locations) plus commonly used columns.
 Geometries are located on the stream to which the observation is matched.
-Useful for visualization and for most queries.
+This is probably the table to use for most queries.
 
 ```
           Column           |          Type          | Collation | Nullable | Default
@@ -184,7 +187,7 @@ Indexes:
 
 On completion, the script runs the query `sql/qa_match_report.sql`, reporting on the number and type of matches made. Results are written to csv file `qa_match_report.csv`.
 
-[Current result (Feb 28, 2020)](qa_match_report.csv)
+[Current result (May 31, 2020)](qa_match_report.csv)
 
 This result can be compared with the output of `sql/qa_total_records`, the number of total observations should be the same in each query.
 
@@ -194,56 +197,72 @@ With the observations now linked to the Freswater Atlas, we can write queries to
 
 ### Example 1
 
-List all species observed on the Cowichan River (`blue_line_key = 354155148`), downstream of Skutz Falls (`downstream_route_meaure = 34180`). Note the use of [`unnest`](https://www.postgresql.org/docs/10/static/functions-array.html#ARRAY-FUNCTIONS-TABLE) to find distinct species:
+List all species observed on the Cowichan River (`blue_line_key = 354155148`), downstream of Skutz Falls (`downstream_route_meaure = 34180`).
 
 ```
-SELECT
-    array_agg(distinct_spp) AS species_codes
-FROM (
-    SELECT DISTINCT unnest(species_codes) AS distinct_spp
-    FROM whse_fish.fiss_fish_obsrvtn_events
-    WHERE
-        blue_line_key = 354155148
-        AND downstream_route_measure < 34180
-    ORDER BY unnest(species_codes)
-) AS dist_spp;
+SELECT DISTINCT species_code
+FROM whse_fish.fiss_fish_obsrvtn_events_vw
+WHERE blue_line_key = 354155148 AND
+downstream_route_measure < 34180
+ORDER BY species_code;
 
-                               species_codes
-----------------------------------------------------------------------------
- {ACT,AS,BNH,BT,C,CAL,CAS,CH,CM,CO,CT,DV,EB,GB,KO,L,MARFAL,RB,SA,ST,TR,TSB}
-(1 row)
-
+ species_code
+--------------
+ ACT
+ AS
+ BNH
+ BT
+ C
+ CAL
+ CAS
+ CH
+ CM
+ CO
+ CT
+ DV
+ EB
+ GB
+ KO
+ L
+ MARFAL
+ RB
+ SA
+ SB
+ ST
+ TR
+ TSB
 ```
 
 
 ### Example 2
 
-What is the slope (percent) of the stream at the locations of all distinct Coho observations in `COWN` watershed group (on single line streams)?
+What is the slope (percent) of the stream at the locations of all *distinct* Coho observation locations in `COWN` watershed group (on single line streams)?
 
 ```
-SELECT
-  e.fish_obsrvtn_pnt_distinct_id,
-  Round((fwa_streamslope(e.blue_line_key, e.downstream_route_measure) * 100)::numeric, 2) AS slope
-FROM whse_fish.fiss_fish_obsrvtn_events e
+SELECT DISTINCT ON (e.linear_feature_id, e.downstream_route_measure)
+  e.fish_observation_point_id,
+  s.gradient
+FROM whse_fish.fiss_fish_obsrvtn_events_vw e
 INNER JOIN whse_basemapping.fwa_stream_networks_sp s
 ON e.linear_feature_id = s.linear_feature_id
 INNER JOIN whse_basemapping.fwa_edge_type_codes ec
 ON s.edge_type = ec.edge_type
-WHERE e.species_codes @> ARRAY['CO']
+WHERE e.species_code = 'CO'
 AND e.watershed_group_code = 'COWN'
-AND ec.edge_type = 1000;
+AND ec.edge_type = 1000
+ORDER BY e.linear_feature_id, e.downstream_route_measure, fish_observation_point_id;
 
-fish_obsrvtn_distinct_id | slope
---------------------------+-------
-                    30728 |  0.00
-                    30128 | 41.75
-                    31129 |  2.31
-                    29762 |  0.00
-                    31350 | 20.49
-                    32586 |  3.64
-                    32667 |  0.00
-                    29804 |  0.00
-                    29007 |  0.40
+ fish_observation_point_id | gradient
+---------------------------+----------
+                    188045 |   0.0109
+                    187998 |   0.0015
+                    187872 |        0
+                    201002 |   0.1169
+                    230155 |   0.0448
+                    230838 |   0.0448
+                    230194 |   0.0203
+                    201004 |   0.0399
+                    230353 |   0.0399
 ...
 ```
 
@@ -254,3 +273,28 @@ Trace downstream from fish observations to the ocean, generating implied habitat
 
 See [`bcfishobs_traces`](https://github.com/smnorris/bcfishobs_traces)
 
+### Example 4
+
+What are the order, elevation and gradient of all Greyling observations in the Parsnip watershed group?
+
+```
+SELECT
+  fish_observation_point_id,
+  s.gradient,
+  s.stream_order,
+  round((ST_Z((ST_Dump(ST_LocateAlong(s.geom, e.downstream_route_measure))).geom))::numeric) as elevation
+FROM whse_fish.fiss_fish_obsrvtn_events_vw e
+INNER JOIN whse_basemapping.fwa_stream_networks_sp s
+ON e.linear_feature_id = s.linear_feature_id
+WHERE e.species_code = 'GR'
+AND e.watershed_group_code = 'PARS';
+
+fish_observation_point_id | gradient | stream_order | elevation
+---------------------------+----------+--------------+-----------
+                     52045 |   0.0025 |            3 |       753
+                     67443 |        0 |            6 |       694
+                    175139 |   0.0005 |            2 |       728
+                    230075 |        0 |            1 |       735
+                    243190 |   0.0585 |            3 |      1097
+...
+```
