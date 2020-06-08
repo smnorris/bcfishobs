@@ -10,10 +10,9 @@ bcdata bc2pg WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP \
 
 # load 50k waterbody table & species table (not published on DataBC Catalogue)
 wget -N https://hillcrestgeo.ca/outgoing/whse_fish/whse_fish.wdic_waterbodies.csv.zip
-wget -N https://hillcrestgeo.ca/outgoing/whse_fish/species_cd.csv.zip
+wget -N https://raw.githubusercontent.com/poissonconsulting/fishbc/master/data-raw/whse_fish_species_cd/whse_fish_species_cd.csv
 
 unzip -qjun whse_fish.wdic_waterbodies.csv.zip
-unzip -qjun species_cd.csv.zip
 
 ogr2ogr \
   -f PostgreSQL \
@@ -31,8 +30,7 @@ ogr2ogr \
   -lco SCHEMA=whse_fish \
   -nln species_cd \
   -nlt NONE \
-  species_cd.csv
+  whse_fish_species_cd.csv
 
 rm whse_fish.wdic_waterbodies.csv
-rm species_cd.csv
 
