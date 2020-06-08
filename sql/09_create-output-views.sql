@@ -37,6 +37,7 @@ SELECT
   a.distance_to_stream,
   a.match_type,
   a.watershed_group_code,
+  sp.species_id,
   b.species_code,
   b.agency_id,
   b.observation_date,
@@ -46,7 +47,8 @@ SELECT
   a.geom
 FROM all_obs a
 INNER JOIN whse_fish.fiss_fish_obsrvtn_pnt_sp  b
-ON a.fish_observation_point_id = b.fish_observation_point_id;
+ON a.fish_observation_point_id = b.fish_observation_point_id
+INNER JOIN whse_fish.species_cd sp ON b.species_code = sp.code;
 
 -- create indexes
 CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events_vw (linear_feature_id);

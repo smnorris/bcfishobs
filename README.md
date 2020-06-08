@@ -89,6 +89,7 @@ Geometries are located on the stream to which the observation is matched.
  distance_to_stream        | double precision       |           |          |
  match_type                | text                   |           |          |
  watershed_group_code      | character varying(4)   |           |          |
+ species_id                | integer                |           |          |
  species_code              | character varying      |           |          |
  agency_id                 | character varying      |           |          |
  observation_date          | date                   |           |          |
@@ -124,7 +125,7 @@ Mostly distinct locations of fish observations.
  wbody_id                      | double precision
  waterbody_type                | character varying
  new_watershed_code            | character varying
- species_codes                 | text[]
+ species_ids                 | integer[]
  watershed_group_code          | text
  geom                          | geometry(Point, 3005)
 
@@ -151,7 +152,7 @@ Indexes:
  downstream_route_measure     | double precision
  watershed_group_code         | character varying(4)
  obs_ids                      | integer[]
- species_codes                | text[]
+ species_ids                  | integer[]
  maximal_species              | text[]
  distance_to_stream           | double precision
  match_type                   | text
@@ -175,7 +176,7 @@ Points in `whse_fish.fiss_fish_obsrvtn_pnt_distinct` that were not referenced to
 -------------------------------+---------------------
  fish_obsrvtn_pnt_distinct_id  | bigint
  obs_ids                       | integer[]
- species_codes                 | character varying[]
+ species_ids                   | integer[]
  distance_to_stream            | double precision
  geom                          | geometry(Point, 3005)
 Indexes:

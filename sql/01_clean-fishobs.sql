@@ -22,7 +22,7 @@ CREATE TABLE whse_fish.fiss_fish_obsrvtn_pnt_distinct
  wbody_id                 integer             ,
  waterbody_type           character varying   ,
  new_watershed_code       character varying   ,
- species_codes            character varying[] ,
+ species_ids              integer[]           ,
  watershed_group_code     text                ,
  geom                     geometry(Point, 3005)
 );
@@ -37,7 +37,7 @@ INSERT INTO whse_fish.fiss_fish_obsrvtn_pnt_distinct
   wbody_id             ,
   waterbody_type       ,
   new_watershed_code   ,
-  species_codes        ,
+  species_ids          ,
   watershed_group_code ,
   geom
 )
@@ -49,12 +49,14 @@ SELECT
   o.wbody_id,
   o.waterbody_type,
   o.new_watershed_code,
-  array_agg(o.species_code) as species_codes,
+  array_agg(sp.species_id) as species_ids,
   wsg.watershed_group_code,
   (ST_Dump(o.geom)).geom
 FROM whse_fish.fiss_fish_obsrvtn_pnt_sp o
 LEFT OUTER JOIN whse_basemapping.fwa_watershed_groups_subdivided wsg
 ON ST_Intersects(o.geom, wsg.geom)
+INNER JOIN whse_fish.species_cd sp
+ON o.species_code = sp.code
 WHERE o.point_type_code = 'Observation'
 GROUP BY
   o.utm_zone,
@@ -68,3 +70,6 @@ GROUP BY
 
 CREATE INDEX fiss_fish_obsrvtn_distinct_wbidix ON whse_fish.fiss_fish_obsrvtn_pnt_distinct (wbody_id);
 CREATE INDEX fiss_fish_obsrvtn_distinct_gidx ON whse_fish.fiss_fish_obsrvtn_pnt_distinct USING gist (geom);
+-- index the species ids and observation ids for fast retreival
+CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_pnt_distinct USING GIST (obs_ids gist__intbig_ops);
+CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_pnt_distinct USING GIST (species_ids gist__intbig_ops);

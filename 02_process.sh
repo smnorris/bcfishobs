@@ -1,8 +1,14 @@
+#!/bin/bash
+set -euxo pipefail
+
 # run the queries
 
 # This script presumes:
 # 1. The PGHOST, PGUSER, PGDATABASE, PGPORT environment variables are set
 # 2. Password authentication for the DB is not required OR a .pgpass exists OR $PGPASSWORD is set
+
+# make sure the intarray extension is added
+psql -c "CREATE EXTENSION IF NOT EXISTS intarray"
 
 psql -f sql/01_clean-fishobs.sql
 psql -f sql/02_clean-wdic.sql

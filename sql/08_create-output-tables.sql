@@ -13,8 +13,8 @@ CREATE TABLE whse_fish.fiss_fish_obsrvtn_events
   downstream_route_measure double precision,
   watershed_group_code character varying(4),
   obs_ids integer[],
-  species_codes text[],
-  maximal_species text[],
+  species_ids integer[],
+  maximal_species integer[],
   distance_to_stream double precision,
   match_type text);
 
@@ -31,7 +31,7 @@ WITH popped AS
   p2.downstream_route_measure,
   s.watershed_group_code,
   unnest(dstnct.obs_ids) as obs_id,
-  unnest(dstnct.species_codes) as species_code
+  unnest(dstnct.species_ids) as species_id
 FROM whse_fish.fiss_fish_obsrvtn_events_prelim2 p2
 INNER JOIN whse_fish.fiss_fish_obsrvtn_pnt_distinct dstnct
 ON p2.fish_obsrvtn_pnt_distinct_id = dstnct.fish_obsrvtn_pnt_distinct_id
@@ -49,7 +49,7 @@ agg AS
   downstream_route_measure,
   watershed_group_code,
   array_agg(distinct obs_id) as obs_ids,
-  array_agg(distinct species_code) AS species_codes
+  array_agg(distinct species_id) AS species_ids
 FROM popped
 GROUP BY
   linear_feature_id,
@@ -72,7 +72,7 @@ INSERT INTO whse_fish.fiss_fish_obsrvtn_events
   downstream_route_measure,
   watershed_group_code,
   obs_ids,
-  species_codes,
+  species_ids,
   distance_to_stream,
   match_type)
 
@@ -89,7 +89,7 @@ SELECT DISTINCT ON (blue_line_key, downstream_route_measure)
   a.downstream_route_measure,
   a.watershed_group_code,
   a.obs_ids,
-  a.species_codes,
+  a.species_ids,
   p.distance_to_stream,
   p.match_type
  FROM agg a
@@ -116,7 +116,7 @@ CREATE TABLE whse_fish.fiss_fish_obsrvtn_unmatched AS
 SELECT DISTINCT ON (e1.fish_obsrvtn_pnt_distinct_id)
   e1.fish_obsrvtn_pnt_distinct_id,
   o.obs_ids,
-  o.species_codes,
+  o.species_ids,
   e1.distance_to_stream,
   o.geom
 FROM whse_fish.fiss_fish_obsrvtn_events_prelim1 e1

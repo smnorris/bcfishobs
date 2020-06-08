@@ -1,3 +1,6 @@
+#!/bin/bash
+set -euxo pipefail
+
 # Get data and load to postgres
 
 # This script presumes:
