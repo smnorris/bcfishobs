@@ -125,7 +125,7 @@ Mostly distinct locations of fish observations.
  wbody_id                      | double precision
  waterbody_type                | character varying
  new_watershed_code            | character varying
- species_ids                 | integer[]
+ species_ids                   | integer[]
  watershed_group_code          | text
  geom                          | geometry(Point, 3005)
 
