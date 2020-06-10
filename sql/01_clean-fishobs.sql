@@ -23,6 +23,7 @@ CREATE TABLE whse_fish.fiss_fish_obsrvtn_pnt_distinct
  waterbody_type           character varying   ,
  new_watershed_code       character varying   ,
  species_ids              integer[]           ,
+ species_codes            text[]              ,
  watershed_group_code     text                ,
  geom                     geometry(Point, 3005)
 );
@@ -38,6 +39,7 @@ INSERT INTO whse_fish.fiss_fish_obsrvtn_pnt_distinct
   waterbody_type       ,
   new_watershed_code   ,
   species_ids          ,
+  species_codes        ,
   watershed_group_code ,
   geom
 )
@@ -50,6 +52,7 @@ SELECT
   o.waterbody_type,
   o.new_watershed_code,
   array_agg(sp.species_id) as species_ids,
+  array_agg(o.species_code) as species_codes,
   wsg.watershed_group_code,
   (ST_Dump(o.geom)).geom
 FROM whse_fish.fiss_fish_obsrvtn_pnt_sp o
@@ -68,8 +71,8 @@ GROUP BY
   wsg.watershed_group_code,
   o.geom;
 
-CREATE INDEX fiss_fish_obsrvtn_distinct_wbidix ON whse_fish.fiss_fish_obsrvtn_pnt_distinct (wbody_id);
-CREATE INDEX fiss_fish_obsrvtn_distinct_gidx ON whse_fish.fiss_fish_obsrvtn_pnt_distinct USING gist (geom);
+CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_pnt_distinct (wbody_id);
+CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_pnt_distinct USING gist (geom);
 -- index the species ids and observation ids for fast retreival
 CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_pnt_distinct USING GIST (obs_ids gist__intbig_ops);
 CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_pnt_distinct USING GIST (species_ids gist__intbig_ops);

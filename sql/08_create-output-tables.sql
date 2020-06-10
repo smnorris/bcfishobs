@@ -13,6 +13,7 @@ CREATE TABLE whse_fish.fiss_fish_obsrvtn_events
   downstream_route_measure double precision,
   watershed_group_code character varying(4),
   obs_ids integer[],
+  species_codes text[],
   species_ids integer[],
   maximal_species integer[],
   distance_to_stream double precision,
@@ -31,6 +32,7 @@ WITH popped AS
   p2.downstream_route_measure,
   s.watershed_group_code,
   unnest(dstnct.obs_ids) as obs_id,
+  unnest(dstnct.species_codes) as species_code,
   unnest(dstnct.species_ids) as species_id
 FROM whse_fish.fiss_fish_obsrvtn_events_prelim2 p2
 INNER JOIN whse_fish.fiss_fish_obsrvtn_pnt_distinct dstnct
@@ -49,7 +51,8 @@ agg AS
   downstream_route_measure,
   watershed_group_code,
   array_agg(distinct obs_id) as obs_ids,
-  array_agg(distinct species_id) AS species_ids
+  array_agg(distinct species_id) AS species_ids,
+  array_agg(distinct species_code) AS species_codes
 FROM popped
 GROUP BY
   linear_feature_id,
@@ -73,6 +76,7 @@ INSERT INTO whse_fish.fiss_fish_obsrvtn_events
   watershed_group_code,
   obs_ids,
   species_ids,
+  species_codes,
   distance_to_stream,
   match_type)
 
@@ -90,6 +94,7 @@ SELECT DISTINCT ON (blue_line_key, downstream_route_measure)
   a.watershed_group_code,
   a.obs_ids,
   a.species_ids,
+  a.species_codes,
   p.distance_to_stream,
   p.match_type
  FROM agg a
@@ -107,6 +112,9 @@ CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events (linear_feature_id);
 CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events (blue_line_key);
 CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events (waterbody_key);
 
+-- index the species ids and observation ids for fast retreival
+CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events USING GIST (obs_ids gist__intbig_ops);
+CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events USING GIST (species_ids gist__intbig_ops);
 
 -- Dump all un-referenced points (within 1500m of a stream) for QA.
 -- Note that points >1500m from a stream will not be in this table, but there
