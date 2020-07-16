@@ -9,7 +9,7 @@ LEFT OUTER JOIN whse_fish.fiss_fish_obsrvtn_events b
 ON
   -- first, the upstream observation has to be same spp
   b.species_ids @> ARRAY[%s] AND
-  fwa_upstream_linear(
+  fwa_upstream(
     a.blue_line_key,
     a.downstream_route_measure,
     a.wscode_ltree,
