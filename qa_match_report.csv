@@ -1,11 +1,11 @@
 match_type,n_distinct_events,n_observations
-A. matched - stream; within 100m; lookup,53931,166854
-B. matched - stream; within 100m; closest stream,6703,19293
-C. matched - stream; 100-500m; lookup,4546,30512
-D. matched - waterbody; construction line within 1500m; lookup,11815,113681
-E. matched - waterbody; construction line within 1500m; closest,1364,15875
-TOTAL MATCHED,78359,346215
-F. unmatched - less than 1500m to stream,1741,5350
+A. matched - stream; within 100m; lookup,53921,166919
+B. matched - stream; within 100m; closest stream,6697,19246
+C. matched - stream; 100-500m; lookup,4538,30503
+D. matched - waterbody; construction line within 1500m; lookup,11829,113853
+E. matched - waterbody; construction line within 1500m; closest,1363,15883
+TOTAL MATCHED,78348,346404
+F. unmatched - less than 1500m to stream,1740,5346
 G. unmatched - more than 1500m to stream,103,723
-TOTAL UNMATCHED,1844,6073
-GRAND TOTAL,80203,352288
+TOTAL UNMATCHED,1843,6069
+GRAND TOTAL,80191,352473

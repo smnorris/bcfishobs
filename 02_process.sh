@@ -18,7 +18,6 @@ psql -f sql/05_add-streams-100m-lookup.sql
 psql -f sql/06_add-streams-100m-closest.sql
 psql -f sql/07_add-streams-100m-500m.sql
 psql -f sql/08_create-output-tables.sql
-psql -f sql/09_create-output-views.sql
 
 # Tag maximal observations for each species
 # As this is run as a loop it is easier to do via Python

@@ -70,10 +70,10 @@ $ ./02_process.sh
 
 ## Output data
 
-#### `whse_fish.fiss_fish_obsrvtn_events_vw`
+#### `whse_fish.fiss_fish_obsrvtn_events_sp`
 
 Likely the primary output of interest.
-A materialized view showing all observations that are successfully matched to streams (not just distinct locations) plus commonly used columns.
+A table holding all observations that are successfully matched to streams (not just distinct locations) plus commonly used columns.
 Geometries are located on the stream to which the observation is matched.
 
 ```
@@ -98,15 +98,15 @@ Geometries are located on the stream to which the observation is matched.
  source_ref                | character varying      |           |          |
  geom                      | geometry(PointZM,3005) |           |          |
 Indexes:
-    "fiss_fish_obsrvtn_events_vw_blue_line_key_idx" btree (blue_line_key)
-    "fiss_fish_obsrvtn_events_vw_geom_idx" gist (geom)
-    "fiss_fish_obsrvtn_events_vw_linear_feature_id_idx" btree (linear_feature_id)
-    "fiss_fish_obsrvtn_events_vw_localcode_ltree_idx" btree (localcode_ltree)
-    "fiss_fish_obsrvtn_events_vw_localcode_ltree_idx1" gist (localcode_ltree)
-    "fiss_fish_obsrvtn_events_vw_waterbody_key_idx" btree (waterbody_key)
-    "fiss_fish_obsrvtn_events_vw_watershed_group_code_idx" btree (watershed_group_code)
-    "fiss_fish_obsrvtn_events_vw_wscode_ltree_idx" btree (wscode_ltree)
-    "fiss_fish_obsrvtn_events_vw_wscode_ltree_idx1" gist (wscode_ltree)
+    "fiss_fish_obsrvtn_events_sp_blue_line_key_idx" btree (blue_line_key)
+    "fiss_fish_obsrvtn_events_sp_geom_idx" gist (geom)
+    "fiss_fish_obsrvtn_events_sp_linear_feature_id_idx" btree (linear_feature_id)
+    "fiss_fish_obsrvtn_events_sp_localcode_ltree_idx" btree (localcode_ltree)
+    "fiss_fish_obsrvtn_events_sp_localcode_ltree_idx1" gist (localcode_ltree)
+    "fiss_fish_obsrvtn_events_sp_waterbody_key_idx" btree (waterbody_key)
+    "fiss_fish_obsrvtn_events_sp_watershed_group_code_idx" btree (watershed_group_code)
+    "fiss_fish_obsrvtn_events_sp_wscode_ltree_idx" btree (wscode_ltree)
+    "fiss_fish_obsrvtn_events_sp_wscode_ltree_idx1" gist (wscode_ltree)
 ```
 
 #### `whse_fish.fiss_fish_obsrvtn_pnt_distinct`
@@ -202,7 +202,7 @@ List all species observed on the Cowichan River (`blue_line_key = 354155148`), d
 
 ```
 SELECT DISTINCT species_code
-FROM whse_fish.fiss_fish_obsrvtn_events_vw
+FROM whse_fish.fiss_fish_obsrvtn_events_sp
 WHERE blue_line_key = 354155148 AND
 downstream_route_measure < 34180
 ORDER BY species_code;
@@ -243,7 +243,7 @@ What is the slope (percent) of the stream at the locations of all *distinct* Coh
 SELECT DISTINCT ON (e.linear_feature_id, e.downstream_route_measure)
   e.fish_observation_point_id,
   s.gradient
-FROM whse_fish.fiss_fish_obsrvtn_events_vw e
+FROM whse_fish.fiss_fish_obsrvtn_events_sp e
 INNER JOIN whse_basemapping.fwa_stream_networks_sp s
 ON e.linear_feature_id = s.linear_feature_id
 INNER JOIN whse_basemapping.fwa_edge_type_codes ec
@@ -284,7 +284,7 @@ SELECT
   s.gradient,
   s.stream_order,
   round((ST_Z((ST_Dump(ST_LocateAlong(s.geom, e.downstream_route_measure))).geom))::numeric) as elevation
-FROM whse_fish.fiss_fish_obsrvtn_events_vw e
+FROM whse_fish.fiss_fish_obsrvtn_events_sp e
 INNER JOIN whse_basemapping.fwa_stream_networks_sp s
 ON e.linear_feature_id = s.linear_feature_id
 WHERE e.species_code = 'GR'
