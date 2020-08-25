@@ -38,7 +38,3 @@ psql -c "CREATE TABLE whse_fish.species_cd
  spcgrp_code     text);"
 
 psql -c "\copy whse_fish.species_cd FROM 'whse_fish_species_cd.csv' delimiter ',' csv header"
-
-
-
-
