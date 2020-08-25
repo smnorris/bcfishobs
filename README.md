@@ -1,17 +1,20 @@
 # bcfishobs
 
-BC [Known BC Fish Observations](https://catalogue.data.gov.bc.ca/dataset/known-bc-fish-observations-and-bc-fish-distributions) is a table described as the *most current and comprehensive information source on fish presence for the province*. This repository includes a method and scripts for locating these observation locations as linear referencing events on the most current and comprehensive stream network currently available for BC, the [Freshwater Atlas](https://www2.gov.bc.ca/gov/content/data/geographic-data-services/topographic-data/freshwater).
+BC [Known BC Fish Observations](https://catalogue.data.gov.bc.ca/dataset/known-bc-fish-observations-and-bc-fish-distributions) is a table described as the *most current and comprehensive information source on fish presence for the province*. This repository includes a method and scripts for locating these observation locations as linear referencing events on the most current and comprehensive stream network currently available for BC, the [Freshwater Atlas](https://www2.gov.bc.ca/gov/content/data/geographic-data-services/topographic-data/freshwater). Also included are scripts for referencing `Falls` records from [FISS Obstacle](https://catalogue.data.gov.bc.ca/dataset/provincial-obstacles-to-fish-passage) points to FWA streams, plus a small additional set of obstacle data that is not currently published to BCGW/BC Data Catalogue.
 
-The script:
+The scripts:
 
-- downloads `whse_fish.fiss_fish_obsrvtn_pnt_sp`, the latest observation data from DataBC
-- downloads a lookup table `whse_fish.wdic_waterbodies` used to match the 50k waterbody codes in the observations table to FWA waterbodies
-- downloads a lookup table `species_cd`, linking the fish species code found in the observation table to species name and scientific name
-- loads each table to a PostgreSQL database
-- aggregates the observations to retain only distinct sites that are coded as `point_type_code = 'Observation'` (`Summary` records should all be duplicates of `Observation` records; they can be discarded)
-- references the observation points to their position on the FWA stream network using the logic outlined below
+- download `whse_fish.fiss_fish_obsrvtn_pnt_sp`, the latest observation data from DataBC
+- download `whse_fish.fiss_obstacles_pnt_sp`, the latest obstacle data from DataBC
+- download a lookup table `whse_fish.wdic_waterbodies` used to match the 50k waterbody codes in the observations table to FWA waterbodies
+- download a lookup table `species_cd`, linking the fish species code found in the observation table to species name and scientific name
+- load each above table to a PostgreSQL database
+- loads additional obstacles from the [included csv](data/fiss_obstacles_unpublished.csv) to `whse_fish.fiss_obstacles_pnt_sp` in the PostgreSQL database
+- discards any observations not coded as `point_type_code = 'Observation'` (`Summary` records are all be duplicates of `Observation` records)
+- discards duplicate geometries from observation and obstacle tables
+- references the observation and obstacle points to their position on the FWA stream network (as outlined below)
 
-### Matching logic / steps
+### Matching logic, observations
 
 1. For observation points associated with a lake or wetland (according to `wbody_id`):
 
@@ -31,7 +34,9 @@ This logic is based on the assumptions:
     -  as long as an observation is associated with the correct waterbody, it is not important to exactly locate it on the stream network within the waterbody
 - for observations on streams, the location of an observation should generally take priority over a match via the xref lookup because many points have been manually snapped to the 20k stream lines - the lookup is best used to prioritize instances of multiple matches within 100m and allow for confidence in making matches between 100 and 500m
 
+### Matching logic, obstacles
 
+Currently, obstacles are simply matched to the closest FWA stream.
 
 ## Requirements
 
@@ -60,7 +65,7 @@ Scripts presume that:
 - environment variables PGHOST, PGUSER, PGDATABASE, PGPORT, DATABASE_URL are set to the appropriate db
 - password authentication for the database is not required
 
-The scripts are run via two bash control scripts:
+The scripts are run via these bash control scripts:
 
 ```
 $ ./01_load.sh
@@ -68,12 +73,11 @@ $ ./02_process.sh
 ```
 
 
-## Output data
+## Output tables of interest
 
 #### `whse_fish.fiss_fish_obsrvtn_events_sp`
 
-Likely the primary output of interest.
-A table holding all observations that are successfully matched to streams (not just distinct locations) plus commonly used columns.
+All observations that are successfully matched to streams (not just distinct locations) plus commonly used columns.
 Geometries are located on the stream to which the observation is matched.
 
 ```
@@ -109,80 +113,39 @@ Indexes:
     "fiss_fish_obsrvtn_events_sp_wscode_ltree_idx1" gist (wscode_ltree)
 ```
 
-#### `whse_fish.fiss_fish_obsrvtn_pnt_distinct`
+#### `whse_fish.fiss_falls_events_sp`
 
-Mostly distinct locations of fish observations.
-(some points are duplicated as equivalent locations may have different values for `new_watershed_code`)
+Distinct `Falls` obstacles that are successfully matched to streams plus commonly used columns.
+Geometries are located on the stream to which the observation is matched.
+Note that this is slightly different from the above output observation table, where all input records are included, not just distinct locations.
 
 ```
-            Column             |         Type
--------------------------------+-----------------------
- fish_obsrvtn_pnt_distinct_id  | integer
- obs_ids                       | integer[]
- utm_zone                      | integer
- utm_easting                   | integer
- utm_northing                  | integer
- wbody_id                      | double precision
- waterbody_type                | character varying
- new_watershed_code            | character varying
- species_ids                   | integer[]
- watershed_group_code          | text
- geom                          | geometry(Point, 3005)
-
+                      Table "whse_fish.fiss_falls_events_sp"
+          Column          |         Type         | Collation | Nullable | Default
+--------------------------+----------------------+-----------+----------+---------
+ falls_id                 | integer              |           | not null |
+ fish_obstacle_point_ids  | integer[]            |           |          |
+ linear_feature_id        | bigint               |           |          |
+ wscode_ltree             | ltree                |           |          |
+ localcode_ltree          | ltree                |           |          |
+ waterbody_key            | integer              |           |          |
+ blue_line_key            | integer              |           |          |
+ downstream_route_measure | double precision     |           |          |
+ distance_to_stream       | double precision     |           |          |
+ height                   | double precision     |           |          |
+ watershed_group_code     | text                 |           |          |
+ geom                     | geometry(Point,3005) |           |          |
 Indexes:
-    "fiss_fish_obsrvtn_pnt_distinct_pkey" PRIMARY KEY, btree (fish_obsrvtn_pnt_distinct_id)
-    "fiss_fish_obsrvtn_distinct_gidx" gist (geom)
-    "fiss_fish_obsrvtn_distinct_wbidix" btree (wbody_id)
+    "fiss_falls_events_sp_pkey" PRIMARY KEY, btree (falls_id)
+    "fiss_falls_events_sp_blue_line_key_idx" btree (blue_line_key)
+    "fiss_falls_events_sp_falls_id_idx" btree (falls_id)
+    "fiss_falls_events_sp_geom_idx" gist (geom)
+    "fiss_falls_events_sp_linear_feature_id_idx" btree (linear_feature_id)
+    "fiss_falls_events_sp_localcode_ltree_idx" gist (localcode_ltree)
+    "fiss_falls_events_sp_localcode_ltree_idx1" btree (localcode_ltree)
+    "fiss_falls_events_sp_wscode_ltree_idx" gist (wscode_ltree)
+    "fiss_falls_events_sp_wscode_ltree_idx1" btree (wscode_ltree)
 ```
-
-
-#### `whse_fish.fiss_fish_obsrvtn_events`
-
-`whse_fish.fiss_fish_obsrvtn_pnt_distinct` stored as linear events referenced to `whse_basemapping.fwa_stream_networks_sp`
-
-```
-          Column              |         Type
-------------------------------+----------------------
- fish_obsrvtn_pnt_distinct_id | integer
- linear_feature_id            | integer
- wscode_ltree                 | ltree
- localcode_ltree              | ltree
- blue_line_key                | integer
- waterbody_key                | integer
- downstream_route_measure     | double precision
- watershed_group_code         | character varying(4)
- obs_ids                      | integer[]
- species_ids                  | integer[]
- maximal_species              | text[]
- distance_to_stream           | double precision
- match_type                   | text
-Indexes:
-    "fiss_fish_obsrvtn_events_blue_line_key_idx" btree (blue_line_key)
-    "fiss_fish_obsrvtn_events_linear_feature_id_idx" btree (linear_feature_id)
-    "fiss_fish_obsrvtn_events_localcode_ltree_idx" gist (localcode_ltree)
-    "fiss_fish_obsrvtn_events_localcode_ltree_idx1" btree (localcode_ltree)
-    "fiss_fish_obsrvtn_events_waterbody_key_idx" btree (waterbody_key)
-    "fiss_fish_obsrvtn_events_wscode_ltree_idx" gist (wscode_ltree)
-    "fiss_fish_obsrvtn_events_wscode_ltree_idx1" btree (wscode_ltree)
-```
-
-
-#### `whse_fish.fiss_fish_obsrvtn_unmatched`
-
-Points in `whse_fish.fiss_fish_obsrvtn_pnt_distinct` that were not referenced to the stream network (useful for QA)
-
-```
-            Column             |        Type
--------------------------------+---------------------
- fish_obsrvtn_pnt_distinct_id  | bigint
- obs_ids                       | integer[]
- species_ids                   | integer[]
- distance_to_stream            | double precision
- geom                          | geometry(Point, 3005)
-Indexes:
-    "fish_obsrvtn_unmatched_pkey" PRIMARY KEY, btree (fish_obsrvtn_distinct_id)
-```
-
 
 ## QA results
 

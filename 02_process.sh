@@ -27,3 +27,6 @@ python tag_maximal_events.py
 psql2csv < sql/qa_match_report.sql > qa_match_report.csv
 
 psql -f sql/11_cleanup.sql
+
+# process obstacles/falls
+psql -f sql/falls.sql
