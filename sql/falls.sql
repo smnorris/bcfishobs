@@ -95,9 +95,9 @@ ORDER BY agg.fish_obstacle_point_ids;
 -- Next, reference the falls to the FWA stream network, creating output
 -- event table fiss_falls_events. For now, simply join to closest stream.
 -- ---------------------------------------------
-DROP TABLE IF EXISTS whse_fish.fiss_falls_events_sp;
+DROP TABLE IF EXISTS whse_fish.fiss_falls_events;
 
-CREATE TABLE whse_fish.fiss_falls_events_sp
+CREATE TABLE whse_fish.fiss_falls_events
  (
  falls_id                 integer primary key,
  fish_obstacle_point_ids  integer[]        ,
@@ -109,8 +109,7 @@ CREATE TABLE whse_fish.fiss_falls_events_sp
  downstream_route_measure double precision ,
  distance_to_stream       double precision ,
  height                   double precision ,
- watershed_group_code     text             ,
- geom                     geometry(Point, 3005)
+ watershed_group_code     text
 );
 
 -- first, find up to 10 streams within 200m of the falls
@@ -162,11 +161,22 @@ bluelines AS
     FROM candidates
     GROUP BY falls_id, blue_line_key) as f
   ORDER BY distance_to_stream asc
-),
+)
 
 -- from the selected blue lines, generate downstream_route_measure
 -- and only return the closest match
-referenced AS (
+INSERT INTO whse_fish.fiss_falls_events
+ (falls_id,
+ fish_obstacle_point_ids,
+ linear_feature_id,
+ wscode_ltree,
+ localcode_ltree,
+ waterbody_key,
+ blue_line_key,
+ downstream_route_measure,
+ distance_to_stream,
+ height,
+ watershed_group_code)
 SELECT DISTINCT ON (bluelines.falls_id)
   bluelines.falls_id,
   candidates.fish_obstacle_point_ids,
@@ -189,11 +199,40 @@ AND bluelines.blue_line_key = candidates.blue_line_key
 AND bluelines.distance_to_stream = candidates.distance_to_stream
 INNER JOIN whse_fish.fiss_falls_pnt_distinct pts
 ON bluelines.falls_id = pts.falls_id
-ORDER BY bluelines.falls_id, candidates.distance_to_stream asc)
+ORDER BY bluelines.falls_id, candidates.distance_to_stream asc;
+
+CREATE INDEX ON whse_fish.fiss_falls_events (falls_id);
+CREATE INDEX ON whse_fish.fiss_falls_events (linear_feature_id);
+CREATE INDEX ON whse_fish.fiss_falls_events (blue_line_key);
+CREATE INDEX ON whse_fish.fiss_falls_events USING GIST (wscode_ltree);
+CREATE INDEX ON whse_fish.fiss_falls_events USING BTREE (wscode_ltree);
+CREATE INDEX ON whse_fish.fiss_falls_events USING GIST (localcode_ltree);
+CREATE INDEX ON whse_fish.fiss_falls_events USING BTREE (localcode_ltree);
+CREATE INDEX ON whse_fish.fiss_falls_events USING GIST (fish_obstacle_point_ids gist__intbig_ops);
+
+
+-- and pull things back out into a spatial table that holds all input falls, not just distinct locations
+-- this is very useful for visualization - it makes the source ids easier to get at.
+DROP TABLE IF EXISTS whse_fish.fiss_falls_events_sp;
+
+CREATE TABLE whse_fish.fiss_falls_events_sp
+ (
+ fish_obstacle_point_id  integer primary key,
+ linear_feature_id        bigint           ,
+ wscode_ltree             ltree            ,
+ localcode_ltree          ltree            ,
+ waterbody_key            integer          ,
+ blue_line_key            integer          ,
+ downstream_route_measure double precision ,
+ distance_to_stream       double precision ,
+ height                   double precision ,
+ watershed_group_code     text,
+ geom                     geometry(Point,3005)
+);
 
 INSERT INTO whse_fish.fiss_falls_events_sp
- (falls_id,
- fish_obstacle_point_ids,
+ (
+ fish_obstacle_point_id,
  linear_feature_id,
  wscode_ltree,
  localcode_ltree,
@@ -203,16 +242,25 @@ INSERT INTO whse_fish.fiss_falls_events_sp
  distance_to_stream,
  height,
  watershed_group_code,
- geom)
-
-SELECT r.*, (ST_Dump(ST_Force2D(ST_locateAlong(s.geom, r.downstream_route_measure)))).geom as geom
-FROM referenced r
+ geom
+)
+SELECT
+ unnest(r.fish_obstacle_point_ids) as fish_obstacle_point_id,
+ r.linear_feature_id,
+ r.wscode_ltree,
+ r.localcode_ltree,
+ r.waterbody_key,
+ r.blue_line_key,
+ r.downstream_route_measure,
+ r.distance_to_stream,
+ r.height,
+ r.watershed_group_code,
+ (ST_Dump(ST_Force2D(ST_locateAlong(s.geom, r.downstream_route_measure)))).geom as geom
+FROM whse_fish.fiss_falls_events r
 INNER JOIN whse_basemapping.fwa_stream_networks_sp s
 ON r.linear_feature_id = s.linear_feature_id;
 
 
--- index the resulting table
-CREATE INDEX ON whse_fish.fiss_falls_events_sp (falls_id);
 CREATE INDEX ON whse_fish.fiss_falls_events_sp (linear_feature_id);
 CREATE INDEX ON whse_fish.fiss_falls_events_sp (blue_line_key);
 CREATE INDEX ON whse_fish.fiss_falls_events_sp USING GIST (wscode_ltree);

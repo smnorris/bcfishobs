@@ -115,16 +115,15 @@ Indexes:
 
 #### `whse_fish.fiss_falls_events_sp`
 
-Distinct `Falls` obstacles that are successfully matched to streams plus commonly used columns.
+All `Falls` obstacles that are successfully matched to streams (not just distinct locations) plus commonly used columns.
 Geometries are located on the stream to which the observation is matched.
-Note that this is slightly different from the above output observation table, where all input records are included, not just distinct locations.
+
 
 ```
                       Table "whse_fish.fiss_falls_events_sp"
           Column          |         Type         | Collation | Nullable | Default
 --------------------------+----------------------+-----------+----------+---------
- falls_id                 | integer              |           | not null |
- fish_obstacle_point_ids  | integer[]            |           |          |
+ fish_obstacle_point_id   | integer              |           | not null |
  linear_feature_id        | bigint               |           |          |
  wscode_ltree             | ltree                |           |          |
  localcode_ltree          | ltree                |           |          |
@@ -136,9 +135,8 @@ Note that this is slightly different from the above output observation table, wh
  watershed_group_code     | text                 |           |          |
  geom                     | geometry(Point,3005) |           |          |
 Indexes:
-    "fiss_falls_events_sp_pkey" PRIMARY KEY, btree (falls_id)
+    "fiss_falls_events_sp_pkey" PRIMARY KEY, btree (fish_obstacle_point_ids)
     "fiss_falls_events_sp_blue_line_key_idx" btree (blue_line_key)
-    "fiss_falls_events_sp_falls_id_idx" btree (falls_id)
     "fiss_falls_events_sp_geom_idx" gist (geom)
     "fiss_falls_events_sp_linear_feature_id_idx" btree (linear_feature_id)
     "fiss_falls_events_sp_localcode_ltree_idx" gist (localcode_ltree)
