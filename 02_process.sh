@@ -23,10 +23,13 @@ psql -f sql/08_create-output-tables.sql
 # As this is run as a loop it is easier to do via Python
 python tag_maximal_events.py
 
+# process obstacles/falls
+psql -f sql/falls.sql
+
 # report on the results of the job
-psql2csv < sql/qa_match_report.sql > qa_match_report.csv
+psql2csv < sql/qa_match_observations.sql > qa_match_observations.csv
+
+psql2csv < sql/qa_match_falls.sql > qa_match_falls.csv
 
 psql -f sql/11_cleanup.sql
 
-# process obstacles/falls
-psql -f sql/falls.sql
