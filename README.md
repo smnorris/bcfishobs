@@ -149,7 +149,7 @@ Indexes:
 
 On completion, the script runs the query `sql/qa_match_report.sql`, reporting on the number and type of matches made. Results are written to csv file `qa_match_report.csv`.
 
-- [Current observation result (May 31, 2020)](qa_match_observations.csv)
+- [Current observation result (Aug 25, 2020)](qa_match_observations.csv)
 - [Current obstacle/falls result (Aug 25, 2020)](qa_match_falls.csv)
 
 The observation result can be compared with the output of `sql/qa_total_records`, the number of total observations should be the same in each query.

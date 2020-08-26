@@ -8,8 +8,7 @@ set -euxo pipefail
 # 2. Password authentication for the DB is not required
 
 # load observations
-bcdata bc2pg WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP \
-  --fid FISH_OBSERVATION_POINT_ID
+bcdata bc2pg WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP
 
 # load 50k waterbody table
 wget -N https://hillcrestgeo.ca/outgoing/whse_fish/whse_fish.wdic_waterbodies.csv.zip
@@ -40,8 +39,7 @@ psql -c "CREATE TABLE whse_fish.species_cd
 psql -c "\copy whse_fish.species_cd FROM 'whse_fish_species_cd.csv' delimiter ',' csv header"
 
 # load obstacles
-bcdata bc2pg WHSE_FISH.FISS_OBSTACLES_PNT_SP \
-  --fid FISH_OBSTACLE_POINT_ID
+bcdata bc2pg WHSE_FISH.FISS_OBSTACLES_PNT_SP
 
 # load additional (unpublished) obstacle data
 psql -c "DROP TABLE IF EXISTS whse_fish.fiss_obstacles_unpublished;"
