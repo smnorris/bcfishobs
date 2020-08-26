@@ -147,7 +147,7 @@ Indexes:
 
 ## QA results
 
-On completion, the script runs the query `sql/qa_match_report.sql`, reporting on the number and type of matches made. Results are written to csv file `qa_match_report.csv`.
+On completion, the script runs the queries `sql/qa_match_observations.sql` and `sql/qa_match_falls.sql`, reporting on the number and type of matches made. Results are written to these csv files:
 
 - [Current observation result (Aug 25, 2020)](qa_match_observations.csv)
 - [Current obstacle/falls result (Aug 25, 2020)](qa_match_falls.csv)
