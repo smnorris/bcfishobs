@@ -158,10 +158,7 @@ WITH all_obs AS
    e.distance_to_stream,
    e.match_type,
    e.watershed_group_code,
-   (ST_Dump(
-      ST_LocateAlong(s.geom, e.downstream_route_measure)
-      )
-   ).geom::geometry(PointZM, 3005) AS geom
+   ST_LocateAlong(s.geom, e.downstream_route_measure) as geom
 FROM whse_fish.fiss_fish_obsrvtn_events e
 INNER JOIN whse_basemapping.fwa_stream_networks_sp s
 ON e.linear_feature_id = s.linear_feature_id)
@@ -184,7 +181,7 @@ SELECT
   b.agency_name,
   b.source,
   b.source_ref,
-  a.geom
+  (st_dump(a.geom)).geom::geometry(PointZM, 3005) AS geom
 FROM all_obs a
 INNER JOIN whse_fish.fiss_fish_obsrvtn_pnt_sp  b
 ON a.fish_observation_point_id = b.fish_observation_point_id
