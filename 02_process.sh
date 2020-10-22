@@ -32,4 +32,3 @@ psql2csv < sql/qa_match_observations.sql > qa_match_observations.csv
 psql2csv < sql/qa_match_falls.sql > qa_match_falls.csv
 
 psql -f sql/11_cleanup.sql
-

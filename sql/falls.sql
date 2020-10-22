@@ -18,7 +18,7 @@ WITH pts AS
   sitesrvy_id,
   comments,
   ST_Transform(ST_PointFromText('POINT (' || utm_easting || ' ' || utm_northing || ')', 32600 + utm_zone::int), 3005) as geom
-FROM whse_fish.fiss_obstacles_non_whse)
+FROM whse_fish.fiss_obstacles_unpublished)
 
 INSERT INTO whse_fish.fiss_obstacles_pnt_sp
 (obstacle_code, obstacle_name, height, length, utm_zone, utm_easting, utm_northing, geom)

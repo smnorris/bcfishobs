@@ -41,7 +41,7 @@ Currently, obstacles are simply matched to the closest FWA stream.
 ## Requirements
 
 - PostgreSQL/PostGIS (requires PostgreSQL >=12.0, tested with v12.2, PostGIS 3.0.1)
-- a FWA database created by [fwapg](https://github.com/smnorris/bcdata)
+- a FWA database created by [fwapg](https://github.com/smnorris/fwapg)
 - GDAL
 - Python (>=3.6)
 - [bcdata](https://github.com/smnorris/bcdata)
