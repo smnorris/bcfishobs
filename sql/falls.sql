@@ -109,7 +109,9 @@ CREATE TABLE whse_fish.fiss_falls_events
  downstream_route_measure double precision ,
  distance_to_stream       double precision ,
  height                   double precision ,
- watershed_group_code     text
+ watershed_group_code     text,
+ -- be certain we do not duplicate features at the same spot
+ UNIQUE (blue_line_key, downstream_route_measure)
 );
 
 -- first, find up to 10 streams within 200m of the falls
@@ -199,7 +201,8 @@ AND bluelines.blue_line_key = candidates.blue_line_key
 AND bluelines.distance_to_stream = candidates.distance_to_stream
 INNER JOIN whse_fish.fiss_falls_pnt_distinct pts
 ON bluelines.falls_id = pts.falls_id
-ORDER BY bluelines.falls_id, candidates.distance_to_stream asc;
+ORDER BY bluelines.falls_id, candidates.distance_to_stream asc
+ON CONFLICT DO NOTHING;
 
 CREATE INDEX ON whse_fish.fiss_falls_events (falls_id);
 CREATE INDEX ON whse_fish.fiss_falls_events (linear_feature_id);
