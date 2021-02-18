@@ -1,18 +1,16 @@
 # bcfishobs
 
-BC [Known BC Fish Observations](https://catalogue.data.gov.bc.ca/dataset/known-bc-fish-observations-and-bc-fish-distributions) is a table described as the *most current and comprehensive information source on fish presence for the province*. This repository includes a method and scripts for locating these observation locations as linear referencing events on the most current and comprehensive stream network currently available for BC, the [Freshwater Atlas](https://www2.gov.bc.ca/gov/content/data/geographic-data-services/topographic-data/freshwater). Also included are scripts for referencing `Falls` records from [FISS Obstacle](https://catalogue.data.gov.bc.ca/dataset/provincial-obstacles-to-fish-passage) points to FWA streams, plus a small additional set of obstacle data that is not currently published to BCGW/BC Data Catalogue.
+BC [Known BC Fish Observations](https://catalogue.data.gov.bc.ca/dataset/known-bc-fish-observations-and-bc-fish-distributions) is a table described as the *most current and comprehensive information source on fish presence for the province*. This repository includes a method and scripts for locating these observation locations as linear referencing events on the most current and comprehensive stream network currently available for BC, the [Freshwater Atlas](https://www2.gov.bc.ca/gov/content/data/geographic-data-services/topographic-data/freshwater).
 
 The scripts:
 
 - download `whse_fish.fiss_fish_obsrvtn_pnt_sp`, the latest observation data from DataBC
-- download `whse_fish.fiss_obstacles_pnt_sp`, the latest obstacle data from DataBC
 - download a lookup table `whse_fish.wdic_waterbodies` used to match the 50k waterbody codes in the observations table to FWA waterbodies
 - download a lookup table `species_cd`, linking the fish species code found in the observation table to species name and scientific name
 - load each above table to a PostgreSQL database
-- loads additional obstacles from the [included csv](data/fiss_obstacles_unpublished.csv) to `whse_fish.fiss_obstacles_pnt_sp` in the PostgreSQL database
 - discards any observations not coded as `point_type_code = 'Observation'` (`Summary` records are all be duplicates of `Observation` records)
-- discards duplicate geometries from observation and obstacle tables
-- references the observation and obstacle points to their position on the FWA stream network (as outlined below)
+- discards duplicate geometries from observation table
+- references the observation points to their position on the FWA stream network (as outlined below)
 
 ### Matching logic, observations
 
@@ -34,9 +32,6 @@ This logic is based on the assumptions:
     -  as long as an observation is associated with the correct waterbody, it is not important to exactly locate it on the stream network within the waterbody
 - for observations on streams, the location of an observation should generally take priority over a match via the xref lookup because many points have been manually snapped to the 20k stream lines - the lookup is best used to prioritize instances of multiple matches within 100m and allow for confidence in making matches between 100 and 500m
 
-### Matching logic, obstacles
-
-Currently, obstacles are simply matched to the closest FWA stream.
 
 ## Requirements
 
@@ -113,44 +108,11 @@ Indexes:
     "fiss_fish_obsrvtn_events_sp_wscode_ltree_idx1" gist (wscode_ltree)
 ```
 
-#### `whse_fish.fiss_falls_events_sp`
-
-All `Falls` obstacles that are successfully matched to streams (not just distinct locations) plus commonly used columns.
-Geometries are located on the stream to which the observation is matched.
-
-
-```
-                      Table "whse_fish.fiss_falls_events_sp"
-          Column          |         Type         | Collation | Nullable | Default
---------------------------+----------------------+-----------+----------+---------
- fish_obstacle_point_id   | integer              |           | not null |
- linear_feature_id        | bigint               |           |          |
- wscode_ltree             | ltree                |           |          |
- localcode_ltree          | ltree                |           |          |
- waterbody_key            | integer              |           |          |
- blue_line_key            | integer              |           |          |
- downstream_route_measure | double precision     |           |          |
- distance_to_stream       | double precision     |           |          |
- height                   | double precision     |           |          |
- watershed_group_code     | text                 |           |          |
- geom                     | geometry(Point,3005) |           |          |
-Indexes:
-    "fiss_falls_events_sp_pkey" PRIMARY KEY, btree (fish_obstacle_point_ids)
-    "fiss_falls_events_sp_blue_line_key_idx" btree (blue_line_key)
-    "fiss_falls_events_sp_geom_idx" gist (geom)
-    "fiss_falls_events_sp_linear_feature_id_idx" btree (linear_feature_id)
-    "fiss_falls_events_sp_localcode_ltree_idx" gist (localcode_ltree)
-    "fiss_falls_events_sp_localcode_ltree_idx1" btree (localcode_ltree)
-    "fiss_falls_events_sp_wscode_ltree_idx" gist (wscode_ltree)
-    "fiss_falls_events_sp_wscode_ltree_idx1" btree (wscode_ltree)
-```
-
 ## QA results
 
-On completion, the script runs the queries `sql/qa_match_observations.sql` and `sql/qa_match_falls.sql`, reporting on the number and type of matches made. Results are written to these csv files:
+On completion, the script runs the query `sql/qa_match_observations.sql`, reporting on the number and type of matches made. Results are written to csv :
 
 - [Current observation result (Aug 25, 2020)](qa_match_observations.csv)
-- [Current obstacle/falls result (Aug 25, 2020)](qa_match_falls.csv)
 
 The observation result can be compared with the output of `sql/qa_total_records`, the number of total observations should be the same in each query.
 
