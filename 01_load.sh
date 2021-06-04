@@ -11,7 +11,7 @@ set -euxo pipefail
 bcdata bc2pg WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP
 
 # load 50k waterbody table
-wget -N https://hillcrestgeo.ca/outgoing/whse_fish/whse_fish.wdic_waterbodies.csv.zip
+wget -N https://hillcrestgeo.ca/outgoing/public/whse_fish/whse_fish.wdic_waterbodies.csv.zip
 unzip -qjun whse_fish.wdic_waterbodies.csv.zip
 ogr2ogr \
   -f PostgreSQL \
