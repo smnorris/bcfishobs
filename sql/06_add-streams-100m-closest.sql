@@ -3,10 +3,10 @@
 
 WITH unmatched AS
 (   SELECT e1.*
-    FROM whse_fish.fiss_fish_obsrvtn_events_prelim1 e1
-    LEFT OUTER JOIN whse_fish.fiss_fish_obsrvtn_events_prelim2 e2
+    FROM bcfishobs.fiss_fish_obsrvtn_events_prelim1 e1
+    LEFT OUTER JOIN bcfishobs.fiss_fish_obsrvtn_events_prelim2 e2
     ON e1.fish_obsrvtn_pnt_distinct_id = e2.fish_obsrvtn_pnt_distinct_id
-    INNER JOIN whse_fish.fiss_fish_obsrvtn_pnt_distinct o
+    INNER JOIN bcfishobs.fiss_fish_obsrvtn_pnt_distinct o
     ON e1.fish_obsrvtn_pnt_distinct_id = o.fish_obsrvtn_pnt_distinct_id
     WHERE o.waterbody_type NOT IN ('Lake', 'Wetland')
     AND e1.distance_to_stream <= 100
@@ -24,7 +24,7 @@ closest_unmatched AS
   ORDER BY fish_obsrvtn_pnt_distinct_id, distance_to_stream
 )
 
-INSERT INTO whse_fish.fiss_fish_obsrvtn_events_prelim2
+INSERT INTO bcfishobs.fiss_fish_obsrvtn_events_prelim2
 SELECT DISTINCT ON (e.fish_obsrvtn_pnt_distinct_id)
   e.fish_obsrvtn_pnt_distinct_id,
   e.linear_feature_id,
@@ -35,7 +35,7 @@ SELECT DISTINCT ON (e.fish_obsrvtn_pnt_distinct_id)
   e.downstream_route_measure,
   e.distance_to_stream,
   'B. matched - stream; within 100m; closest stream'
-FROM whse_fish.fiss_fish_obsrvtn_events_prelim1 e
+FROM bcfishobs.fiss_fish_obsrvtn_events_prelim1 e
 INNER JOIN closest_unmatched
 ON e.fish_obsrvtn_pnt_distinct_id = closest_unmatched.fish_obsrvtn_pnt_distinct_id
 AND e.distance_to_stream = closest_unmatched.distance_to_stream

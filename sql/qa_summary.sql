@@ -2,7 +2,7 @@ WITH matched_pts AS
 (SELECT
   match_type,
   count(*) as n_distinct_events
-FROM whse_fish.fiss_fish_obsrvtn_events
+FROM bcfishobs.fiss_fish_obsrvtn_events
 GROUP BY match_type
 ORDER BY match_type),
 
@@ -12,8 +12,8 @@ FROM
 (SELECT
   a.match_type,
   unnest(b.obs_ids) as fish_observation_point_id
-FROM whse_fish.fiss_fish_obsrvtn_events_prelim2 a
-INNER JOIN whse_fish.fiss_fish_obsrvtn_pnt_distinct b
+FROM bcfishobs.fiss_fish_obsrvtn_events_prelim2 a
+INNER JOIN bcfishobs.fiss_fish_obsrvtn_pnt_distinct b
 ON a.fish_obsrvtn_pnt_distinct_id = b.fish_obsrvtn_pnt_distinct_id) as obs
 GROUP BY match_type
 ORDER BY match_type),
@@ -23,7 +23,7 @@ unmatched_pts1 AS
 SELECT
   'F. unmatched - less than 1500m to stream' as match_type,
   count(*) as n_distinct_events
-FROM whse_fish.fiss_fish_obsrvtn_unmatched
+FROM bcfishobs.fiss_fish_obsrvtn_unmatched
 GROUP BY match_type
 ORDER BY match_type),
 
@@ -33,7 +33,7 @@ FROM
 (SELECT
   'F. unmatched - less than 1500m to stream' as match_type,
   unnest(obs_ids) as fish_observation_point_id
-FROM whse_fish.fiss_fish_obsrvtn_unmatched) as obs
+FROM bcfishobs.fiss_fish_obsrvtn_unmatched) as obs
 GROUP BY match_type
 ORDER BY match_type),
 
@@ -41,10 +41,10 @@ unmatched_pts2 AS (
 SELECT
   'G. unmatched - more than 1500m to stream' as match_type,
   count(o.fish_obsrvtn_pnt_distinct_id) as n_distinct_events
-FROM whse_fish.fiss_fish_obsrvtn_pnt_distinct o
-LEFT OUTER JOIN whse_fish.fiss_fish_obsrvtn_events_prelim2 e
+FROM bcfishobs.fiss_fish_obsrvtn_pnt_distinct o
+LEFT OUTER JOIN bcfishobs.fiss_fish_obsrvtn_events_prelim2 e
 ON o.fish_obsrvtn_pnt_distinct_id = e.fish_obsrvtn_pnt_distinct_id
-LEFT OUTER JOIN whse_fish.fiss_fish_obsrvtn_unmatched u
+LEFT OUTER JOIN bcfishobs.fiss_fish_obsrvtn_unmatched u
 ON o.fish_obsrvtn_pnt_distinct_id = u.fish_obsrvtn_pnt_distinct_id
 WHERE u.fish_obsrvtn_pnt_distinct_id IS NULL
 AND e.fish_obsrvtn_pnt_distinct_id IS NULL
@@ -56,10 +56,10 @@ unmatched_obs2 AS (
     Count(*) as n_observations
   FROM
   (SELECT unnest(o.obs_ids) AS fish_observation_point_id
-  FROM whse_fish.fiss_fish_obsrvtn_pnt_distinct o
-  LEFT OUTER JOIN whse_fish.fiss_fish_obsrvtn_events_prelim2 e
+  FROM bcfishobs.fiss_fish_obsrvtn_pnt_distinct o
+  LEFT OUTER JOIN bcfishobs.fiss_fish_obsrvtn_events_prelim2 e
   ON o.fish_obsrvtn_pnt_distinct_id = e.fish_obsrvtn_pnt_distinct_id
-  LEFT OUTER JOIN whse_fish.fiss_fish_obsrvtn_unmatched u
+  LEFT OUTER JOIN bcfishobs.fiss_fish_obsrvtn_unmatched u
   ON o.fish_obsrvtn_pnt_distinct_id = u.fish_obsrvtn_pnt_distinct_id
   WHERE u.fish_obsrvtn_pnt_distinct_id IS NULL
   AND e.fish_obsrvtn_pnt_distinct_id IS NULL) as all_ids
@@ -115,7 +115,7 @@ UNION ALL
 SELECT * FROM total_unmatched
 UNION ALL
 SELECT
-  'GRAND TOTAL' as match_type,
+  'GRAND TOTAL, '|| (select to_char(date_downloaded, 'YYYY-MM-DD') from bcdata where table_name = 'whse_fish.fiss_fish_obsrvtn_pnt_sp') as match_type,
   sum(n_distinct_events) as n_distinct_events,
   sum(n_observations) as n_observations
 FROM raw

@@ -56,21 +56,21 @@ $ cd bcfishobs
 ## Run the scripts
 
 Scripts presume that:
-- the FWA database is loaded (to schema `whse_basemapping`)
-- environment variables PGHOST, PGUSER, PGDATABASE, PGPORT, DATABASE_URL are set to the appropriate db
-- password authentication for the database is not required
+- environment variable `DATABASE_URL` points to the appropriate db
+- FWA data are loaded to the db via `fwapg`
 
-The scripts are run via these bash control scripts:
+To run the job:
 
 ```
-$ ./01_load.sh
-$ ./02_process.sh
+$ make
 ```
 
 
-## Output tables of interest
+## Output tables
 
-#### `whse_fish.fiss_fish_obsrvtn_events_sp`
+All derived outout tables are written to schema `bcfishobs`.
+
+#### `bcfishobs.fiss_fish_obsrvtn_events_sp`
 
 All observations that are successfully matched to streams (not just distinct locations) plus commonly used columns.
 Geometries are located on the stream to which the observation is matched.
@@ -126,7 +126,7 @@ List all species observed on the Cowichan River (`blue_line_key = 354155148`), d
 
 ```
 SELECT DISTINCT species_code
-FROM whse_fish.fiss_fish_obsrvtn_events_sp
+FROM bcfishobs.fiss_fish_obsrvtn_events_sp
 WHERE blue_line_key = 354155148 AND
 downstream_route_measure < 34180
 ORDER BY species_code;
@@ -167,7 +167,7 @@ What is the slope (percent) of the stream at the locations of all *distinct* Coh
 SELECT DISTINCT ON (e.linear_feature_id, e.downstream_route_measure)
   e.fish_observation_point_id,
   s.gradient
-FROM whse_fish.fiss_fish_obsrvtn_events_sp e
+FROM bcfishobs.fiss_fish_obsrvtn_events_sp e
 INNER JOIN whse_basemapping.fwa_stream_networks_sp s
 ON e.linear_feature_id = s.linear_feature_id
 INNER JOIN whse_basemapping.fwa_edge_type_codes ec
@@ -208,7 +208,7 @@ SELECT
   s.gradient,
   s.stream_order,
   round((ST_Z((ST_Dump(ST_LocateAlong(s.geom, e.downstream_route_measure))).geom))::numeric) as elevation
-FROM whse_fish.fiss_fish_obsrvtn_events_sp e
+FROM bcfishobs.fiss_fish_obsrvtn_events_sp e
 INNER JOIN whse_basemapping.fwa_stream_networks_sp s
 ON e.linear_feature_id = s.linear_feature_id
 WHERE e.species_code = 'GR'

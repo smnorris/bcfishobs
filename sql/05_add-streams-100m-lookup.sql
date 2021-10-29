@@ -4,8 +4,8 @@
 -- the record with a match in the xref - if available.
 WITH unmatched AS
 (   SELECT e.*
-    FROM whse_fish.fiss_fish_obsrvtn_events_prelim1 e
-    INNER JOIN whse_fish.fiss_fish_obsrvtn_pnt_distinct o
+    FROM bcfishobs.fiss_fish_obsrvtn_events_prelim1 e
+    INNER JOIN bcfishobs.fiss_fish_obsrvtn_pnt_distinct o
     ON e.fish_obsrvtn_pnt_distinct_id = o.fish_obsrvtn_pnt_distinct_id
     INNER JOIN whse_basemapping.fwa_streams_20k_50k lut
     ON replace(o.new_watershed_code, '-', '') = lut.watershed_code_50k
@@ -25,7 +25,7 @@ closest_unmatched AS
   ORDER BY fish_obsrvtn_pnt_distinct_id, distance_to_stream
 )
 
-INSERT INTO whse_fish.fiss_fish_obsrvtn_events_prelim2
+INSERT INTO bcfishobs.fiss_fish_obsrvtn_events_prelim2
 SELECT DISTINCT ON (e.fish_obsrvtn_pnt_distinct_id)
   e.fish_obsrvtn_pnt_distinct_id,
   e.linear_feature_id,
@@ -36,7 +36,7 @@ SELECT DISTINCT ON (e.fish_obsrvtn_pnt_distinct_id)
   e.downstream_route_measure,
   e.distance_to_stream,
   'A. matched - stream; within 100m; lookup'
-FROM whse_fish.fiss_fish_obsrvtn_events_prelim1 e
+FROM bcfishobs.fiss_fish_obsrvtn_events_prelim1 e
 INNER JOIN closest_unmatched
 ON e.fish_obsrvtn_pnt_distinct_id = closest_unmatched.fish_obsrvtn_pnt_distinct_id
 AND e.distance_to_stream = closest_unmatched.distance_to_stream

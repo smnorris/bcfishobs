@@ -12,9 +12,9 @@
 -- ---------------------------------------------
 
 
-DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_events_prelim1;
+DROP TABLE IF EXISTS bcfishobs.fiss_fish_obsrvtn_events_prelim1;
 
-CREATE TABLE whse_fish.fiss_fish_obsrvtn_events_prelim1 AS
+CREATE TABLE bcfishobs.fiss_fish_obsrvtn_events_prelim1 AS
 WITH candidates AS
  ( SELECT
     pt.fish_obsrvtn_pnt_distinct_id,
@@ -77,10 +77,10 @@ FROM bluelines
 INNER JOIN candidates ON bluelines.fish_obsrvtn_pnt_distinct_id = candidates.fish_obsrvtn_pnt_distinct_id
 AND bluelines.blue_line_key = candidates.blue_line_key
 AND bluelines.distance_to_stream = candidates.distance_to_stream
-INNER JOIN whse_fish.fiss_fish_obsrvtn_pnt_distinct pts
+INNER JOIN bcfishobs.fiss_fish_obsrvtn_pnt_distinct pts
 ON bluelines.fish_obsrvtn_pnt_distinct_id = pts.fish_obsrvtn_pnt_distinct_id;
 
 -- ---------------------------------------------
 -- index the intermediate table
-CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_events_prelim1 (fish_obsrvtn_pnt_distinct_id);
+CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_prelim1 (fish_obsrvtn_pnt_distinct_id);
 

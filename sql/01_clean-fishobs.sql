@@ -10,9 +10,9 @@
 -- ** Observations with different watershed codes may be in exactly the
 --    same spot **
 
-DROP TABLE IF EXISTS whse_fish.fiss_fish_obsrvtn_pnt_distinct;
+DROP TABLE IF EXISTS bcfishobs.fiss_fish_obsrvtn_pnt_distinct;
 
-CREATE TABLE whse_fish.fiss_fish_obsrvtn_pnt_distinct
+CREATE TABLE bcfishobs.fiss_fish_obsrvtn_pnt_distinct
 (
  fish_obsrvtn_pnt_distinct_id serial primary key  ,
  obs_ids                  integer[]           ,
@@ -29,7 +29,7 @@ CREATE TABLE whse_fish.fiss_fish_obsrvtn_pnt_distinct
 );
 
 
-INSERT INTO whse_fish.fiss_fish_obsrvtn_pnt_distinct
+INSERT INTO bcfishobs.fiss_fish_obsrvtn_pnt_distinct
 (
   obs_ids              ,
   utm_zone             ,
@@ -71,8 +71,8 @@ GROUP BY
   wsg.watershed_group_code,
   o.geom;
 
-CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_pnt_distinct (wbody_id);
-CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_pnt_distinct USING gist (geom);
+CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_pnt_distinct (wbody_id);
+CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_pnt_distinct USING gist (geom);
 -- index the species ids and observation ids for fast retreival
-CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_pnt_distinct USING GIST (obs_ids gist__intbig_ops);
-CREATE INDEX ON whse_fish.fiss_fish_obsrvtn_pnt_distinct USING GIST (species_ids gist__intbig_ops);
+CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_pnt_distinct USING GIST (obs_ids gist__intbig_ops);
+CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_pnt_distinct USING GIST (species_ids gist__intbig_ops);

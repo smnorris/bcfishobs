@@ -1,0 +1,11 @@
+match_type,n_distinct_events,n_observations
+A. matched - stream; within 100m; lookup,54753,170853
+B. matched - stream; within 100m; closest stream,6831,19806
+C. matched - stream; 100-500m; lookup,4571,30686
+D. matched - waterbody; construction line within 1500m; lookup,12064,115758
+E. matched - waterbody; construction line within 1500m; closest,1395,16168
+TOTAL MATCHED,79614,353271
+F. unmatched - less than 1500m to stream,1755,5374
+G. unmatched - more than 1500m to stream,103,723
+TOTAL UNMATCHED,1858,6097
+"GRAND TOTAL, 2021-10-29",81472,359368
