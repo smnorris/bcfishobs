@@ -26,7 +26,7 @@ clean:
 .wdic_waterbodies:
 	wget -qNP data https://hillcrestgeo.ca/outgoing/public/whse_fish/whse_fish.wdic_waterbodies.csv.zip
 	unzip -qjun -d data data/whse_fish.wdic_waterbodies.csv.zip
-	# use ogr2ogr to guess column types and launder the column names to lowercase
+	# load via ogr because it makes cleaning the input file easy.
 	# ?application_name=foo is a workaround for a gdal issue on macos
 	ogr2ogr \
 		-f PostgreSQL \
@@ -71,6 +71,6 @@ qa_summary.csv: .species_cd .wdic_waterbodies .fiss_fish_obsrvtn_pnt_sp
 	  echo $$spp_id ; \
 	  psql -v ON_ERROR_STOP=1 -f sql/10_tag_maximal_events.sql -v species=$$spp_id ; \
 	done
-	psql -f sql/11_cleanup.sql
 	psql2csv < sql/qa_summary.sql > $@
+	psql -f sql/11_cleanup.sql
 
