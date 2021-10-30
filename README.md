@@ -192,12 +192,6 @@ ORDER BY e.linear_feature_id, e.downstream_route_measure, fish_observation_point
 
 ### Example 3
 
-Trace downstream from fish observations to the ocean, generating implied habitat distribution for anadramous species:
-
-See [`bcfishobs_traces`](https://github.com/smnorris/bcfishobs_traces)
-
-### Example 4
-
 What are the order, elevation and gradient of all Arctic Grayling observations in the Parsnip watershed group?
 
 ```
