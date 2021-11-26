@@ -56,7 +56,7 @@ SELECT
   wsg.watershed_group_code,
   (ST_Dump(o.geom)).geom
 FROM whse_fish.fiss_fish_obsrvtn_pnt_sp o
-LEFT OUTER JOIN whse_basemapping.fwa_watershed_groups_subdivided wsg
+LEFT OUTER JOIN whse_basemapping.fwa_watershed_groups wsg
 ON ST_Intersects(o.geom, wsg.geom)
 INNER JOIN whse_fish.species_cd sp
 ON o.species_code = sp.code

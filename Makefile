@@ -27,10 +27,9 @@ clean:
 	wget -qNP data https://hillcrestgeo.ca/outgoing/public/whse_fish/whse_fish.wdic_waterbodies.csv.zip
 	unzip -qjun -d data data/whse_fish.wdic_waterbodies.csv.zip
 	# load via ogr because it makes cleaning the input file easy.
-	# ?application_name=foo is a workaround for a gdal issue on macos
 	ogr2ogr \
 		-f PostgreSQL \
-		"PG:$(DATABASE_URL)?application_name=foo" \
+		"PG:$(DATABASE_URL)" \
 		-lco OVERWRITE=YES \
 		-lco SCHEMA=whse_fish \
 		-nln wdic_waterbodies_load \
@@ -58,14 +57,14 @@ clean:
 qa_summary.csv: .species_cd .wdic_waterbodies .fiss_fish_obsrvtn_pnt_sp
 	psql -c "CREATE EXTENSION IF NOT EXISTS intarray"
 	psql -c "CREATE SCHEMA IF NOT EXISTS bcfishobs"
-	psql -f sql/01_clean-fishobs.sql
-	psql -f sql/02_clean-wdic.sql
-	psql -f sql/03_create-prelim-table.sql
-	psql -f sql/04_add-waterbodies.sql
-	psql -f sql/05_add-streams-100m-lookup.sql
-	psql -f sql/06_add-streams-100m-closest.sql
-	psql -f sql/07_add-streams-100m-500m.sql
-	psql -f sql/08_create-output-tables.sql
+	psql -v ON_ERROR_STOP=1 -f sql/01_clean-fishobs.sql
+	psql -v ON_ERROR_STOP=1 -f sql/02_clean-wdic.sql
+	psql -v ON_ERROR_STOP=1 -f sql/03_create-prelim-table.sql
+	psql -v ON_ERROR_STOP=1 -f sql/04_add-waterbodies.sql
+	psql -v ON_ERROR_STOP=1 -f sql/05_add-streams-100m-lookup.sql
+	psql -v ON_ERROR_STOP=1 -f sql/06_add-streams-100m-closest.sql
+	psql -v ON_ERROR_STOP=1 -f sql/07_add-streams-100m-500m.sql
+	psql -v ON_ERROR_STOP=1 -f sql/08_create-output-tables.sql
 	# Tag maximal observations for each species
 	for spp_id in $(SPECIES) ; do \
 	  echo $$spp_id ; \
