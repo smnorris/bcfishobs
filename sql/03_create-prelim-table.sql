@@ -27,7 +27,7 @@ WITH candidates AS
     nn.downstream_route_measure,
     nn.distance_to_stream,
     ST_LineMerge(nn.geom) AS geom
-  FROM whse_fish.fiss_fish_obsrvtn_pnt_distinct as pt
+  FROM bcfishobs.fiss_fish_obsrvtn_pnt_distinct as pt
   CROSS JOIN LATERAL
   (SELECT
      str.linear_feature_id,
