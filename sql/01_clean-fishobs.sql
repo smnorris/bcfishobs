@@ -24,7 +24,6 @@ CREATE TABLE bcfishobs.fiss_fish_obsrvtn_pnt_distinct
  new_watershed_code       character varying   ,
  species_ids              integer[]           ,
  species_codes            text[]              ,
- watershed_group_code     text                ,
  geom                     geometry(Point, 3005)
 );
 
@@ -40,7 +39,6 @@ INSERT INTO bcfishobs.fiss_fish_obsrvtn_pnt_distinct
   new_watershed_code   ,
   species_ids          ,
   species_codes        ,
-  watershed_group_code ,
   geom
 )
 SELECT
@@ -53,11 +51,8 @@ SELECT
   o.new_watershed_code,
   array_agg(sp.species_id) as species_ids,
   array_agg(o.species_code) as species_codes,
-  wsg.watershed_group_code,
   (ST_Dump(o.geom)).geom
 FROM whse_fish.fiss_fish_obsrvtn_pnt_sp o
-LEFT OUTER JOIN whse_basemapping.fwa_watershed_groups_poly wsg
-ON ST_Intersects(o.geom, wsg.geom)
 INNER JOIN whse_fish.species_cd sp
 ON o.species_code = sp.code
 WHERE o.point_type_code = 'Observation'
@@ -68,7 +63,6 @@ GROUP BY
   o.wbody_id,
   o.waterbody_type,
   o.new_watershed_code,
-  wsg.watershed_group_code,
   o.geom;
 
 CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_pnt_distinct (wbody_id);
