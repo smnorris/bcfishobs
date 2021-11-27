@@ -10,6 +10,8 @@ SPECIES = $(shell psql -AtX -c "SELECT DISTINCT b.species_id \
     INNER JOIN whse_fish.species_cd b \
     ON a.species_code = b.code")
 
+PSQL_CMD = psql $(DATABASE_URL) -v ON_ERROR_STOP=1
+
 # Make all targets
 all: $(GENERATED_FILES)
 
@@ -40,8 +42,8 @@ clean:
 # load species code table
 .species_cd:
 	wget -qNP data https://raw.githubusercontent.com/smnorris/fishbc/master/data-raw/whse_fish_species_cd/whse_fish_species_cd.csv
-	psql -c "DROP TABLE IF EXISTS whse_fish.species_cd;"
-	psql -c "CREATE TABLE whse_fish.species_cd \
+	$(PSQL_CMD) -c "DROP TABLE IF EXISTS whse_fish.species_cd;"
+	$(PSQL_CMD) -c "CREATE TABLE whse_fish.species_cd \
 	(species_id     integer primary key, \
 	code            text, \
 	name            text, \
@@ -50,26 +52,26 @@ clean:
 	scientific_name text, \
 	spctype_code    text, \
 	spcgrp_code     text);"
-	psql -c "\copy whse_fish.species_cd FROM 'data/whse_fish_species_cd.csv' delimiter ',' csv header"
+	$(PSQL_CMD) -c "\copy whse_fish.species_cd FROM 'data/whse_fish_species_cd.csv' delimiter ',' csv header"
 	touch $@
 
 # process all queries and write qa file when done
 qa_summary.csv: .species_cd .wdic_waterbodies .fiss_fish_obsrvtn_pnt_sp
-	psql -c "CREATE EXTENSION IF NOT EXISTS intarray"
-	psql -c "CREATE SCHEMA IF NOT EXISTS bcfishobs"
-	psql -v ON_ERROR_STOP=1 -f sql/01_clean-fishobs.sql
-	psql -v ON_ERROR_STOP=1 -f sql/02_clean-wdic.sql
-	psql -v ON_ERROR_STOP=1 -f sql/03_create-prelim-table.sql
-	psql -v ON_ERROR_STOP=1 -f sql/04_add-waterbodies.sql
-	psql -v ON_ERROR_STOP=1 -f sql/05_add-streams-100m-lookup.sql
-	psql -v ON_ERROR_STOP=1 -f sql/06_add-streams-100m-closest.sql
-	psql -v ON_ERROR_STOP=1 -f sql/07_add-streams-100m-500m.sql
-	psql -v ON_ERROR_STOP=1 -f sql/08_create-output-tables.sql
+	$(PSQL_CMD) -c "CREATE EXTENSION IF NOT EXISTS intarray"
+	$(PSQL_CMD) -c "CREATE SCHEMA IF NOT EXISTS bcfishobs"
+	$(PSQL_CMD) -f sql/01_clean-fishobs.sql
+	$(PSQL_CMD) -f sql/02_clean-wdic.sql
+	$(PSQL_CMD) -f sql/03_create-prelim-table.sql
+	$(PSQL_CMD) -f sql/04_add-waterbodies.sql
+	$(PSQL_CMD) -f sql/05_add-streams-100m-lookup.sql
+	$(PSQL_CMD) -f sql/06_add-streams-100m-closest.sql
+	$(PSQL_CMD) -f sql/07_add-streams-100m-500m.sql
+	$(PSQL_CMD) -f sql/08_create-output-tables.sql
 	# Tag maximal observations for each species
 	for spp_id in $(SPECIES) ; do \
 	  echo $$spp_id ; \
-	  psql -v ON_ERROR_STOP=1 -f sql/10_tag_maximal_events.sql -v species=$$spp_id ; \
+	  $(PSQL_CMD) -f sql/10_tag_maximal_events.sql -v species=$$spp_id ; \
 	done
-	psql2csv < sql/qa_summary.sql > $@
-	psql -f sql/11_cleanup.sql
+	psql2csv $(DATABASE_URL) < sql/qa_summary.sql > $@
+	$(PSQL_CMD) -f sql/11_cleanup.sql
 
