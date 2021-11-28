@@ -32,12 +32,11 @@ This logic is based on the assumptions:
     -  as long as an observation is associated with the correct waterbody, it is not important to exactly locate it on the stream network within the waterbody
 - for observations on streams, the location of an observation should generally take priority over a match via the xref lookup because many points have been manually snapped to the 20k stream lines - the lookup is best used to prioritize instances of multiple matches within 100m and allow for confidence in making matches between 100 and 500m
 
-
 ## Requirements
 
-- PostgreSQL/PostGIS (requires PostgreSQL >=12.0, tested with v12.2, PostGIS 3.0.1)
+- PostgreSQL/PostGIS (requires PostgreSQL >=13, PostGIS >=3.1)
 - a FWA database created by [fwapg](https://github.com/smnorris/fwapg)
-- GDAL
+- GDAL >= 3.4
 - Python (>=3.6)
 - [bcdata](https://github.com/smnorris/bcdata)
 - wget, unzip, psql2csv
@@ -64,7 +63,6 @@ To run the job:
 ```
 $ make
 ```
-
 
 ## Output tables
 
@@ -156,7 +154,6 @@ ORDER BY species_code;
  TSB
 ```
 
-
 ### Example 2
 
 What is the slope (percent) of the stream at the locations of all *distinct* Coho observation locations in `COWN` watershed group (on single line streams)?
@@ -188,7 +185,6 @@ ORDER BY e.linear_feature_id, e.downstream_route_measure, fish_observation_point
                     230353 |   0.0399
 ...
 ```
-
 
 ### Example 3
 
