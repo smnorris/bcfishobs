@@ -37,6 +37,7 @@ clean:
 		-nln wdic_waterbodies_load \
 		-nlt NONE \
 		data/whse_fish.wdic_waterbodies.csv
+	$(PSQL_CMD) -f sql/02_clean-wdic.sql
 	touch $@
 
 # load species code table
@@ -60,7 +61,6 @@ qa_summary.csv: .species_cd .wdic_waterbodies .fiss_fish_obsrvtn_pnt_sp
 	$(PSQL_CMD) -c "CREATE EXTENSION IF NOT EXISTS intarray"
 	$(PSQL_CMD) -c "CREATE SCHEMA IF NOT EXISTS bcfishobs"
 	$(PSQL_CMD) -f sql/01_clean-fishobs.sql
-	$(PSQL_CMD) -f sql/02_clean-wdic.sql
 	$(PSQL_CMD) -f sql/03_create-prelim-table.sql
 	$(PSQL_CMD) -f sql/04_add-waterbodies.sql
 	$(PSQL_CMD) -f sql/05_add-streams-100m-lookup.sql
