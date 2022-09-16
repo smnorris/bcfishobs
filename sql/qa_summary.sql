@@ -1,10 +1,12 @@
 WITH matched_pts AS
-(SELECT
-  match_type,
+(
+  -- just choose the first match type used for a given event (several observations may have been matched to the location)
+  SELECT
+  match_types[1] as match_type,
   count(*) as n_distinct_events
 FROM bcfishobs.fiss_fish_obsrvtn_events
-GROUP BY match_type
-ORDER BY match_type),
+GROUP BY match_types[1]
+ORDER BY match_types[1]),
 
 matched_obs AS
 (SELECT match_type, count(*) as n_observations

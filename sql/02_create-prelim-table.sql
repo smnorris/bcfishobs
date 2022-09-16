@@ -42,6 +42,7 @@ WITH candidates AS
     FROM whse_basemapping.fwa_stream_networks_sp AS str
     WHERE str.localcode_ltree IS NOT NULL
     AND NOT str.wscode_ltree <@ '999'
+    AND str.edge_type != 6010
     ORDER BY str.geom <-> pt.geom
     LIMIT 100) as nn
   WHERE nn.distance_to_stream < 1500
