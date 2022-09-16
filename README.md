@@ -185,8 +185,6 @@ What is the slope (percent) of the stream at all distinct locations of Steelhead
 ```
 SELECT 
   e.fish_obsrvtn_event_id,
-  e.wscode_ltree,
-  e.localcode_ltree,
   s.gnis_name,
   s.gradient
 FROM bcfishobs.fiss_fish_obsrvtn_events e
@@ -197,17 +195,17 @@ AND e.watershed_group_code = 'COWN'
 AND s.edge_type = 1000
 ORDER BY e.wscode_ltree, e.localcode_ltree, e.downstream_route_measure
 
-  fish_obsrvtn_event_id |              wscode_ltree              |            localcode_ltree             |      gnis_name       | gradient 
------------------------+----------------------------------------+----------------------------------------+----------------------+----------
-          675380033961 | 920.252823                             | 920.252823.375007                      | Cowichan River       |   0.0071
-          675380034170 | 920.252823                             | 920.252823.409736                      | Cowichan River       |   0.0614
-          641720026729 | 920.252823.022807                      | 920.252823.022807.537781               | Koksilah River       |   0.0058
-          641720036829 | 920.252823.022807                      | 920.252823.022807.758579               | Koksilah River       |   0.0369
-          641720037394 | 920.252823.022807                      | 920.252823.022807.765283               | Koksilah River       |   0.0761
-          581370001848 | 920.252823.022807.080512               | 920.252823.022807.080512.060547        | Kelvin Creek         |   0.0061
-          581370006510 | 920.252823.022807.080512               | 920.252823.022807.080512.361902        | Kelvin Creek         |   0.0167
-          564060000660 | 920.252823.022807.080512.135864        | 920.252823.022807.080512.135864        | Glenora Creek        |   0.0137
-          564060008058 | 920.252823.022807.080512.135864        | 920.252823.022807.080512.135864.562535 | Glenora Creek        |   0.0843
+ fish_obsrvtn_event_id |      gnis_name       | gradient 
+-----------------------+----------------------+----------
+          675380033961 | Cowichan River       |   0.0071
+          675380034170 | Cowichan River       |   0.0614
+          641720026729 | Koksilah River       |   0.0058
+          641720036829 | Koksilah River       |   0.0369
+          641720037394 | Koksilah River       |   0.0761
+          581370001848 | Kelvin Creek         |   0.0061
+          581370006510 | Kelvin Creek         |   0.0167
+          564060000660 | Glenora Creek        |   0.0137
+          564060008058 | Glenora Creek        |   0.0843
 ...
 ```
 
