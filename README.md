@@ -1,6 +1,6 @@
 # bcfishobs
 
-[Known BC Fish Observations](https://catalogue.data.gov.bc.ca/dataset/known-bc-fish-observations-and-bc-fish-distributions) is documented as the *most current and comprehensive information source on fish presence for the province*. This repository includes a method and scripts for locating these observation locations as linear referencing events on the most current and comprehensive stream network currently available for BC, the [Freshwater Atlas](https://www2.gov.bc.ca/gov/content/data/geographic-data-services/topographic-data/freshwater).
+[Known BC Fish Observations](https://catalogue.data.gov.bc.ca/dataset/known-bc-fish-observations-and-bc-fish-distributions) is documented as the *most current and comprehensive information source on fish presence for the province*. These scripts locate these observation points as linear referencing events on the most current and comprehensive stream network currently available for BC, the [Freshwater Atlas](https://www2.gov.bc.ca/gov/content/data/geographic-data-services/topographic-data/freshwater).
 
 The scripts:
 
@@ -8,9 +8,9 @@ The scripts:
 - download a lookup table `whse_fish.wdic_waterbodies` used to match the 50k waterbody codes in the observations table to FWA waterbodies
 - download a lookup table `species_cd`, linking the fish species code found in the observation table to species name and scientific name
 - load each above table to a PostgreSQL database
-- discards any observations not coded as `point_type_code = 'Observation'` (`Summary` records are all be duplicates of `Observation` records)
-- discards duplicate geometries from observation table
+- discard any observations not coded as `point_type_code = 'Observation'` (`Summary` records are all be duplicates of `Observation` records)
 - references the observation points to their position on the FWA stream network (as outlined below)
+- create two ouputs (see below for descriptions)
 
 ### Matching logic, observations
 
