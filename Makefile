@@ -18,6 +18,7 @@ all: $(GENERATED_FILES)
 # Remove all generated targets
 clean:
 	rm -Rf .make
+	rm -Rf data
 
 # load source data to db
 .make/fiss_fish_obsrvtn_pnt_sp:
@@ -27,6 +28,7 @@ clean:
 
 # load 50k waterbody table
 .make/wdic_waterbodies: sql/wdic_waterbodies.sql
+	mkdir -p data
 	wget -qNP data https://hillcrestgeo.ca/outgoing/public/whse_fish/whse_fish.wdic_waterbodies.csv.zip
 	unzip -qjun -d data data/whse_fish.wdic_waterbodies.csv.zip
 	# load via ogr because it makes cleaning the input file easy.
@@ -44,6 +46,7 @@ clean:
 
 # load species code table
 .make/species_cd:
+	mkdir -p data
 	wget -qNP data https://raw.githubusercontent.com/smnorris/fishbc/master/data-raw/whse_fish_species_cd/whse_fish_species_cd.csv
 	$(PSQL_CMD) -c "DROP TABLE IF EXISTS whse_fish.species_cd;"
 	$(PSQL_CMD) -c "CREATE TABLE whse_fish.species_cd \
