@@ -1,7 +1,7 @@
 -- find and tag maximal observations for a given species
 WITH maximal AS
 (SELECT DISTINCT
-  a.fish_obsrvtn_pnt_distinct_id,
+  a.fish_obsrvtn_event_id,
   a.blue_line_key,
   a.downstream_route_measure
 FROM bcfishobs.fiss_fish_obsrvtn_events a
@@ -19,7 +19,7 @@ ON
     b.wscode_ltree,
     b.localcode_ltree
   )
-WHERE b.fish_obsrvtn_pnt_distinct_id is null
+WHERE b.fish_obsrvtn_event_id is null
 AND a.species_ids @> ARRAY[:species]
 ORDER BY blue_line_key, downstream_route_measure
 )
@@ -32,6 +32,6 @@ SET maximal_species =
   CASE WHEN maximal_species IS NULL THEN ARRAY[:species]
   ELSE array_append(maximal_species, :species)
 END
-WHERE fish_obsrvtn_pnt_distinct_id IN
-  (SELECT fish_obsrvtn_pnt_distinct_id FROM maximal)
+WHERE fish_obsrvtn_event_id IN
+  (SELECT fish_obsrvtn_event_id FROM maximal)
 
