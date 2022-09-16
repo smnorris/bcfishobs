@@ -194,3 +194,25 @@ ALTER TABLE bcfishobs.fiss_fish_obsrvtn_unmatched
 ADD PRIMARY KEY (fish_obsrvtn_pnt_distinct_id);
 
 
+COMMENT ON TABLE bcfishobs.fiss_fish_obsrvtn_events IS 'Unique locations of BC Fish Observations snapped to FWA streams';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events.fish_obsrvtn_event_id IS 'Unique identifier, linked to blue_line_key and measure';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events.match_types IS 'Notes on how the observation(s) were matched to the stream';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events.obs_ids IS 'fish_observation_point_id for observations associated with the location';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events.species_codes IS 'BC fish species codes, see https://raw.githubusercontent.com/smnorris/fishbc/master/data-raw/whse_fish_species_cd/whse_fish_species_cd.csv';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events.species_ids IS 'Species IDs, see https://raw.githubusercontent.com/smnorris/fishbc/master/data-raw/whse_fish_species_cd/whse_fish_species_cd.csv';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events.maximal_species IS 'Indicates if the observation is the most upstream for the given species (no additional observations upstream)';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events.distances_to_stream IS 'Distances (m) from source observations to output point';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events.geom IS 'Geometry of observation(s) on the FWA stream (measure rounded to the nearest metre)';
+
+COMMENT ON VIEW bcfishobs.fiss_fish_obsrvtn_events_vw IS 'BC Fish Observations snapped to FWA streams';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.fish_observation_point_id IS 'Source observation primary key';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.distance_to_stream IS 'Distance (m) from source observation to output point';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.match_type IS 'Notes on how the observation was matched to the stream';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.species_id IS 'Species ID, see https://raw.githubusercontent.com/smnorris/fishbc/master/data-raw/whse_fish_species_cd/whse_fish_species_cd.csv';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.species_code IS 'BC fish species code, see https://raw.githubusercontent.com/smnorris/fishbc/master/data-raw/whse_fish_species_cd/whse_fish_species_cd.csv';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.agency_id IS '';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.observation_date IS 'The date on which the observation occurred.';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.agency_name IS 'The name of the agency that made the observation.';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.source IS 'The abbreviation, and if appropriate, the primary key, of the dataset(s) from which the data was obtained. For example: FDIS Database: fshclctn_id 66589';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.source_ref IS 'The concatenation of all biographical references for the source data.  This may include citations to reports that published the observations, or the name of a project under which the observations were made. Some example values for SOURCE REF are: A RECONNAISSANCE SURVEY OF CULTUS LAKE, and Bonaparte Watershed Fish and Fish Habitat Inventory - 2000';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.geom IS 'Geometry of observation on the FWA stream (measure rounded to the nearest metre)';
