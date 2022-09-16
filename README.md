@@ -180,7 +180,7 @@ ORDER BY species_code;
 
 ### Example 2
 
-What is the slope (percent) of the stream at the locations of all *distinct locations* of Steelhead observations in `COWN` watershed group (on single line streams)?
+What is the slope (percent) of the stream at all distinct locations of Steelhead observations in `COWN` watershed group (on single line streams)?
 
 ```
 SELECT 
