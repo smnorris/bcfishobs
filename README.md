@@ -64,47 +64,71 @@ To run the job:
 $ make
 ```
 
-## Output tables
+## Outputs
 
-All derived outout tables are written to schema `bcfishobs`.
+All outputs are written to schema `bcfishobs`.
 
-#### `bcfishobs.fiss_fish_obsrvtn_events_sp`
+#### `bcfishobs.fiss_fish_obsrvtn_events_vw`
 
-All observations that are successfully matched to streams (not just distinct locations) plus commonly used columns.
+Contains a record for each observation that is successfully matched to a stream 
+(not just distinct locations), and commonly used columns.
 Geometries are located on the stream to which the observation is matched.
 
 ```
-          Column           |          Type          | Collation | Nullable | Default
----------------------------+------------------------+-----------+----------+---------
- fish_observation_point_id | integer                |           |          |
- linear_feature_id         | integer                |           |          |
- wscode_ltree              | ltree                  |           |          |
- localcode_ltree           | ltree                  |           |          |
- blue_line_key             | integer                |           |          |
- waterbody_key             | integer                |           |          |
- downstream_route_measure  | double precision       |           |          |
- distance_to_stream        | double precision       |           |          |
- match_type                | text                   |           |          |
- watershed_group_code      | character varying(4)   |           |          |
- species_id                | integer                |           |          |
- species_code              | character varying      |           |          |
- agency_id                 | character varying      |           |          |
- observation_date          | date                   |           |          |
- agency_name               | character varying      |           |          |
- source                    | character varying      |           |          |
- source_ref                | character varying      |           |          |
- geom                      | geometry(PointZM,3005) |           |          |
-Indexes:
-    "fiss_fish_obsrvtn_events_sp_blue_line_key_idx" btree (blue_line_key)
-    "fiss_fish_obsrvtn_events_sp_geom_idx" gist (geom)
-    "fiss_fish_obsrvtn_events_sp_linear_feature_id_idx" btree (linear_feature_id)
-    "fiss_fish_obsrvtn_events_sp_localcode_ltree_idx" btree (localcode_ltree)
-    "fiss_fish_obsrvtn_events_sp_localcode_ltree_idx1" gist (localcode_ltree)
-    "fiss_fish_obsrvtn_events_sp_waterbody_key_idx" btree (waterbody_key)
-    "fiss_fish_obsrvtn_events_sp_watershed_group_code_idx" btree (watershed_group_code)
-    "fiss_fish_obsrvtn_events_sp_wscode_ltree_idx" btree (wscode_ltree)
-    "fiss_fish_obsrvtn_events_sp_wscode_ltree_idx1" gist (wscode_ltree)
+          Column           |          Type          |
+---------------------------+------------------------+
+ fish_observation_point_id | integer                |
+ linear_feature_id         | integer                |
+ wscode_ltree              | ltree                  |
+ localcode_ltree           | ltree                  |
+ blue_line_key             | integer                |
+ waterbody_key             | integer                |
+ downstream_route_measure  | double precision       |
+ distance_to_stream        | double precision       |
+ match_type                | text                   |
+ watershed_group_code      | character varying(4)   |
+ species_id                | integer                |
+ species_code              | character varying      |
+ agency_id                 | character varying      |
+ observation_date          | date                   |
+ agency_name               | character varying      |
+ source                    | character varying      |
+ source_ref                | character varying      |
+ geom                      | geometry(PointZM,3005) |
 ```
+
+#### `bcfishobs.fiss_fish_obsrvtn_events`
+
+Distinct locations of observations matched to streams.
+Geometries are located on the stream to which the observation is matched.
+
+```
+          Column          |          Type          |
+--------------------------+------------------------+
+ fish_obsrvtn_event_id    | bigint                 |
+ linear_feature_id        | integer                |
+ wscode_ltree             | ltree                  |
+ localcode_ltree          | ltree                  |
+ blue_line_key            | integer                |
+ watershed_group_code     | character varying(4)   |
+ downstream_route_measure | double precision       |
+ match_types              | text[]                 |
+ obs_ids                  | integer[]              |
+ species_codes            | text[]                 |
+ species_ids              | integer[]              |
+ maximal_species          | integer[]              |
+ distances_to_stream      | double precision[]     |
+ geom                     | geometry(PointZM,3005) |
+Indexes:
+    "fiss_fish_obsrvtn_events_pkey" PRIMARY KEY, btree (fish_obsrvtn_event_id)
+    "fiss_fish_obsrvtn_events_blue_line_key_idx" btree (blue_line_key)
+    "fiss_fish_obsrvtn_events_linear_feature_id_idx" btree (linear_feature_id)
+    "fiss_fish_obsrvtn_events_localcode_ltree_idx" btree (localcode_ltree)
+    "fiss_fish_obsrvtn_events_obs_ids_idx" gist (obs_ids gist__intbig_ops)
+    "fiss_fish_obsrvtn_events_species_ids_idx" gist (species_ids gist__intbig_ops)
+    "fiss_fish_obsrvtn_events_wscode_ltree_idx" btree (wscode_ltree)
+```
+
 
 ## QA results
 
@@ -122,7 +146,7 @@ List all species observed on the Cowichan River (`blue_line_key = 354155148`), d
 
 ```
 SELECT DISTINCT species_code
-FROM bcfishobs.fiss_fish_obsrvtn_events_sp
+FROM bcfishobs.fiss_fish_obsrvtn_events_vw
 WHERE blue_line_key = 354155148 AND
 downstream_route_measure < 34180
 ORDER BY species_code;
@@ -156,33 +180,34 @@ ORDER BY species_code;
 
 ### Example 2
 
-What is the slope (percent) of the stream at the locations of all *distinct* Coho observation locations in `COWN` watershed group (on single line streams)?
+What is the slope (percent) of the stream at the locations of all *distinct locations* of Steelhead observations in `COWN` watershed group (on single line streams)?
 
 ```
-SELECT DISTINCT ON (e.linear_feature_id, e.downstream_route_measure)
-  e.fish_observation_point_id,
+SELECT 
+  e.fish_obsrvtn_event_id,
+  e.wscode_ltree,
+  e.localcode_ltree,
+  s.gnis_name,
   s.gradient
-FROM bcfishobs.fiss_fish_obsrvtn_events_sp e
+FROM bcfishobs.fiss_fish_obsrvtn_events e
 INNER JOIN whse_basemapping.fwa_stream_networks_sp s
 ON e.linear_feature_id = s.linear_feature_id
-INNER JOIN whse_basemapping.fwa_edge_type_codes ec
-ON s.edge_type = ec.edge_type
-WHERE e.species_code = 'CO'
+WHERE e.species_codes && ARRAY['ST']
 AND e.watershed_group_code = 'COWN'
-AND ec.edge_type = 1000
-ORDER BY e.linear_feature_id, e.downstream_route_measure, fish_observation_point_id;
+AND s.edge_type = 1000
+ORDER BY e.wscode_ltree, e.localcode_ltree, e.downstream_route_measure
 
- fish_observation_point_id | gradient
----------------------------+----------
-                    188045 |   0.0109
-                    187998 |   0.0015
-                    187872 |        0
-                    201002 |   0.1169
-                    230155 |   0.0448
-                    230838 |   0.0448
-                    230194 |   0.0203
-                    201004 |   0.0399
-                    230353 |   0.0399
+  fish_obsrvtn_event_id |              wscode_ltree              |            localcode_ltree             |      gnis_name       | gradient 
+-----------------------+----------------------------------------+----------------------------------------+----------------------+----------
+          675380033961 | 920.252823                             | 920.252823.375007                      | Cowichan River       |   0.0071
+          675380034170 | 920.252823                             | 920.252823.409736                      | Cowichan River       |   0.0614
+          641720026729 | 920.252823.022807                      | 920.252823.022807.537781               | Koksilah River       |   0.0058
+          641720036829 | 920.252823.022807                      | 920.252823.022807.758579               | Koksilah River       |   0.0369
+          641720037394 | 920.252823.022807                      | 920.252823.022807.765283               | Koksilah River       |   0.0761
+          581370001848 | 920.252823.022807.080512               | 920.252823.022807.080512.060547        | Kelvin Creek         |   0.0061
+          581370006510 | 920.252823.022807.080512               | 920.252823.022807.080512.361902        | Kelvin Creek         |   0.0167
+          564060000660 | 920.252823.022807.080512.135864        | 920.252823.022807.080512.135864        | Glenora Creek        |   0.0137
+          564060008058 | 920.252823.022807.080512.135864        | 920.252823.022807.080512.135864.562535 | Glenora Creek        |   0.0843
 ...
 ```
 
@@ -196,18 +221,20 @@ SELECT
   s.gradient,
   s.stream_order,
   round((ST_Z((ST_Dump(ST_LocateAlong(s.geom, e.downstream_route_measure))).geom))::numeric) as elevation
-FROM bcfishobs.fiss_fish_obsrvtn_events_sp e
+FROM bcfishobs.fiss_fish_obsrvtn_events_vw e
 INNER JOIN whse_basemapping.fwa_stream_networks_sp s
 ON e.linear_feature_id = s.linear_feature_id
 WHERE e.species_code = 'GR'
-AND e.watershed_group_code = 'PARS';
+AND e.watershed_group_code = 'PARS'
+ORDER BY e.wscode_ltree, e.localcode_ltree, e.downstream_route_measure;
 
-fish_observation_point_id | gradient | stream_order | elevation
+ fish_observation_point_id | gradient | stream_order | elevation 
 ---------------------------+----------+--------------+-----------
-                     52045 |   0.0025 |            3 |       753
-                     67443 |        0 |            6 |       694
-                    175139 |   0.0005 |            2 |       728
-                    230075 |        0 |            1 |       735
-                    243190 |   0.0585 |            3 |      1097
+                    233425 |        0 |            7 |       674
+                    233402 |   0.0007 |            7 |       675
+                    318578 |   0.0007 |            7 |       675
+                    233432 |   0.0004 |            7 |       685
+                     96418 |        0 |            6 |       694
+                    233458 |   0.0003 |            7 |       696
 ...
 ```

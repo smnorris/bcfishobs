@@ -7,13 +7,15 @@ CREATE TABLE bcfishobs.fiss_fish_obsrvtn_events
   wscode_ltree ltree,
   localcode_ltree ltree,
   blue_line_key integer,
+  watershed_group_code character varying(4),
   downstream_route_measure double precision,
   match_types text[],
   obs_ids integer[],
   species_codes text[],
   species_ids integer[],
   maximal_species integer[],
-  distances_to_stream double precision[]
+  distances_to_stream double precision[],
+  geom geometry(pointzm, 3005)
   );
 
 
@@ -70,24 +72,28 @@ insert into bcfishobs.fiss_fish_obsrvtn_events
   wscode_ltree,
   localcode_ltree,
   blue_line_key,
+  watershed_group_code,
   downstream_route_measure,
   obs_ids,
   species_ids,
   species_codes,
   distances_to_stream,
-  match_types
+  match_types,
+  geom
   )
 SELECT
   s.linear_feature_id,
   s.wscode_ltree,
   s.localcode_ltree,
   r.blue_line_key,
+  s.watershed_group_code,
   r.downstream_route_measure,
   array_agg(r.obs_id) as obs_ids,
   array_agg(r.species_id) AS species_ids,
   array_agg(r.species_code) AS species_codes,
   array_agg(r.distance_to_stream) as distances_to_stream,
-  array_agg(r.match_type) as match_types
+  array_agg(r.match_type) as match_types,
+  postgisftw.FWA_LocateAlong(r.blue_line_key, r.downstream_route_measure) as geom
 FROM rounded r
 inner join whse_fish.fiss_fish_obsrvtn_pnt_sp o
 on r.obs_id = o.fish_observation_point_id
@@ -105,16 +111,21 @@ GROUP BY
 ORDER BY r.blue_line_key, r.downstream_route_measure, st_distance(s.geom, o.geom)
 on conflict do nothing; 
 
+CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events (linear_feature_id);
 CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events (blue_line_key);
+CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events (wscode_ltree);
+CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events (localcode_ltree);
+CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_sp USING GIST (wscode_ltree);
+CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_sp USING GIST (localcode_ltree);
+CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_sp USING GIST (geom);
 CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events USING GIST (obs_ids gist__intbig_ops);
 CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events USING GIST (species_ids gist__intbig_ops);
 
 
--- create primary output - all matched observations as single points, snapped to streams
 
-DROP TABLE IF EXISTS bcfishobs.fiss_fish_obsrvtn_events_sp;
-
-CREATE TABLE bcfishobs.fiss_fish_obsrvtn_events_sp AS
+-- de-aggregated view - all matched observations as single points, snapped to streams
+DROP VIEW IF EXISTS bcfishobs.fiss_fish_obsrvtn_events_vw;
+CREATE VIEW bcfishobs.fiss_fish_obsrvtn_events_vw AS
 
 WITH all_obs AS
 (SELECT
@@ -128,12 +139,11 @@ WITH all_obs AS
    unnest(e.distances_to_stream) as distance_to_stream,
    unnest(e.match_types) as match_type,
    s.watershed_group_code,
-   postgisftw.FWA_LocateAlong(e.blue_line_key, e.downstream_route_measure) as geom
+   e.geom
 FROM bcfishobs.fiss_fish_obsrvtn_events e
 INNER JOIN whse_basemapping.fwa_stream_networks_sp s
-ON e.blue_line_key = s.blue_line_key
-and e.downstream_route_measure < s.upstream_route_measure
-and e.downstream_route_measure > s.downstream_route_measure)
+ON e.linear_feature_id = s.linear_feature_id
+)
 
 SELECT
   a.fish_observation_point_id,
@@ -159,18 +169,6 @@ INNER JOIN whse_fish.fiss_fish_obsrvtn_pnt_sp  b
 ON a.fish_observation_point_id = b.fish_observation_point_id
 INNER JOIN whse_fish.species_cd sp ON b.species_code = sp.code;
 
--- create indexes
-CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_sp (linear_feature_id);
-CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_sp (blue_line_key);
-CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_sp (waterbody_key);
-CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_sp (wscode_ltree);
-CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_sp (localcode_ltree);
-CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_sp (watershed_group_code);
-
--- create GIST indexes on geom and ltree types
-CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_sp USING GIST (geom);
-CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_sp USING GIST (wscode_ltree);
-CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_sp USING GIST (localcode_ltree);
 
 
 -- Dump all un-referenced points (within 1500m of a stream) for QA.
@@ -194,3 +192,5 @@ ORDER BY e1.fish_obsrvtn_pnt_distinct_id, e1.distance_to_stream;
 
 ALTER TABLE bcfishobs.fiss_fish_obsrvtn_unmatched
 ADD PRIMARY KEY (fish_obsrvtn_pnt_distinct_id);
+
+
