@@ -70,6 +70,7 @@ qa_summary.csv: .make/species_cd .make/wdic_waterbodies .make/fiss_fish_obsrvtn_
 	$(PSQL_CMD) -f sql/05_add-streams-100m-closest.sql
 	$(PSQL_CMD) -f sql/06_add-streams-100m-500m.sql
 	$(PSQL_CMD) -f sql/07_create-output-tables.sql
+
 	# Tag maximal observations for each species
 	for spp_id in $(SPECIES) ; do \
 	  echo $$spp_id ; \
