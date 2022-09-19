@@ -130,6 +130,7 @@ CREATE VIEW bcfishobs.fiss_fish_obsrvtn_events_vw AS
 WITH all_obs AS
 (SELECT
    unnest(e.obs_ids) AS fish_observation_point_id,
+   e.fish_obsrvtn_event_id,
    s.linear_feature_id,
    s.wscode_ltree,
    s.localcode_ltree,
@@ -147,6 +148,7 @@ ON e.linear_feature_id = s.linear_feature_id
 
 SELECT
   a.fish_observation_point_id,
+  a.fish_obsrvtn_event_id,
   a.linear_feature_id,
   a.wscode_ltree,
   a.localcode_ltree,
@@ -205,6 +207,7 @@ COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events.distances_to_stream IS 'Dis
 COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events.geom IS 'Geometry of observation(s) on the FWA stream (measure rounded to the nearest metre)';
 
 COMMENT ON VIEW bcfishobs.fiss_fish_obsrvtn_events_vw IS 'BC Fish Observations snapped to FWA streams';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events.fish_obsrvtn_event_id IS 'Links to fiss_fish_obsrvtn_events, a unique location on the stream network based on blue_line_key and measure';
 COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.fish_observation_point_id IS 'Source observation primary key';
 COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.distance_to_stream IS 'Distance (m) from source observation to output point';
 COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.match_type IS 'Notes on how the observation was matched to the stream';
