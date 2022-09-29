@@ -115,9 +115,9 @@ CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events (linear_feature_id);
 CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events (blue_line_key);
 CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events (wscode_ltree);
 CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events (localcode_ltree);
-CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_sp USING GIST (wscode_ltree);
-CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_sp USING GIST (localcode_ltree);
-CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_sp USING GIST (geom);
+CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events USING GIST (wscode_ltree);
+CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events USING GIST (localcode_ltree);
+CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events USING GIST (geom);
 CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events USING GIST (obs_ids gist__intbig_ops);
 CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events USING GIST (species_ids gist__intbig_ops);
 
