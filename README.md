@@ -75,26 +75,32 @@ Contains a record for each observation that is successfully matched to a stream
 Geometries are located on the stream to which the observation is matched.
 
 ```
-          Column           |          Type          |
----------------------------+------------------------+
- fish_observation_point_id | integer                |
- linear_feature_id         | integer                |
- wscode_ltree              | ltree                  |
- localcode_ltree           | ltree                  |
- blue_line_key             | integer                |
- waterbody_key             | integer                |
- downstream_route_measure  | double precision       |
- distance_to_stream        | double precision       |
- match_type                | text                   |
- watershed_group_code      | character varying(4)   |
- species_id                | integer                |
- species_code              | character varying      |
- agency_id                 | character varying      |
- observation_date          | date                   |
- agency_name               | character varying      |
- source                    | character varying      |
- source_ref                | character varying      |
- geom                      | geometry(PointZM,3005) |
+          Column           |          Type           |
+---------------------------+-------------------------+
+ fish_observation_point_id | integer                 |
+ fish_obsrvtn_event_id     | bigint                  |
+ linear_feature_id         | bigint                  |
+ wscode_ltree              | ltree                   |
+ localcode_ltree           | ltree                   |
+ blue_line_key             | integer                 |
+ waterbody_key             | integer                 |
+ downstream_route_measure  | double precision        |
+ distance_to_stream        | double precision        |
+ match_type                | text                    |
+ watershed_group_code      | character varying(4)    |
+ species_id                | integer                 |
+ species_code              | character varying(6)    |
+ agency_id                 | numeric                 |
+ observation_date          | date                    |
+ agency_name               | character varying(60)   |
+ source                    | character varying(1000) |
+ source_ref                | character varying(4000) |
+ activity_code             | character varying(100)  |
+ activity                  | character varying(300)  |
+ life_stage_code           | character varying(100)  |
+ life_stage                | character varying(300)  |
+ acat_report_url           | character varying(254)  |
+ geom                      | geometry(PointZM,3005)  |
 ```
 
 #### `bcfishobs.fiss_fish_obsrvtn_events`
@@ -236,3 +242,17 @@ ORDER BY e.wscode_ltree, e.localcode_ltree, e.downstream_route_measure;
                     233458 |   0.0003 |            7 |       696
 ...
 ```
+
+## Warnings
+
+### `fish_observation_point_id`
+
+Column `fish_observation_point_id` is not an immutable primary key in the source table.
+`fish_observation_point_id` is guaranteed to be unique for a given extract but values will change over time.
+- if current id values are required, run a fresh extract
+- if referring to a specific observation in communications, use some combination of `source`, `species_code`, `life_cycle_code`, coordinates, etc
+
+### Duplicates
+
+Duplicate rows (for all fields) exist in the source table and are replicated in the output view. 
+Use observation counts with caution. 

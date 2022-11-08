@@ -165,6 +165,11 @@ SELECT
   b.agency_name,
   b.source,
   b.source_ref,
+  b.activity_code,
+  b.activity,
+  b.life_stage_code,
+  b.life_stage,
+  b.acat_report_url,
   (st_dump(a.geom)).geom::geometry(PointZM, 3005) AS geom
 FROM all_obs a
 INNER JOIN whse_fish.fiss_fish_obsrvtn_pnt_sp  b
@@ -218,4 +223,9 @@ COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.observation_date IS 'The
 COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.agency_name IS 'The name of the agency that made the observation.';
 COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.source IS 'The abbreviation, and if appropriate, the primary key, of the dataset(s) from which the data was obtained. For example: FDIS Database: fshclctn_id 66589';
 COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.source_ref IS 'The concatenation of all biographical references for the source data.  This may include citations to reports that published the observations, or the name of a project under which the observations were made. Some example values for SOURCE REF are: A RECONNAISSANCE SURVEY OF CULTUS LAKE, and Bonaparte Watershed Fish and Fish Habitat Inventory - 2000';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.activity_code IS 'ACTIVITY CODE contains the fish activity code from the source dataset, such as I for Incubating, or SPE for Spawning In Estuary.';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.activity IS 'ACTIVITY is a full textual description of the activity the fish was engaged in when it was observed, such as SPAWNING.';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.life_stage_code IS 'LIFE STAGE CODE is a short character code identiying the life stage of the fish species for this oberservation.  Each source dataset of observations uses its own set of LIFE STAGE CODES.  For example, in the FDIS dataset, U means Undetermined, NS means Not Specified, M means Mature, IM means Immature, and MT means Maturing.  Descriptions for each LIFE STAGE CODE are given in the LIFE STAGE attribute.';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.life_stage IS 'LIFE STAGE is the full textual description corresponding to the LIFE STAGE CODE';
+COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.acat_report_url IS 'ACAT REPORT URL is a URL to the ACAT REPORT which provides additional information about the FISS FISH OBSRVTN PNT SP.';
 COMMENT ON COLUMN bcfishobs.fiss_fish_obsrvtn_events_vw.geom IS 'Geometry of observation on the FWA stream (measure rounded to the nearest metre)';
