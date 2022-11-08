@@ -21,9 +21,9 @@ clean:
 	rm -Rf data
 	$(PSQL) -c "drop schema if exists bcfishobs cascade"
 
-# load source data to db
+# load source data to db, do not include "Summary" records
 .make/fiss_fish_obsrvtn_pnt_sp:
-	bcdata bc2pg WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP
+	bcdata bc2pg WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP --query "POINT_TYPE_CODE = 'Observation'"
 	mkdir -p .make
 	touch $@
 
