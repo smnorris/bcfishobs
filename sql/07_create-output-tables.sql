@@ -107,8 +107,8 @@ GROUP BY
   s.localcode_ltree,
   r.blue_line_key,
   r.downstream_route_measure,
-  o.geom
-ORDER BY r.blue_line_key, r.downstream_route_measure, st_distance(s.geom, o.geom)
+  postgisftw.FWA_LocateAlong(r.blue_line_key, r.downstream_route_measure)
+ORDER BY r.blue_line_key, r.downstream_route_measure
 on conflict do nothing; 
 
 CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events (linear_feature_id);
