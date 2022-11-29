@@ -12,9 +12,20 @@
 -- ---------------------------------------------
 
 
-DROP TABLE IF EXISTS bcfishobs.fiss_fish_obsrvtn_events_prelim1;
+drop table if exists temp.fiss_fish_obsrvtn_events_prelim_a;
+create table temp.fiss_fish_obsrvtn_events_prelim_a (
+  fish_obsrvtn_pnt_distinct_id integer,
+  linear_feature_id bigint,
+  wscode_ltree ltree,
+  localcode_ltree ltree,
+  waterbody_key integer,
+  blue_line_key integer,
+  downstream_route_measure double precision,
+  distance_to_stream double precision
+);
+create index on temp.fiss_fish_obsrvtn_events_prelim_a (fish_obsrvtn_pnt_distinct_id);
 
-CREATE TABLE bcfishobs.fiss_fish_obsrvtn_events_prelim1 AS
+
 WITH candidates AS
  ( SELECT
     pt.fish_obsrvtn_pnt_distinct_id,
@@ -27,7 +38,7 @@ WITH candidates AS
     nn.downstream_route_measure,
     nn.distance_to_stream,
     ST_LineMerge(nn.geom) AS geom
-  FROM bcfishobs.fiss_fish_obsrvtn_pnt_distinct as pt
+  FROM temp.fiss_fish_obsrvtn_pnt_distinct as pt
   CROSS JOIN LATERAL
   (SELECT
      str.linear_feature_id,
@@ -62,6 +73,7 @@ bluelines AS
 )
 
 -- from the selected blue lines, generate downstream_route_measure
+insert into temp.fiss_fish_obsrvtn_events_prelim_a
 SELECT
   bluelines.fish_obsrvtn_pnt_distinct_id,
   candidates.linear_feature_id,
@@ -78,10 +90,5 @@ FROM bluelines
 INNER JOIN candidates ON bluelines.fish_obsrvtn_pnt_distinct_id = candidates.fish_obsrvtn_pnt_distinct_id
 AND bluelines.blue_line_key = candidates.blue_line_key
 AND bluelines.distance_to_stream = candidates.distance_to_stream
-INNER JOIN bcfishobs.fiss_fish_obsrvtn_pnt_distinct pts
+INNER JOIN temp.fiss_fish_obsrvtn_pnt_distinct pts
 ON bluelines.fish_obsrvtn_pnt_distinct_id = pts.fish_obsrvtn_pnt_distinct_id;
-
--- ---------------------------------------------
--- index the intermediate table
-CREATE INDEX ON bcfishobs.fiss_fish_obsrvtn_events_prelim1 (fish_obsrvtn_pnt_distinct_id);
-
