@@ -100,7 +100,7 @@ on r.obs_id = o.fish_observation_point_id
 inner join whse_basemapping.fwa_stream_networks_sp s
 ON r.blue_line_key = s.blue_line_key
 and r.downstream_route_measure < s.upstream_route_measure
-and r.downstream_route_measure > s.downstream_route_measure
+and r.downstream_route_measure >= s.downstream_route_measure
 GROUP BY
   s.linear_feature_id,
   s.wscode_ltree,
