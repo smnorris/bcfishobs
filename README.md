@@ -58,11 +58,18 @@ Scripts presume that:
 - environment variable `DATABASE_URL` points to the appropriate db
 - FWA data are loaded to the db via `fwapg`
 
-To run the job:
+To set up the output tables and run the job:
 
 ```
 $ make
 ```
+
+To refresh the observation data from DataBC and re-run the analysis (without tearing down the output tables):
+```
+$ rm .make/fiss_fish_obsrvtn_pnt_sp
+$ make
+```
+
 
 ## Outputs
 

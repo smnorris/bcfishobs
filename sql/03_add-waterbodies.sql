@@ -1,13 +1,18 @@
 -- Insert observations on waterbodies, matching on wb_key, within 1500m
 -- ---------------------------------------------
 
-DROP TABLE IF EXISTS bcfishobs.fiss_fish_obsrvtn_events_prelim2;
-CREATE TABLE bcfishobs.fiss_fish_obsrvtn_events_prelim2
-  (LIKE bcfishobs.fiss_fish_obsrvtn_events_prelim1 INCLUDING ALL);
-
--- add a column for tracking how the event got inserted
-ALTER TABLE bcfishobs.fiss_fish_obsrvtn_events_prelim2
-ADD COLUMN match_type text;
+drop table if exists temp.fiss_fish_obsrvtn_events_prelim_b;
+create table temp.fiss_fish_obsrvtn_events_prelim_b (
+  fish_obsrvtn_pnt_distinct_id integer primary key,
+  linear_feature_id bigint,
+  wscode_ltree ltree,
+  localcode_ltree ltree,
+  waterbody_key integer,
+  blue_line_key integer,
+  downstream_route_measure double precision,
+  distance_to_stream double precision,
+  match_type text
+);
 
 -- ---------------------------------------------
 -- Insert events matched to waterbodies.
@@ -30,7 +35,7 @@ WITH wb AS
   SELECT DISTINCT
     o.fish_obsrvtn_pnt_distinct_id,
     wb.waterbody_key
-  FROM bcfishobs.fiss_fish_obsrvtn_pnt_distinct o
+  FROM temp.fiss_fish_obsrvtn_pnt_distinct o
   INNER JOIN whse_fish.wdic_waterbodies wdic ON o.wbody_id = wdic.id
   INNER JOIN whse_basemapping.fwa_waterbodies_20k_50k lut
      ON LTRIM(wdic.waterbody_identifier,'0') = lut.waterbody_key_50k::TEXT||lut.watershed_group_code_50k
@@ -46,7 +51,7 @@ closest AS
    (e.fish_obsrvtn_pnt_distinct_id)
     e.fish_obsrvtn_pnt_distinct_id,
     e.distance_to_stream
-  FROM bcfishobs.fiss_fish_obsrvtn_events_prelim1 e
+  FROM temp.fiss_fish_obsrvtn_events_prelim_a e
   INNER JOIN wb ON e.fish_obsrvtn_pnt_distinct_id = wb.fish_obsrvtn_pnt_distinct_id
   AND e.waterbody_key = wb.waterbody_key
   ORDER BY fish_obsrvtn_pnt_distinct_id, distance_to_stream
@@ -56,7 +61,7 @@ closest AS
 -- equidistant from
 -- several stream lines. Insert records with highest measure (though they
 -- should be the same)
-INSERT INTO bcfishobs.fiss_fish_obsrvtn_events_prelim2
+INSERT INTO temp.fiss_fish_obsrvtn_events_prelim_b
 SELECT DISTINCT ON (e.fish_obsrvtn_pnt_distinct_id)
   e.fish_obsrvtn_pnt_distinct_id,
   e.linear_feature_id,
@@ -67,7 +72,7 @@ SELECT DISTINCT ON (e.fish_obsrvtn_pnt_distinct_id)
   e.downstream_route_measure,
   e.distance_to_stream,
   'D. matched - waterbody; construction line within 1500m; lookup'
-FROM bcfishobs.fiss_fish_obsrvtn_events_prelim1 e
+FROM temp.fiss_fish_obsrvtn_events_prelim_a e
 INNER JOIN closest
 ON e.fish_obsrvtn_pnt_distinct_id = closest.fish_obsrvtn_pnt_distinct_id
 AND e.distance_to_stream = closest.distance_to_stream
@@ -82,10 +87,10 @@ ORDER BY e.fish_obsrvtn_pnt_distinct_id, e.downstream_route_measure;
 -- ---------------------------------------------
 WITH unmatched_wb AS
 (    SELECT e.*
-    FROM bcfishobs.fiss_fish_obsrvtn_events_prelim1 e
-    INNER JOIN bcfishobs.fiss_fish_obsrvtn_pnt_distinct o
+    FROM temp.fiss_fish_obsrvtn_events_prelim_a e
+    INNER JOIN temp.fiss_fish_obsrvtn_pnt_distinct o
     ON e.fish_obsrvtn_pnt_distinct_id = o.fish_obsrvtn_pnt_distinct_id
-    LEFT OUTER JOIN bcfishobs.fiss_fish_obsrvtn_events_prelim2 p
+    LEFT OUTER JOIN temp.fiss_fish_obsrvtn_events_prelim_b p
     ON e.fish_obsrvtn_pnt_distinct_id = p.fish_obsrvtn_pnt_distinct_id
     WHERE o.wbody_id IS NOT NULL AND o.waterbody_type IN ('Lake','Wetland')
     AND p.fish_obsrvtn_pnt_distinct_id IS NULL
@@ -100,7 +105,7 @@ closest_unmatched AS
   ORDER BY fish_obsrvtn_pnt_distinct_id, distance_to_stream
 )
 
-INSERT INTO bcfishobs.fiss_fish_obsrvtn_events_prelim2
+INSERT INTO temp.fiss_fish_obsrvtn_events_prelim_b
 SELECT DISTINCT ON (e.fish_obsrvtn_pnt_distinct_id)
   e.fish_obsrvtn_pnt_distinct_id,
   e.linear_feature_id,
@@ -111,7 +116,7 @@ SELECT DISTINCT ON (e.fish_obsrvtn_pnt_distinct_id)
   e.downstream_route_measure,
   e.distance_to_stream,
   'E. matched - waterbody; construction line within 1500m; closest'
-FROM bcfishobs.fiss_fish_obsrvtn_events_prelim1 e
+FROM temp.fiss_fish_obsrvtn_events_prelim_a e
 INNER JOIN closest_unmatched
 ON e.fish_obsrvtn_pnt_distinct_id = closest_unmatched.fish_obsrvtn_pnt_distinct_id
 AND e.distance_to_stream = closest_unmatched.distance_to_stream
