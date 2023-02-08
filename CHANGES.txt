@@ -1,0 +1,10 @@
+Changes
+=======
+
+All issue numbers are relative to https://github.com/smnorris/bcfishobs/issues
+
+0.1.0 (2023-02-08)
+------------------
+- create WHSE_FISH schema if it does not exist (#39)
+- latest stats
+- begin tagging versions / creating releases

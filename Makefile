@@ -13,6 +13,7 @@ clean:
 .make/setup:
 	mkdir -p .make
 	mkdir -p data
+	$(PSQL) -c "create schema if not exists whse_fish"
 	# wdic waterbodies table for relating 50k waterbodies to fwa
 	wget -qNP data https://hillcrestgeo.ca/outgoing/public/whse_fish/whse_fish.wdic_waterbodies.csv.zip
 	unzip -qjun -d data data/whse_fish.wdic_waterbodies.csv.zip
