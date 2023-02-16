@@ -70,6 +70,13 @@ $ rm .make/fiss_fish_obsrvtn_pnt_sp
 $ make
 ```
 
+To tear down `bcfishobs` schema and re-run the analysis from scratch (advisable after upgrading `bcfishops` scripts):
+
+```
+$ make clean
+$ make
+```
+
 
 ## Outputs
 
