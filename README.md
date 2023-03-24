@@ -39,7 +39,7 @@ This logic is based on the assumptions:
 - GDAL >= 3.4
 - Python (>=3.6)
 - [bcdata](https://github.com/smnorris/bcdata)
-- wget, unzip, psql2csv
+- wget, unzip
 
 ## Installation
 

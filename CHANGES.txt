@@ -3,9 +3,12 @@ Changes
 
 All issue numbers are relative to https://github.com/smnorris/bcfishobs/issues
 
-0.1.1 ()
+0.1.1 (2023-03-23)
 ------------------
-- doc improvements
+- connect to correct database for species query (#41)
+- doc improvements (#40)
+- remove psql2csv requirement
+- latest stats
 
 0.1.0 (2023-02-08)
 ------------------

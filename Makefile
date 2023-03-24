@@ -63,12 +63,12 @@ qa_summary.csv: .make/setup .make/fiss_fish_obsrvtn_pnt_sp
 	$(PSQL) -f sql/07_load-output-tables.sql
 
 	# Tag maximal observations for each species
-	for spp_id in $(shell psql -AtX -c "SELECT DISTINCT b.species_id \
+	for spp_id in $(shell psql $$DATABASE_URL -AtX -c "SELECT DISTINCT b.species_id \
     	FROM whse_fish.fiss_fish_obsrvtn_pnt_sp a \
     	INNER JOIN whse_fish.species_cd b \
     	ON a.species_code = b.code") ; do \
 	  echo $$spp_id ; \
 	  $(PSQL) -f sql/08_tag_maximal_events.sql -v species=$$spp_id ; \
 	done
-	set -e ; psql2csv $(DATABASE_URL) < sql/qa_summary.sql > $@
+	$(PSQL) --csv -f sql/qa_summary.sql > $@
 	$(PSQL) -f sql/09_cleanup.sql
