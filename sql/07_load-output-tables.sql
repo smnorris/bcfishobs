@@ -74,7 +74,7 @@ SELECT
   array_agg(r.species_code) AS species_codes,
   array_agg(r.distance_to_stream) as distances_to_stream,
   array_agg(r.match_type) as match_types,
-  postgisftw.FWA_LocateAlong(r.blue_line_key, r.downstream_route_measure) as geom
+  whse_basemapping.FWA_LocateAlong(r.blue_line_key, r.downstream_route_measure) as geom
 FROM rounded r
 inner join whse_fish.fiss_fish_obsrvtn_pnt_sp o
 on r.obs_id = o.fish_observation_point_id
@@ -87,8 +87,9 @@ GROUP BY
   s.wscode_ltree,
   s.localcode_ltree,
   r.blue_line_key,
+  s.watershed_group_code,
   r.downstream_route_measure,
-  postgisftw.FWA_LocateAlong(r.blue_line_key, r.downstream_route_measure)
+  whse_basemapping.FWA_LocateAlong(r.blue_line_key, r.downstream_route_measure)
 ORDER BY r.blue_line_key, r.downstream_route_measure
 on conflict do nothing; 
 
