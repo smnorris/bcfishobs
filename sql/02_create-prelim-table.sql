@@ -7,8 +7,7 @@
 -- ---------------------------------------------
 -- First, create preliminary event table, with observation points matched to
 -- all streams within 1500m. Use this for subsequent analysis. Since we are
--- using such a large search area and also calculating the measures, this may
--- take some time (~6min)
+-- using such a large search area and also calculating the measures, this takes time
 -- ---------------------------------------------
 
 
