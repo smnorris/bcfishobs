@@ -41,6 +41,7 @@ clean:
 	spcgrp_code     text);"
 	$(PSQL) -c "\copy whse_fish.species_cd FROM 'data/whse_fish_species_cd.csv' delimiter ',' csv header"
 	# create empty observation table so the view query works
+	$(PSQL) -c "drop table if exists whse_fish.fiss_fish_obsrvtn_pnt_sp cascade"
 	bcdata bc2pg WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP -s
 	# create empty output tables and views
 	$(PSQL) -f sql/schema.sql
