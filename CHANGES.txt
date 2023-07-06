@@ -3,9 +3,10 @@ Changes
 
 All issue numbers are relative to https://github.com/smnorris/bcfishobs/issues
 
-0.1.2 ()
+0.1.2 (2023-07-05)
 ------------------
 - cascade when dropping source observation table (#42)
+- upgrade to bcdata v0.8.0
 
 0.1.1 (2023-03-23)
 ------------------
