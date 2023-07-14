@@ -117,7 +117,7 @@ UNION ALL
 SELECT * FROM total_unmatched
 UNION ALL
 SELECT
-  'GRAND TOTAL, '|| (select to_char(date_downloaded, 'YYYY-MM-DD') from bcdata where table_name = 'whse_fish.fiss_fish_obsrvtn_pnt_sp') as match_type,
+  'GRAND TOTAL, '|| (select to_char(date_downloaded, 'YYYY-MM-DD') from bcdata.log where table_name = 'whse_fish.fiss_fish_obsrvtn_pnt_sp') as match_type,
   sum(n_distinct_events) as n_distinct_events,
   sum(n_observations) as n_observations
 FROM raw
