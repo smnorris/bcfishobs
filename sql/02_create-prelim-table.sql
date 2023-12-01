@@ -10,7 +10,6 @@
 -- using such a large search area and also calculating the measures, this takes time
 -- ---------------------------------------------
 
-
 drop table if exists temp.fiss_fish_obsrvtn_events_prelim_a;
 create table temp.fiss_fish_obsrvtn_events_prelim_a (
   fish_obsrvtn_pnt_distinct_id integer,
@@ -25,69 +24,53 @@ create table temp.fiss_fish_obsrvtn_events_prelim_a (
 create index on temp.fiss_fish_obsrvtn_events_prelim_a (fish_obsrvtn_pnt_distinct_id);
 
 
-WITH candidates AS
- ( SELECT
+WITH candidates AS (
+  select
     pt.fish_obsrvtn_pnt_distinct_id,
     nn.linear_feature_id,
-    nn.wscode_ltree,
-    nn.localcode_ltree,
     nn.blue_line_key,
-    nn.waterbody_key,
-    nn.length_metre,
-    nn.downstream_route_measure,
-    nn.distance_to_stream,
-    ST_LineMerge(nn.geom) AS geom
-  FROM temp.fiss_fish_obsrvtn_pnt_distinct as pt
-  CROSS JOIN LATERAL
-  (SELECT
-     str.linear_feature_id,
-     str.wscode_ltree,
-     str.localcode_ltree,
-     str.blue_line_key,
-     str.waterbody_key,
-     str.length_metre,
-     str.downstream_route_measure,
-     str.geom,
-     ST_Distance(str.geom, pt.geom) as distance_to_stream
-    FROM whse_basemapping.fwa_stream_networks_sp AS str
-    WHERE str.localcode_ltree IS NOT NULL
-    AND NOT str.wscode_ltree <@ '999'
-    AND str.edge_type != 6010
-    ORDER BY str.geom <-> pt.geom
-    LIMIT 100) as nn
-  WHERE nn.distance_to_stream < 1500
+    nn.distance_to_stream
+  from temp.fiss_fish_obsrvtn_pnt_distinct as pt
+  cross join lateral
+  (select
+     s.linear_feature_id,
+     s.blue_line_key,
+     ST_Distance(s.geom, pt.geom) as distance_to_stream
+    from whse_basemapping.fwa_stream_networks_sp as s
+    where s.localcode_ltree is not null
+    and not s.wscode_ltree <@ '999'
+    and s.edge_type != 6010
+    order by s.geom <-> pt.geom
+    limit 100) as nn
+  where nn.distance_to_stream < 1500
 ),
 
 -- find just the closest point for distinct blue_line_keys -
 -- we don't want to match to all individual stream segments
-bluelines AS
-(SELECT * FROM
-    (SELECT
-      fish_obsrvtn_pnt_distinct_id,
-      blue_line_key,
-      min(distance_to_stream) AS distance_to_stream
-    FROM candidates
-    GROUP BY fish_obsrvtn_pnt_distinct_id, blue_line_key) as f
-  ORDER BY distance_to_stream
+bluelines AS (
+  select distinct on (fish_obsrvtn_pnt_distinct_id, blue_line_key)
+    fish_obsrvtn_pnt_distinct_id,
+    blue_line_key,
+    linear_feature_id,
+    distance_to_stream
+  from candidates
+  order by fish_obsrvtn_pnt_distinct_id, blue_line_key, distance_to_stream
 )
 
 -- from the selected blue lines, generate downstream_route_measure
 insert into temp.fiss_fish_obsrvtn_events_prelim_a
 SELECT
-  bluelines.fish_obsrvtn_pnt_distinct_id,
-  candidates.linear_feature_id,
-  candidates.wscode_ltree,
-  candidates.localcode_ltree,
-  candidates.waterbody_key,
-  bluelines.blue_line_key,
-  (ST_LineLocatePoint(candidates.geom,
-                       ST_ClosestPoint(candidates.geom, pts.geom))
-     * candidates.length_metre) + candidates.downstream_route_measure
-    AS downstream_route_measure,
-  candidates.distance_to_stream
-FROM bluelines
-INNER JOIN candidates ON bluelines.fish_obsrvtn_pnt_distinct_id = candidates.fish_obsrvtn_pnt_distinct_id
-AND bluelines.blue_line_key = candidates.blue_line_key
-AND bluelines.distance_to_stream = candidates.distance_to_stream
-INNER JOIN temp.fiss_fish_obsrvtn_pnt_distinct pts
-ON bluelines.fish_obsrvtn_pnt_distinct_id = pts.fish_obsrvtn_pnt_distinct_id;
+  bl.fish_obsrvtn_pnt_distinct_id,
+  c.linear_feature_id,
+  s.wscode_ltree,
+  s.localcode_ltree,
+  s.waterbody_key,
+  bl.blue_line_key,
+  st_interpolatepoint(s.geom, pts.geom) AS downstream_route_measure,
+  c.distance_to_stream
+FROM bluelines bl
+INNER JOIN candidates c ON bl.fish_obsrvtn_pnt_distinct_id = c.fish_obsrvtn_pnt_distinct_id
+AND bl.blue_line_key = c.blue_line_key
+AND bl.distance_to_stream = c.distance_to_stream
+INNER JOIN temp.fiss_fish_obsrvtn_pnt_distinct pts ON bl.fish_obsrvtn_pnt_distinct_id = pts.fish_obsrvtn_pnt_distinct_id
+inner join whse_basemapping.fwa_stream_networks_sp s on bl.linear_feature_id = s.linear_feature_id;
