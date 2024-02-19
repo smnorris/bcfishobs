@@ -47,8 +47,7 @@ clean:
 
 # load source data to db, do not include "Summary" records
 .make/fiss_fish_obsrvtn_pnt_sp: .make/setup
-	$(PSQL) -c "truncate whse_fish.fiss_fish_obsrvtn_pnt_sp"
-	bcdata bc2pg WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP --query "POINT_TYPE_CODE = 'Observation'" -a
+	bcdata bc2pg -r WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP --query "POINT_TYPE_CODE = 'Observation'"
 	touch $@
 
 # process all queries and write qa file when done
