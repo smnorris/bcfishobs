@@ -10,8 +10,8 @@
 -- using such a large search area and also calculating the measures, this takes time
 -- ---------------------------------------------
 
-drop table if exists temp.fiss_fish_obsrvtn_events_prelim_a;
-create table temp.fiss_fish_obsrvtn_events_prelim_a (
+drop table if exists bcfishobs.fiss_fish_obsrvtn_events_prelim_a;
+create table bcfishobs.fiss_fish_obsrvtn_events_prelim_a (
   fish_obsrvtn_pnt_distinct_id integer,
   linear_feature_id bigint,
   wscode_ltree ltree,
@@ -21,7 +21,7 @@ create table temp.fiss_fish_obsrvtn_events_prelim_a (
   downstream_route_measure double precision,
   distance_to_stream double precision
 );
-create index on temp.fiss_fish_obsrvtn_events_prelim_a (fish_obsrvtn_pnt_distinct_id);
+create index on bcfishobs.fiss_fish_obsrvtn_events_prelim_a (fish_obsrvtn_pnt_distinct_id);
 
 
 WITH candidates AS (
@@ -30,7 +30,7 @@ WITH candidates AS (
     nn.linear_feature_id,
     nn.blue_line_key,
     nn.distance_to_stream
-  from temp.fiss_fish_obsrvtn_pnt_distinct as pt
+  from bcfishobs.fiss_fish_obsrvtn_pnt_distinct as pt
   cross join lateral
   (select
      s.linear_feature_id,
@@ -58,7 +58,7 @@ bluelines AS (
 )
 
 -- from the selected blue lines, generate downstream_route_measure
-insert into temp.fiss_fish_obsrvtn_events_prelim_a
+insert into bcfishobs.fiss_fish_obsrvtn_events_prelim_a
 SELECT
   bl.fish_obsrvtn_pnt_distinct_id,
   c.linear_feature_id,
@@ -72,5 +72,5 @@ FROM bluelines bl
 INNER JOIN candidates c ON bl.fish_obsrvtn_pnt_distinct_id = c.fish_obsrvtn_pnt_distinct_id
 AND bl.blue_line_key = c.blue_line_key
 AND bl.distance_to_stream = c.distance_to_stream
-INNER JOIN temp.fiss_fish_obsrvtn_pnt_distinct pts ON bl.fish_obsrvtn_pnt_distinct_id = pts.fish_obsrvtn_pnt_distinct_id
+INNER JOIN bcfishobs.fiss_fish_obsrvtn_pnt_distinct pts ON bl.fish_obsrvtn_pnt_distinct_id = pts.fish_obsrvtn_pnt_distinct_id
 inner join whse_basemapping.fwa_stream_networks_sp s on bl.linear_feature_id = s.linear_feature_id;

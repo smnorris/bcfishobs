@@ -1,0 +1,40 @@
+name: bcfishobs
+run-name: ${{ github.actor }} run bcfishobs
+on:
+  schedule:
+    - cron: '0 23 * * MON'
+  workflow_dispatch:
+jobs:
+  bcfishobs:
+    runs-on: ubuntu-latest
+    environment: testing
+    container: ghcr.io/smnorris/bcfishpass:main
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+    - name: Load streams
+      run: |
+        git clone https://github.com/smnorris/fwapg
+        cd fwapg
+        make .make/fwa_stream_networks_sp --debug=basic
+        cd ..
+        rm -rf fwapg
+      env:
+          DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
+    - name: Run bcfishobs
+      run: |
+        make
+        psql $DATABASE_URL -c "select * from bcfishobs.summary"
+      env:
+          DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres

@@ -7,7 +7,7 @@ The scripts:
 - download `whse_fish.fiss_fish_obsrvtn_pnt_sp`, the latest observation data from DataBC
 - download a lookup table `whse_fish.wdic_waterbodies` used to match the 50k waterbody codes in the observations table to FWA waterbodies
 - download a lookup table `species_cd`, linking the fish species code found in the observation table to species name and scientific name
-- load each above table to a PostgreSQL database
+- load above tables to a PostgreSQL database
 - discard any observations not coded as `point_type_code = 'Observation'` (`Summary` records are all be duplicates of `Observation` records)
 - references the observation points to their position on the FWA stream network (as outlined below)
 - create two ouputs (see below for descriptions)
@@ -32,50 +32,39 @@ This logic is based on the assumptions:
     -  as long as an observation is associated with the correct waterbody, it is not important to exactly locate it on the stream network within the waterbody
 - for observations on streams, the location of an observation should generally take priority over a match via the xref lookup because many points have been manually snapped to the 20k stream lines - the lookup is best used to prioritize instances of multiple matches within 100m and allow for confidence in making matches between 100 and 500m
 
-## Requirements
+## General requirements
 
-- PostgreSQL/PostGIS (requires PostgreSQL >=13, PostGIS >=3.1)
+- PostgreSQL/PostGIS 
 - a FWA database created by [fwapg](https://github.com/smnorris/fwapg)
 - GDAL >= 3.4
 - Python (>=3.6)
 - [bcdata](https://github.com/smnorris/bcdata)
-- wget, unzip
 
-## Installation
-
-With `bcdata` installed (via `pip install --user bcdata`), all required Python libraries should be available, no further installation should be necessary.
-
-Download/clone the scripts to your system and navigate to the folder:
-
-```
-$ git clone https://github.com/smnorris/bcfishobs.git
-$ cd bcfishobs
-```
 
 ## Run the scripts
 
 Scripts presume that:
+
 - environment variable `DATABASE_URL` points to the appropriate db
 - FWA data are loaded to the db via `fwapg`
 
 To set up the output tables and run the job:
 
-```
-$ make
-```
+    $ git clone https://github.com/smnorris/bcfishobs.git
+    $ cd bcfishobs
+    $ make
+
 
 To refresh the observation data from DataBC and re-run the analysis (without tearing down the output tables):
-```
-$ rm .make/fiss_fish_obsrvtn_pnt_sp
-$ make
-```
 
-To tear down `bcfishobs` schema and re-run the analysis from scratch (advisable after upgrading `bcfishobs` scripts):
+    $ rm .make/fiss_fish_obsrvtn_pnt_sp
+    $ make
 
-```
-$ make clean
-$ make
-```
+
+To tear down `bcfishobs` schema and re-run the analysis from scratch:
+
+    $ make clean
+    $ make
 
 
 ## Outputs
@@ -149,12 +138,34 @@ Indexes:
     "fiss_fish_obsrvtn_events_wscode_ltree_idx" btree (wscode_ltree)
 ```
 
+#### `bcfishobs.fiss_fish_obsrvtn_unmatched`
 
-## QA results
+Unique observation locations that the scripts are unable to match to FWA streams.
 
-On completion, the script reports on the number and type of matches made and [dumps a summary to csv](qa_summary.csv)
+```
+            Column            |         Type         | Collation | Nullable | Default
+------------------------------+----------------------+-----------+----------+---------
+ fish_obsrvtn_pnt_distinct_id | integer              |           | not null |
+ obs_ids                      | integer[]            |           |          |
+ species_ids                  | integer[]            |           |          |
+ distance_to_stream           | double precision     |           |          |
+ geom                         | geometry(Point,3005) |           |          |
+Indexes:
+    "fiss_fish_obsrvtn_unmatched_pkey" PRIMARY KEY, btree (fish_obsrvtn_pnt_distinct_id)
+    "fiss_fish_obsrvtn_unmatched_geom_idx" gist (geom)
+```
 
-The observation result can be compared with the output of `sql/qa_total_records`, the number of total observations should be the same in each query.
+#### `bcfishobs.summary`
+
+Report on total number of observations processed and matched to streams, and the type of match used.
+
+```
+      Column       |  Type   |
+-------------------+---------+
+ match_type        | text    |
+ n_distinct_events | integer |
+ n_observations    | integer |
+```
 
 ## Use the data
 
