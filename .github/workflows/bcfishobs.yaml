@@ -7,7 +7,6 @@ on:
 jobs:
   bcfishobs:
     runs-on: ubuntu-latest
-    environment: testing
     container: ghcr.io/smnorris/bcfishpass:main
     services:
       postgres:
