@@ -1,7 +1,31 @@
 create extension if not exists intarray;
 create schema if not exists bcfishobs;
 
-drop table if exists bcfishobs.fiss_fish_obsrvtn_events cascade;
+CREATE TABLE whse_fish.wdic_waterbodies (
+  id integer primary key,
+  type text,
+  extinct_indicator text,
+  watershed_id integer,
+  sequence_number text,
+  waterbody_identifier text,
+  gazetted_name text,
+  waterbody_mouth_identifier text,
+  formatted_name text
+ );
+create index wdic_waterbodies_wbtrimidx on whse_fish.wdic_waterbodies (ltrim(waterbody_identifier,'0'));
+create index wdic_waterbodies_typeidx on whse_fish.wdic_waterbodies (type);
+
+CREATE TABLE whse_fish.species_cd (
+  species_id     integer primary key,
+  code            text,
+  name            text,
+  cdcgr_code      text,
+  cdclr_code      text,
+  scientific_name text,
+  spctype_code    text,
+  spcgrp_code     text
+);
+
 create table bcfishobs.fiss_fish_obsrvtn_events ( 
   fish_obsrvtn_event_id bigint
      GENERATED ALWAYS AS ((((blue_line_key::bigint + 1) - 354087611) * 10000000) + round(downstream_route_measure::bigint)) STORED PRIMARY KEY,
@@ -18,7 +42,7 @@ create table bcfishobs.fiss_fish_obsrvtn_events (
   maximal_species integer[],
   distances_to_stream double precision[],
   geom geometry(pointzm, 3005)
-  );
+);
 create index on bcfishobs.fiss_fish_obsrvtn_events (linear_feature_id);
 create index on bcfishobs.fiss_fish_obsrvtn_events (blue_line_key);
 create index on bcfishobs.fiss_fish_obsrvtn_events (wscode_ltree);
@@ -29,14 +53,12 @@ create index on bcfishobs.fiss_fish_obsrvtn_events using gist (geom);
 create index on bcfishobs.fiss_fish_obsrvtn_events using gist (obs_ids gist__intbig_ops);
 create index on bcfishobs.fiss_fish_obsrvtn_events using gist (species_ids gist__intbig_ops);
 
-
-drop table if exists bcfishobs.fiss_fish_obsrvtn_unmatched;
-create table bcfishobs.fiss_fish_obsrvtn_unmatched
-  (fish_obsrvtn_pnt_distinct_id integer primary key,
-    obs_ids integer[],
-    species_ids integer[],
-    distance_to_stream double precision,
-    geom geometry(Point, 3005)
+create table bcfishobs.fiss_fish_obsrvtn_unmatched (
+  fish_obsrvtn_pnt_distinct_id integer primary key,
+  obs_ids integer[],
+  species_ids integer[],
+  distance_to_stream double precision,
+  geom geometry(Point, 3005)
 );
 create index on bcfishobs.fiss_fish_obsrvtn_unmatched using gist (geom);
 
@@ -52,29 +74,26 @@ comment on column bcfishobs.fiss_fish_obsrvtn_events.geom IS 'Geometry of observ
 
 
 -- de-aggregated view - all matched observations as single points, snapped to streams
-
-DROP VIEW IF EXISTS bcfishobs.fiss_fish_obsrvtn_events_vw;
 CREATE VIEW bcfishobs.fiss_fish_obsrvtn_events_vw AS
 
-WITH all_obs AS
-(SELECT
-   unnest(e.obs_ids) AS fish_observation_point_id,
-   e.fish_obsrvtn_event_id,
-   s.linear_feature_id,
-   s.wscode_ltree,
-   s.localcode_ltree,
-   e.blue_line_key,
-   s.waterbody_key,
-   e.downstream_route_measure,
-   unnest(e.distances_to_stream) as distance_to_stream,
-   unnest(e.match_types) as match_type,
-   s.watershed_group_code,
-   e.geom
-FROM bcfishobs.fiss_fish_obsrvtn_events e
-INNER JOIN whse_basemapping.fwa_stream_networks_sp s
-ON e.linear_feature_id = s.linear_feature_id
+WITH all_obs AS (
+  SELECT
+    unnest(e.obs_ids) AS fish_observation_point_id,
+    e.fish_obsrvtn_event_id,
+    s.linear_feature_id,
+    s.wscode_ltree,
+    s.localcode_ltree,
+    e.blue_line_key,
+    s.waterbody_key,
+    e.downstream_route_measure,
+    unnest(e.distances_to_stream) as distance_to_stream,
+    unnest(e.match_types) as match_type,
+    s.watershed_group_code,
+    e.geom
+  FROM bcfishobs.fiss_fish_obsrvtn_events e
+  INNER JOIN whse_basemapping.fwa_stream_networks_sp s
+  ON e.linear_feature_id = s.linear_feature_id
 )
-
 SELECT
   a.fish_observation_point_id,
   a.fish_obsrvtn_event_id,
@@ -123,3 +142,10 @@ comment on column bcfishobs.fiss_fish_obsrvtn_events_vw.life_stage_code IS 'LIFE
 comment on column bcfishobs.fiss_fish_obsrvtn_events_vw.life_stage IS 'LIFE STAGE is the full textual description corresponding to the LIFE STAGE CODE';
 comment on column bcfishobs.fiss_fish_obsrvtn_events_vw.acat_report_url IS 'ACAT REPORT URL is a URL to the ACAT REPORT which provides additional information about the FISS FISH OBSRVTN PNT SP.';
 comment on column bcfishobs.fiss_fish_obsrvtn_events_vw.geom IS 'Geometry of observation on the FWA stream (measure rounded to the nearest metre)';     
+
+
+create table bcfishobs.summary (
+  match_type text,
+  n_distinct_events integer,
+  n_observations integer
+);
