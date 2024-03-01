@@ -4,9 +4,14 @@ on:
   schedule:
     - cron: '0 23 * * MON'
   workflow_dispatch:
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 jobs:
   bcfishobs:
     runs-on: ubuntu-latest
+    environment: production
     container: ghcr.io/smnorris/bcfishpass:main
     services:
       postgres:
@@ -35,5 +40,33 @@ jobs:
       run: |
         make
         psql $DATABASE_URL -c "select * from bcfishobs.summary"
+      env:
+          DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
+    - name: Dump to file
+      run: |
+        ogr2ogr \
+          -f GPKG \
+          bcfishobs.gpkg \
+          PG:$DATABASE_URL \
+          -nln fiss_fish_obsrvtn_events \
+          -sql "select * from bcfishobs.fiss_fish_obsrvtn_events"
+        ogr2ogr \
+          -f GPKG \
+          -append \
+          -update \
+          bcfishobs.gpkg \
+          PG:$DATABASE_URL \
+          -nln fiss_fish_obsrvtn_unmatched \
+          -sql "select * from bcfishobs.fiss_fish_obsrvtn_unmatched"
+        ogr2ogr \
+          -f GPKG \
+          -append \
+          -update \
+          bcfishobs.gpkg \
+          PG:$DATABASE_URL \
+          -nln summary \
+          -sql "select * from bcfishobs.summary"
+        sozip bcfishobs.gpkg.zip bcfishobs.gpkg
+        aws s3 cp bcfishobs.gpkg.zip s3://bcfishpass/bcfishobs.gpkg.zip
       env:
           DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
