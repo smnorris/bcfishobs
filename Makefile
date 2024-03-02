@@ -36,4 +36,6 @@ clean:
 	$(PSQL) -f sql/02_create-prelim-table.sql
 	$(PSQL) -f sql/03_add-waterbodies.sql
 	$(PSQL) -f sql/04_add-streams.sql
-	$(PSQL) -f sql/05_load-output-tables.sql
+	$(PSQL) -f sql/05_fiss_fish_obsrvtn_events.sql
+	$(PSQL) -f sql/06_fiss_fish_obsrvtn_unmatched.sql
+	$(PSQL) -f sql/07_summary.sql
