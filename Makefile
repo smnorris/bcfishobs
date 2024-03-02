@@ -1,6 +1,6 @@
 .PHONY: all clean
 
-PSQL = psql $(DATABASE_URL) -v ON_ERROR_STOP=1
+PSQL = psql $(DATABASE_URL)?keepalives_idle=240 -v ON_ERROR_STOP=1
 
 all: .make/process
 
