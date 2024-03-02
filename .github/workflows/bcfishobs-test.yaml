@@ -2,7 +2,7 @@ name: bcfishobs-test
 run-name: ${{ github.actor }} run bcfishobs in test
 on:
   schedule:
-    - cron: '0 23 * * MON'
+    - cron: '0 23 * * SAT'
   workflow_dispatch:
 env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -16,5 +16,9 @@ jobs:
       uses: actions/checkout@v2
     - name: Run bcfishobs
       run: |
-        make
+        mkdir -p .make
+        make -t .make/setup
+        make -t .make/load_static
+        make -t .make/fiss_fish_obsrvtn_pnt_sp
+        make --debug=basic
         psql $DATABASE_URL -c "select * from bcfishobs.summary"
