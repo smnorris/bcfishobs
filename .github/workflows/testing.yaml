@@ -1,0 +1,20 @@
+name: bcfishobs
+run-name: ${{ github.actor }} run bcfishobs
+on:
+  schedule:
+    - cron: '0 23 * * MON'
+  workflow_dispatch:
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+jobs:
+  bcfishobs:
+    runs-on: ubuntu-latest
+    environment: testing
+    container: ghcr.io/smnorris/bcfishpass:main
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+    - name: Run bcfishobs
+      run: |
+        make
+        psql $DATABASE_URL -c "select * from bcfishobs.summary"

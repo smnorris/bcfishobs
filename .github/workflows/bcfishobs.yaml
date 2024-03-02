@@ -8,40 +8,19 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
 jobs:
   bcfishobs:
     runs-on: ubuntu-latest
     environment: production
     container: ghcr.io/smnorris/bcfishpass:main
-    services:
-      postgres:
-        image: postgis/postgis:16-3.4
-        env:
-          POSTGRES_PASSWORD: postgres
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
-    - name: Load streams
-      run: |
-        git clone https://github.com/smnorris/fwapg
-        cd fwapg
-        make .make/fwa_stream_networks_sp --debug=basic
-        cd ..
-        rm -rf fwapg
-      env:
-          DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
     - name: Run bcfishobs
       run: |
         make
         psql $DATABASE_URL -c "select * from bcfishobs.summary"
-      env:
-          DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
     - name: Dump to file
       run: |
         ogr2ogr \
@@ -68,5 +47,3 @@ jobs:
           -sql "select * from bcfishobs.summary"
         sozip bcfishobs.gpkg.zip bcfishobs.gpkg
         aws s3 cp bcfishobs.gpkg.zip s3://bcfishpass/bcfishobs.gpkg.zip
-      env:
-          DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
