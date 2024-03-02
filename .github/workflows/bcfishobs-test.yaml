@@ -1,5 +1,5 @@
-name: bcfishobs
-run-name: ${{ github.actor }} run bcfishobs
+name: bcfishobs-test
+run-name: ${{ github.actor }} run bcfishobs in test
 on:
   schedule:
     - cron: '0 23 * * MON'
