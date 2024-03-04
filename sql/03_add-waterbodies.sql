@@ -1,5 +1,6 @@
 -- Insert observations on waterbodies, matching on wb_key, within 1500m
 -- ---------------------------------------------
+drop table if exists bcfishobs.fiss_fish_obsrvtn_events_prelim_b;
 create table bcfishobs.fiss_fish_obsrvtn_events_prelim_b (
   fish_obsrvtn_pnt_distinct_id integer primary key,
   linear_feature_id bigint,

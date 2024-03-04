@@ -10,6 +10,7 @@
 -- ** Observations with different watershed codes may be in exactly the
 --    same spot **
 
+drop table if exists bcfishobs.fiss_fish_obsrvtn_pnt_distinct;
 create table bcfishobs.fiss_fish_obsrvtn_pnt_distinct
 (
  fish_obsrvtn_pnt_distinct_id serial primary key  ,
