@@ -281,3 +281,8 @@ Column `fish_observation_point_id` is not an immutable primary key in the source
 
 Duplicate rows (for all fields) exist in the source table and are replicated in the output view. 
 Use observation counts with caution. 
+
+## Scheduled job
+
+The workflow is processed weekly and dumped to file.
+Acces the latest extract as a geopackage [here](https://bcfishpass.s3.us-west-2.amazonaws.com/bcfishobs.gpkg.zip).
