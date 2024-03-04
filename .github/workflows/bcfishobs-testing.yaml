@@ -1,5 +1,5 @@
 name: bcfishobs-test
-run-name: ${{ github.actor }} run bcfishobs against test db
+run-name: ${{ github.actor }} bcfishobs-testing
 on:
   pull_request:
     branches:
