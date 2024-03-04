@@ -1,5 +1,5 @@
-name: bcfishobs
-run-name: ${{ github.actor }} bcfishobs-production
+name: production
+run-name: ${{ github.actor }} production
 on:
   schedule:
     - cron: '0 23 * * MON'
