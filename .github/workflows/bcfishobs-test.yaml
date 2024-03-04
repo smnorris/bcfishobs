@@ -1,8 +1,9 @@
 name: bcfishobs-test
-run-name: ${{ github.actor }} run bcfishobs in test
+run-name: ${{ github.actor }} run bcfishobs against test db
 on:
-  schedule:
-    - cron: '0 23 * * SAT'
+  pull_request:
+    branches:
+      - 'main'
   workflow_dispatch:
 env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
