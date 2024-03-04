@@ -32,7 +32,30 @@ jobs:
           bcfishobs.gpkg \
           PG:$DATABASE_URL \
           -nln fiss_fish_obsrvtn_events_vw \
-          -sql "select * from bcfishobs.fiss_fish_obsrvtn_events_vw"
+          -sql "select fish_observation_point_id,
+                  fish_obsrvtn_event_id,
+                  linear_feature_id,
+                  wscode_ltree as wscode,
+                  localcode_ltree as localcode,
+                  blue_line_key,
+                  waterbody_key,
+                  downstream_route_measure,
+                  distance_to_stream,
+                  match_type,
+                  watershed_group_code,
+                  species_id,
+                  species_code,
+                  agency_id,
+                  observation_date,
+                  agency_name,
+                  source,
+                  source_ref,
+                  activity_code,
+                  activity,
+                  life_stage_code,
+                  life_stage,
+                  acat_report_url,
+                  geom from bcfishobs.fiss_fish_obsrvtn_events_vw"
         ogr2ogr \
           -f GPKG \
           -append \
