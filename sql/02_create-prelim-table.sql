@@ -9,8 +9,6 @@
 -- all streams within 1500m. Use this for subsequent analysis. Since we are
 -- using such a large search area and also calculating the measures, this takes time
 -- ---------------------------------------------
-
-drop table if exists bcfishobs.fiss_fish_obsrvtn_events_prelim_a;
 create table bcfishobs.fiss_fish_obsrvtn_events_prelim_a (
   fish_obsrvtn_pnt_distinct_id integer,
   linear_feature_id bigint,
