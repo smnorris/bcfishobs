@@ -7,7 +7,7 @@ env:
 jobs:
   bcfishobs:
     runs-on: ubuntu-latest
-    environment: production
+    environment: staging
     container: ghcr.io/smnorris/bcfishpass:main
     steps:
     - name: Checkout Repository
