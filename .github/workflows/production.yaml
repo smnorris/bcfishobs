@@ -2,7 +2,7 @@ name: production
 run-name: ${{ github.actor }} production
 on:
   schedule:
-    - cron: '0 23 * * MON'
+    - cron: '0 21 * * FRI'
   workflow_dispatch:
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
