@@ -285,4 +285,4 @@ Use observation counts with caution.
 ## Scheduled job
 
 The workflow is processed weekly and dumped to file.
-Acces the latest extract as a geopackage [here](https://bcfishpass.s3.us-west-2.amazonaws.com/bcfishobs.gpkg.zip).
+Download the latest extract (as a geopackage) [here](https://bcfishpass.s3.us-west-2.amazonaws.com/bcfishobs.gpkg.zip).
