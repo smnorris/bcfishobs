@@ -8,7 +8,7 @@ The scripts:
 - download a lookup table `whse_fish.wdic_waterbodies` used to match the 50k waterbody codes in the observations table to FWA waterbodies
 - download a lookup table `species_cd`, linking the fish species code found in the observation table to species name and scientific name
 - load above tables to a PostgreSQL database
-- discard any observations not coded as `point_type_code = 'Observation'` (`Summary` records are all be duplicates of `Observation` records)
+- discard any observations not coded as `point_type_code = 'Observation'` (`Summary` records are all duplicates of `Observation` records)
 - references the observation points to their position on the FWA stream network (as outlined below)
 - create two ouputs (see below for descriptions)
 
