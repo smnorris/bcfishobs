@@ -10,7 +10,7 @@ The scripts:
 - load above tables to a PostgreSQL database
 - discard any observations not coded as `point_type_code = 'Observation'` (`Summary` records are all duplicates of `Observation` records)
 - references the observation points to their position on the FWA stream network (as outlined below)
-- create two ouputs (see below for descriptions)
+- creates output table `bcfishobs.observations`, as documented below
 
 ### Matching logic, observations
 
@@ -48,124 +48,64 @@ Scripts presume that:
 - environment variable `DATABASE_URL` points to the appropriate db
 - FWA data are loaded to the db via `fwapg`
 
-To set up the output tables and run the job:
+To set up the database/create schema:
 
     $ git clone https://github.com/smnorris/bcfishobs.git
     $ cd bcfishobs
-    $ make
+    $ psql $DATABASE_URL -f sql/v0.2.0.sql
+    $ psql $DATABASE_URL -f sql/v0.3.0.sql
 
+To run the job:
 
-To refresh the observation data from DataBC and re-run the analysis (without tearing down the output tables):
+    $ ./process.sh
 
-    $ rm .make/fiss_fish_obsrvtn_pnt_sp
-    $ make
-
-
-To tear down `bcfishobs` schema and re-run the analysis from scratch:
-
-    $ make clean
-    $ make
-
-
-## Outputs
+## Output
 
 All outputs are written to schema `bcfishobs`.
 
-#### `bcfishobs.fiss_fish_obsrvtn_events_vw`
+#### `bcfishobs.observations`
 
-Contains a record for each observation that is successfully matched to a stream 
-(not just distinct locations), and commonly used columns.
-Geometries are located on the stream to which the observation is matched.
-
-```
-          Column           |          Type           |
----------------------------+-------------------------+
- fish_observation_point_id | integer                 |
- fish_obsrvtn_event_id     | bigint                  |
- linear_feature_id         | bigint                  |
- wscode_ltree              | ltree                   |
- localcode_ltree           | ltree                   |
- blue_line_key             | integer                 |
- waterbody_key             | integer                 |
- downstream_route_measure  | double precision        |
- distance_to_stream        | double precision        |
- match_type                | text                    |
- watershed_group_code      | character varying(4)    |
- species_id                | integer                 |
- species_code              | character varying(6)    |
- agency_id                 | numeric                 |
- observation_date          | date                    |
- agency_name               | character varying(60)   |
- source                    | character varying(1000) |
- source_ref                | character varying(4000) |
- activity_code             | character varying(100)  |
- activity                  | character varying(300)  |
- life_stage_code           | character varying(100)  |
- life_stage                | character varying(300)  |
- acat_report_url           | character varying(254)  |
- geom                      | geometry(PointZM,3005)  |
-```
-
-#### `bcfishobs.fiss_fish_obsrvtn_events`
-
-Distinct locations of observations matched to streams.
-Geometries are located on the stream to which the observation is matched.
+Source observations that have been successfully matched to a FWA stream.
+Geometries are snapped to the closest point on the the stream to which the observation is matched.
 
 ```
-          Column          |          Type          |
---------------------------+------------------------+
- fish_obsrvtn_event_id    | bigint                 |
- linear_feature_id        | integer                |
- wscode_ltree             | ltree                  |
- localcode_ltree          | ltree                  |
- blue_line_key            | integer                |
- watershed_group_code     | character varying(4)   |
- downstream_route_measure | double precision       |
- match_types              | text[]                 |
- obs_ids                  | integer[]              |
- species_codes            | text[]                 |
- species_ids              | integer[]              |
- maximal_species          | integer[]              |
- distances_to_stream      | double precision[]     |
- geom                     | geometry(PointZM,3005) |
-Indexes:
-    "fiss_fish_obsrvtn_events_pkey" PRIMARY KEY, btree (fish_obsrvtn_event_id)
-    "fiss_fish_obsrvtn_events_blue_line_key_idx" btree (blue_line_key)
-    "fiss_fish_obsrvtn_events_linear_feature_id_idx" btree (linear_feature_id)
-    "fiss_fish_obsrvtn_events_localcode_ltree_idx" btree (localcode_ltree)
-    "fiss_fish_obsrvtn_events_obs_ids_idx" gist (obs_ids gist__intbig_ops)
-    "fiss_fish_obsrvtn_events_species_ids_idx" gist (species_ids gist__intbig_ops)
-    "fiss_fish_obsrvtn_events_wscode_ltree_idx" btree (wscode_ltree)
+ Column                   |          Type          
+--------------------------+-------------------------+
+ observation_key          | text                    
+ wbody_id                 | numeric                 
+ species_code             | character varying(6)    
+ agency_id                | numeric                 
+ point_type_code          | character varying(20)   
+ observation_date         | date                    
+ agency_name              | character varying(60)   
+ source                   | character varying(1000) 
+ source_ref               | character varying(4000) 
+ utm_zone                 | numeric                 
+ utm_easting              | numeric                 
+ utm_northing             | numeric                 
+ activity_code            | character varying(100)  
+ activity                 | character varying(300)  
+ life_stage_code          | character varying(100)  
+ life_stage               | character varying(300)  
+ species_name             | character varying(60)   
+ waterbody_identifier     | character varying(9)    
+ waterbody_type           | character varying(20)   
+ gazetted_name            | character varying(30)   
+ new_watershed_code       | character varying(56)   
+ trimmed_watershed_code   | character varying(56)   
+ acat_report_url          | character varying(254)  
+ feature_code             | character varying(10)   
+ linear_feature_id        | integer                 
+ wscode                   | ltree                   
+ localcode                | ltree                   
+ blue_line_key            | integer                 
+ watershed_group_code     | character varying(4)    
+ downstream_route_measure | double precision        
+ match_type               | text                    
+ distances_to_stream      | double precision        
+ geom                     | geometry(PointZM,3005)  
 ```
 
-#### `bcfishobs.fiss_fish_obsrvtn_unmatched`
-
-Unique observation locations that the scripts are unable to match to FWA streams.
-
-```
-            Column            |         Type         | Collation | Nullable | Default
-------------------------------+----------------------+-----------+----------+---------
- fish_obsrvtn_pnt_distinct_id | integer              |           | not null |
- obs_ids                      | integer[]            |           |          |
- species_ids                  | integer[]            |           |          |
- distance_to_stream           | double precision     |           |          |
- geom                         | geometry(Point,3005) |           |          |
-Indexes:
-    "fiss_fish_obsrvtn_unmatched_pkey" PRIMARY KEY, btree (fish_obsrvtn_pnt_distinct_id)
-    "fiss_fish_obsrvtn_unmatched_geom_idx" gist (geom)
-```
-
-#### `bcfishobs.summary`
-
-Report on total number of observations processed and matched to streams, and the type of match used.
-
-```
-      Column       |  Type   |
--------------------+---------+
- match_type        | text    |
- n_distinct_events | integer |
- n_observations    | integer |
-```
 
 ## Use the data
 
@@ -270,17 +210,11 @@ ORDER BY e.wscode_ltree, e.localcode_ltree, e.downstream_route_measure;
 
 ## Warnings
 
-### `fish_observation_point_id`
+### Primary key and duplicates
 
-Column `fish_observation_point_id` is not an immutable primary key in the source table.
-`fish_observation_point_id` is guaranteed to be unique for a given extract but values will change over time.
-- if current id values are required, run a fresh extract
-- if referring to a specific observation in communications, use some combination of `source`, `species_code`, `life_cycle_code`, coordinates, etc
+Column `fish_observation_point_id` has been removed from the ouput, it is unique when downloaded but changes over time.
 
-### Duplicates
-
-Duplicate rows (for all fields) exist in the source table and are replicated in the output view. 
-Use observation counts with caution. 
+Column `observation_key` is generated by this script as a persistent unique identifier.  The value is created by hashing input columns `source, species_code, observation_date, utm_zone, utm_easting, utm_northing, life_stage_code, activity_code`. This combinaition of data is *mostly* unique in the source - any duplicates are dropped.
 
 ## Scheduled job
 
