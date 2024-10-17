@@ -14,7 +14,7 @@ clean:
 	mkdir -p .make
 	mkdir -p data
 	# create db schema
-	bcdata bc2pg -e -c 1 WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP
+	bcdata bc2pg -e -c 1 WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP --geometry_type POINT
 	$(PSQL) -f sql/schema.sql
 	touch $@
 
