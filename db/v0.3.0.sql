@@ -4,6 +4,7 @@ create extension if not exists pgcrypto;
 
 create table bcfishobs.observations (
  observation_key           text  primary key        ,
+ fish_observation_point_id numeric,
  wbody_id                  numeric                  ,
  species_code              character varying(6)     ,
  agency_id                 numeric                  ,
@@ -35,6 +36,7 @@ create table bcfishobs.observations (
  downstream_route_measure  double precision,
  match_type                text,
  distances_to_stream       double precision,
+ geom_src                  geometry(Point,3005),
  geom                      geometry(PointZM,3005)
 );
 create index on bcfishobs.observations (linear_feature_id);
