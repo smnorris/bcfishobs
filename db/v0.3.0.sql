@@ -41,6 +41,7 @@ create table bcfishobs.observations (
 );
 create index on bcfishobs.observations (linear_feature_id);
 create index on bcfishobs.observations (blue_line_key);
+create index on bcfishobs.observations (blue_line_key, downstream_route_measure);
 create index on bcfishobs.observations (wscode);
 create index on bcfishobs.observations (localcode);
 create index on bcfishobs.observations using gist (wscode);
