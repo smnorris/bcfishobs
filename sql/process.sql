@@ -1,4 +1,6 @@
--- load source data plus a synthetic primary key to target table
+------------------------------------------------------------
+-- load source data plus a synthetic primary key to preliminary table holding all observation source data
+------------------------------------------------------------
 drop table if exists bcfishobs.obs;
 create table bcfishobs.obs (like bcfishobs.observations including all);
 
@@ -62,9 +64,9 @@ on conflict do nothing;
 
 
 -- ---------------------------------------------
--- First, join each observation to all streams within 1500m.
--- Use this for subsequent analysis. Since we are
--- using such a large search area and also calculating the measures, this takes time
+-- Join each observation point to all streams within 1500m.
+-- This is used for subsequent analysis/inserts. Since we are
+-- using such a large search area and also calculating the measures, this takes a bit of time
 -- ---------------------------------------------
 drop table if exists bcfishobs.obs_streams1500m;
 create table bcfishobs.obs_streams1500m (
@@ -132,8 +134,10 @@ INNER JOIN bcfishobs.obs pts ON bl.observation_key = pts.observation_key
 inner join whse_basemapping.fwa_stream_networks_sp s on bl.linear_feature_id = s.linear_feature_id;
 
 
--- Insert observations on waterbodies, matching on wb_key, within 1500m
+------------------------------------------------------------
+-- Create table holding the observation to stream matches that should be retained
 -- ---------------------------------------------
+
 drop table if exists bcfishobs.obs_fwa;
 create table bcfishobs.obs_fwa (
   observation_key text primary key,
@@ -148,8 +152,12 @@ create table bcfishobs.obs_fwa (
 );
 create index on bcfishobs.obs_fwa (linear_feature_id);
 
+
+------------------------------------------------------------
+-- Load each matching type to obs_fwa table in a different load
 -- ---------------------------------------------
--- Insert events matched to waterbodies.
+
+-- First, insert events matched to waterbodies.
 -- This is perhaps more complicated than it has to be but we want to
 -- ensure that observations in waterbodies are associated with waterbodies.
 -- We use a large 1500m tolerance (in previous query) because observations in
@@ -214,6 +222,7 @@ WHERE e.waterbody_key is NOT NULL
 ORDER BY e.observation_key, e.downstream_route_measure;
 
 
+
 -- ---------------------------------------------
 -- Some observations in waterbodies do not get added above due to
 -- lookup quirks.
@@ -257,6 +266,9 @@ AND e.distance_to_stream = closest_unmatched.distance_to_stream
 ORDER BY e.observation_key, e.downstream_route_measure;
 
 
+------------------------------------------------------------
+-- now match streams in several steps
+------------------------------------------------------------
 -- 1.
 -- Find points on streams that are within 100m of stream, but only
 -- insert those with an exact match in the 20k-50k lookup.
@@ -302,6 +314,8 @@ ON e.observation_key = closest_unmatched.observation_key
 AND e.distance_to_stream = closest_unmatched.distance_to_stream;
 
 
+
+------------------------------------------------------------
 -- 2.
 -- For records that we haven't yet inserted, insert those that are 100m
 -- or less from a stream, based just on minimum distance to stream
@@ -345,6 +359,8 @@ ON e.observation_key = closest_unmatched.observation_key
 AND e.distance_to_stream = closest_unmatched.distance_to_stream;
 
 
+
+------------------------------------------------------------
 -- 3.
 -- Finally, within records that still have not been inserted,
 -- find those that are >100m and <500m from a stream and have a exact
@@ -392,6 +408,11 @@ ON e.observation_key = closest_unmatched.observation_key
 AND e.distance_to_stream = closest_unmatched.distance_to_stream
 INNER JOIN bcfishobs.obs o
 ON e.observation_key = o.observation_key;
+
+
+------------------------------------------------------------
+-- load data from obs and obs_fwa tables to the output bcfishobs.observations table,
+-- rounding the measures and retaining both the snapped and source geometries
 
 insert into bcfishobs.observations (
   observation_key         ,
