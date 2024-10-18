@@ -447,7 +447,7 @@ insert into bcfishobs.observations (
   watershed_group_code    ,
   downstream_route_measure,
   match_type              ,
-  distances_to_stream     ,
+  distance_to_stream     ,
   geom_src,
   geom
 )

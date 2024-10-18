@@ -35,7 +35,7 @@ create table bcfishobs.observations (
  watershed_group_code      character varying(4),
  downstream_route_measure  double precision,
  match_type                text,
- distances_to_stream       double precision,
+ distance_to_stream        double precision,
  geom_src                  geometry(Point,3005),
  geom                      geometry(PointZM,3005)
 );
