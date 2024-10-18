@@ -4,12 +4,11 @@ set -euxo pipefail
 
 PSQL="psql $DATABASE_URL -v ON_ERROR_STOP=1"
 
-#$PSQL -c "truncate whse_fish.wdic_waterbodies"
-#$PSQL -c "\copy whse_fish.wdic_waterbodies FROM PROGRAM 'curl -s https://www.hillcrestgeo.ca/outgoing/public/whse_fish/whse_fish.wdic_waterbodies.csv.gz | gunzip' delimiter ',' csv header"
-#$PSQL -c "truncate whse_fish.species_cd"
-#$PSQL -c "\copy whse_fish.species_cd FROM PROGRAM 'curl -s https://raw.githubusercontent.com/smnorris/fishbc/master/data-raw/whse_fish_species_cd/whse_fish_species_cd.csv' delimiter ',' csv header"
-
-#bcdata bc2pg WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP --query "POINT_TYPE_CODE = 'Observation'" --geometry_type POINT
+$PSQL -c "truncate whse_fish.wdic_waterbodies"
+$PSQL -c "\copy whse_fish.wdic_waterbodies FROM PROGRAM 'curl -s https://www.hillcrestgeo.ca/outgoing/public/whse_fish/whse_fish.wdic_waterbodies.csv.gz | gunzip' delimiter ',' csv header"
+$PSQL -c "truncate whse_fish.species_cd"
+$PSQL -c "\copy whse_fish.species_cd FROM PROGRAM 'curl -s https://raw.githubusercontent.com/smnorris/fishbc/master/data-raw/whse_fish_species_cd/whse_fish_species_cd.csv' delimiter ',' csv header"
+bcdata bc2pg WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP --query "POINT_TYPE_CODE = 'Observation'" --geometry_type POINT
 
 # report on duplicates in source
 $PSQL -c "select
@@ -38,4 +37,4 @@ $PSQL -c "truncate bcfishobs.observations"
 $PSQL -f sql/process.sql
 
 # drop temp tables
-# $PSQL -c "drop table bcfishobs.obs; drop table bcfishobs.obs_fwa;"
+$PSQL -c "drop table bcfishobs.obs; drop table bcfishobs.obs_fwa;"
