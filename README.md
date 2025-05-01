@@ -52,8 +52,8 @@ To set up the database/create schema:
 
     $ git clone https://github.com/smnorris/bcfishobs.git
     $ cd bcfishobs
-    $ psql $DATABASE_URL -f sql/v0.2.0.sql
-    $ psql $DATABASE_URL -f sql/v0.3.0.sql
+    $ psql $DATABASE_URL -f db/v0.2.0.sql
+    $ psql $DATABASE_URL -f db/v0.3.0.sql
 
 To run the job:
 
