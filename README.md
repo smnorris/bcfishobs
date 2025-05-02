@@ -66,7 +66,7 @@ To run the job:
 Source observations that have been successfully matched to a FWA stream.
 Geometries are snapped to the closest point on the the stream network to which the observation is matched.
 
-For a list of columns and descriptions, see [db/v0.3.0.sql](db/v0.3.0.sql) or the [bcfishpass feature service](https://features.hillcrestgeo.ca/bcfishpass/collections/bcfishobs.observations.html)
+For a list of columns and descriptions, see [db/v0.3.0.sql](db/v0.3.0.sql) or the [bcfishpass feature service](https://features.hillcrestgeo.ca/bcfishpass/collections/bcfishobs.observations.html).
 
 
 ## Use the data
