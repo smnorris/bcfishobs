@@ -1,3 +1,5 @@
+BEGIN;
+
 create extension if not exists intarray;
 create schema if not exists bcfishobs;
 
@@ -149,3 +151,5 @@ create table bcfishobs.summary (
   n_distinct_events integer,
   n_observations integer
 );
+
+COMMIT;
