@@ -50,4 +50,4 @@ $PSQL -c "truncate bcfishobs.observations"
 $PSQL -f sql/process.sql
 
 # drop temp tables
-$PSQL -c "drop table bcfishobs.obs; drop table bcfishobs.obs_fwa;"
+$PSQL -c "drop table bcfishobs.obs; drop table bcfishobs.obs_fwa; drop table bcfishobs.obs_streams1500m;"
