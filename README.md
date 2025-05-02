@@ -59,16 +59,14 @@ To run the job:
 
     $ ./process.sh
 
-## Output
-
-All outputs are written to schema `bcfishobs`.
+## Output table
 
 #### `bcfishobs.observations`
 
 Source observations that have been successfully matched to a FWA stream.
 Geometries are snapped to the closest point on the the stream network to which the observation is matched.
 
-See <url> for column descriptions.
+For a list of columns and descriptions, see [db/v0.3.0.sql](db/v0.3.0.sql) or the [bcfishpass feature service](https://features.hillcrestgeo.ca/bcfishpass/collections/bcfishobs.observations.html)
 
 
 ## Use the data
