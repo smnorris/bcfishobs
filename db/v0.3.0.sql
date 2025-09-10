@@ -86,4 +86,12 @@ comment on column bcfishobs.observations.distance_to_stream IS 'Distance (m) fro
 comment on column bcfishobs.observations.geom_src IS 'Source geometry (from UTM coordinates)';
 comment on column bcfishobs.observations.geom IS 'Geometry of observation as snapped to the FWA stream network';
 
+
+-- drop obsolete v0.2.0 relations
+-- drop view bcfishobs.fiss_fish_obsrvtn_events_vw;
+-- drop table bcfishobs.fiss_fish_obsrvtn_events;
+-- drop table bcfishobs.fiss_fish_obsrvtn_unmatched;
+
 COMMIT;
+
+
