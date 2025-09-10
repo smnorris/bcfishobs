@@ -50,6 +50,7 @@ Scripts presume that:
 
 To set up the database/create schema:
 
+    $ bcdata bc2pg -e -c 1 whse_fish.fiss_fish_obsrvtn_pnt_sp
     $ git clone https://github.com/smnorris/bcfishobs.git
     $ cd bcfishobs
     $ psql $DATABASE_URL -f db/v0.2.0.sql
