@@ -9,7 +9,8 @@ $PSQL -c "\copy whse_fish.wdic_waterbodies FROM PROGRAM 'curl -s https://www.hil
 $PSQL -c "truncate whse_fish.species_cd"
 $PSQL -c "\copy whse_fish.species_cd FROM PROGRAM 'curl -s https://raw.githubusercontent.com/smnorris/fishbc/master/data-raw/whse_fish_species_cd/whse_fish_species_cd.csv' delimiter ',' csv header"
 
-#bcdata bc2pg WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP --query "POINT_TYPE_CODE = 'Observation'" --geometry_type POINT
+# presume that refreshing the source data is done by some other script
+# bcdata bc2pg WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP --query "POINT_TYPE_CODE = 'Observation'" --geometry_type POINT
 
 # rather than downloading via bcdata/WFS, pull data from NRS object storage
 # (presumes data is being cached weekly by bcfishpass workflows)
@@ -97,4 +98,4 @@ ogr2ogr -f Parquet \
   from bcfishobs.observations"
 
 # make public
-aws s3api put-object-acl --bucket bchamp --key observations.parquet --acl public-read
+aws s3api put-object-acl --bucket bchamp --key bcfishobs/observations.parquet --acl public-read
