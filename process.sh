@@ -9,9 +9,6 @@ $PSQL -c "\copy whse_fish.wdic_waterbodies FROM PROGRAM 'curl -s https://www.hil
 $PSQL -c "truncate whse_fish.species_cd"
 $PSQL -c "\copy whse_fish.species_cd FROM PROGRAM 'curl -s https://raw.githubusercontent.com/smnorris/fishbc/master/data-raw/whse_fish_species_cd/whse_fish_species_cd.csv' delimiter ',' csv header"
 
-# presume that refreshing the source data is done by some other script
-# bcdata bc2pg WHSE_FISH.FISS_FISH_OBSRVTN_PNT_SP --query "POINT_TYPE_CODE = 'Observation'" --geometry_type POINT
-
 # rather than downloading via bcdata/WFS, pull data from NRS object storage
 # (presumes data is being cached weekly by bcfishpass workflows)
 ogr2ogr -f PostgreSQL \
@@ -47,7 +44,6 @@ group by source,
 having count(*) > 1;" --csv > duplicates.csv
 
 # load to bcfishobs.observations, snapping to fwa streams and adding a hashed key for convenience
-$PSQL -c "truncate bcfishobs.observations"
 $PSQL -f sql/process.sql
 
 # drop temp tables
