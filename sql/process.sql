@@ -448,7 +448,7 @@ insert into bcfishobs.observations (
   downstream_route_measure,
   match_type              ,
   distance_to_stream     ,
-  geom_src,
+  -- geom_src,
   geom
 )
 select
@@ -485,8 +485,8 @@ select
   CEIL(GREATEST(s.downstream_route_measure, FLOOR(LEAST(s.upstream_route_measure, fwa.downstream_route_measure)))) as downstream_route_measure,
   fwa.match_type              ,
   fwa.distance_to_stream     ,
-  o.geom_src,
-  whse_basemapping.FWA_LocateAlong(fwa.blue_line_key, CEIL(GREATEST(s.downstream_route_measure, FLOOR(LEAST(s.upstream_route_measure, fwa.downstream_route_measure))))) as geom
+  -- o.geom_src,
+  ST_Force3DZ(whse_basemapping.FWA_LocateAlong(fwa.blue_line_key, CEIL(GREATEST(s.downstream_route_measure, FLOOR(LEAST(s.upstream_route_measure, fwa.downstream_route_measure)))))) as geom
 from bcfishobs.obs o
 inner join bcfishobs.obs_fwa fwa on o.observation_key = fwa.observation_key
 inner join whse_basemapping.fwa_stream_networks_sp s on fwa.linear_feature_id = s.linear_feature_id;

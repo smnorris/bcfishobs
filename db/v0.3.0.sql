@@ -88,10 +88,9 @@ comment on column bcfishobs.observations.geom IS 'Geometry of observation as sna
 
 
 -- drop obsolete v0.2.0 relations
+-- (do not do this when setting up a bcfishpass database from scratch, events_vw is required by migration scripts)
 -- drop view bcfishobs.fiss_fish_obsrvtn_events_vw;
 -- drop table bcfishobs.fiss_fish_obsrvtn_events;
 -- drop table bcfishobs.fiss_fish_obsrvtn_unmatched;
 
 COMMIT;
-
-
