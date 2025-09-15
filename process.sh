@@ -55,7 +55,7 @@ $PSQL -c "drop table bcfishobs.obs; drop table bcfishobs.obs_fwa; drop table bcf
 
 # dump to file, do not include source geoms
 ogr2ogr -f Parquet \
-  /vsis3/bchamp/bcdata/observations.parquet \
+  /vsis3/bchamp/bcfishobs/observations.parquet \
   PG:$DATABASE_URL \
   --debug ON \
   -lco FID=observation_key \
