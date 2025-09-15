@@ -2,7 +2,51 @@
 -- load source data plus a synthetic primary key to preliminary table holding all observation source data
 ------------------------------------------------------------
 drop table if exists bcfishobs.obs;
-create table bcfishobs.obs (like bcfishobs.observations including all);
+create table bcfishobs.obs (
+ observation_key           text  primary key        ,
+ fish_observation_point_id numeric,
+ wbody_id                  numeric                  ,
+ species_code              character varying(6)     ,
+ agency_id                 numeric                  ,
+ point_type_code           character varying(20)    ,
+ observation_date          date                     ,
+ agency_name               character varying(60)    ,
+ source                    character varying(1000)  ,
+ source_ref                character varying(4000)  ,
+ utm_zone                  integer                  ,
+ utm_easting               integer                  ,
+ utm_northing              integer                  ,
+ activity_code             character varying(100)   ,
+ activity                  character varying(300)   ,
+ life_stage_code           character varying(100)   ,
+ life_stage                character varying(300)   ,
+ species_name              character varying(60)    ,
+ waterbody_identifier      character varying(9)     ,
+ waterbody_type            character varying(20)    ,
+ gazetted_name             character varying(30)    ,
+ new_watershed_code        character varying(56)    ,
+ trimmed_watershed_code    character varying(56)    ,
+ acat_report_url           character varying(254)   ,
+ feature_code              character varying(10)    ,
+ linear_feature_id         bigint,
+ wscode                    ltree,
+ localcode                 ltree,
+ blue_line_key             integer,
+ watershed_group_code      character varying(4),
+ downstream_route_measure  double precision,
+ match_type                text,
+ distance_to_stream        double precision,
+ geom_src                  geometry(Point,3005),
+ geom                      geometry(PointZM,3005)
+);
+create index on bcfishobs.obs (linear_feature_id);
+create index on bcfishobs.obs (blue_line_key);
+create index on bcfishobs.obs (blue_line_key, downstream_route_measure);
+create index on bcfishobs.obs (wscode);
+create index on bcfishobs.obs (localcode);
+create index on bcfishobs.obs using gist (wscode);
+create index on bcfishobs.obs using gist (localcode);
+create index on bcfishobs.obs using gist (geom);
 
 insert into bcfishobs.obs (
  observation_key,
@@ -448,7 +492,7 @@ insert into bcfishobs.observations (
   downstream_route_measure,
   match_type              ,
   distance_to_stream     ,
-  geom_src,
+  -- geom_src,
   geom
 )
 select
@@ -485,8 +529,8 @@ select
   CEIL(GREATEST(s.downstream_route_measure, FLOOR(LEAST(s.upstream_route_measure, fwa.downstream_route_measure)))) as downstream_route_measure,
   fwa.match_type              ,
   fwa.distance_to_stream     ,
-  o.geom_src,
-  whse_basemapping.FWA_LocateAlong(fwa.blue_line_key, CEIL(GREATEST(s.downstream_route_measure, FLOOR(LEAST(s.upstream_route_measure, fwa.downstream_route_measure))))) as geom
+  -- o.geom_src,
+  ST_Force3DZ(whse_basemapping.FWA_LocateAlong(fwa.blue_line_key, CEIL(GREATEST(s.downstream_route_measure, FLOOR(LEAST(s.upstream_route_measure, fwa.downstream_route_measure)))))) as geom
 from bcfishobs.obs o
 inner join bcfishobs.obs_fwa fwa on o.observation_key = fwa.observation_key
 inner join whse_basemapping.fwa_stream_networks_sp s on fwa.linear_feature_id = s.linear_feature_id;

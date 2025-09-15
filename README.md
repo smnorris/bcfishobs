@@ -55,6 +55,7 @@ To set up the database/create schema:
     $ cd bcfishobs
     $ psql $DATABASE_URL -f db/v0.2.0.sql
     $ psql $DATABASE_URL -f db/v0.3.0.sql
+    $ psql $DATABASE_URL -f db/v0.3.1.sql
 
 To run the job:
 

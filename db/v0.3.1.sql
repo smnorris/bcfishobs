@@ -1,6 +1,6 @@
 BEGIN;
 
-create extension if not exists pgcrypto;
+DROP TABLE bcfishobs.observations;
 
 create table bcfishobs.observations (
  observation_key           text  primary key        ,
@@ -36,8 +36,7 @@ create table bcfishobs.observations (
  downstream_route_measure  double precision,
  match_type                text,
  distance_to_stream        double precision,
- geom_src                  geometry(Point,3005),
- geom                      geometry(PointZM,3005)
+ geom                      geometry(PointZ,3005)
 );
 create index on bcfishobs.observations (linear_feature_id);
 create index on bcfishobs.observations (blue_line_key);
@@ -83,14 +82,6 @@ comment on column bcfishobs.observations.watershed_group_code is 'See FWA docume
 comment on column bcfishobs.observations.downstream_route_measure is 'See FWA documentation';
 comment on column bcfishobs.observations.match_type IS 'Description of how the observation was matched to the stream';
 comment on column bcfishobs.observations.distance_to_stream IS 'Distance (m) from source observation to output point';
-comment on column bcfishobs.observations.geom_src IS 'Source geometry (from UTM coordinates)';
 comment on column bcfishobs.observations.geom IS 'Geometry of observation as snapped to the FWA stream network';
-
-
--- drop obsolete v0.2.0 relations
--- (do not do this when setting up a bcfishpass database from scratch, events_vw is required by migration scripts)
--- drop view bcfishobs.fiss_fish_obsrvtn_events_vw;
--- drop table bcfishobs.fiss_fish_obsrvtn_events;
--- drop table bcfishobs.fiss_fish_obsrvtn_unmatched;
 
 COMMIT;
