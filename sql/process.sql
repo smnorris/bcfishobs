@@ -36,7 +36,7 @@ create table bcfishobs.obs (
  downstream_route_measure  double precision,
  match_type                text,
  distance_to_stream        double precision,
- geom_src                  geometry(PointZ,3005)
+ geom_src                  geometry(PointZ,3005),
  geom                      geometry(PointZM,3005)
 );
 create index on bcfishobs.obs (linear_feature_id);
