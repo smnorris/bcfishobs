@@ -48,7 +48,7 @@ Scripts presume that:
 - environment variable `DATABASE_URL` points to the appropriate db
 - FWA data are loaded to the db via `fwapg`
 
-To set up the database/create schema:
+To set up the database/create schema/load required supporting datasets:
 
     $ bcdata bc2pg -e -c 1 whse_fish.fiss_fish_obsrvtn_pnt_sp
     $ git clone https://github.com/smnorris/bcfishobs.git
@@ -56,6 +56,7 @@ To set up the database/create schema:
     $ psql $DATABASE_URL -f db/v0.2.0.sql
     $ psql $DATABASE_URL -f db/v0.3.0.sql
     $ psql $DATABASE_URL -f db/v0.3.1.sql
+    $ ./load_supporting_data.sh
 
 To run the job:
 
