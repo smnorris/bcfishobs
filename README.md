@@ -56,6 +56,7 @@ To set up the database/create schema/load required supporting datasets:
     $ psql $DATABASE_URL -f db/v0.2.0.sql
     $ psql $DATABASE_URL -f db/v0.3.0.sql
     $ psql $DATABASE_URL -f db/v0.3.1.sql
+    $ psql $DATABASE_URL -f db/v0.3.2.sql
     $ ./load_supporting_data.sh
 
 To run the job:
